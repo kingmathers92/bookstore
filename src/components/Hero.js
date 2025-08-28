@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <section
       className="relative h-[500px] bg-cover bg-center arabesque-bg"
-      style={{ backgroundImage: "url('/images/hero.webp')" }}
+      style={{ backgroundImage: "url('/images/hero.png')" }}
     >
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--teal-800)]/50 via-transparent to-[var(--gold-300)]/50 flex items-center justify-center">
         <motion.div

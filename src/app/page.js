@@ -1,13 +1,13 @@
-import Hero from "@/components/Hero";
-import BookCard from "@/components/BookCard";
-import SearchBar from "@/components/SearchBar";
-import CategoryFilter from "@/components/CategoryFilter";
+import Hero from "../components/Hero";
+import BookCard from "../components/BookCard";
+import SearchBar from "../components/SearchBar";
+import CategoryFilter from "../components/CategoryFilter";
 
 export default function Home() {
   const books = [
-    { id: 1, title: "كتاب إسلامي 1", price: "50", image: "/images/book1.webp" },
-    { id: 2, title: "كتاب إسلامي 2", price: "60", image: "/images/book2.webp" },
-    { id: 3, title: "كتاب إسلامي 3", price: "40", image: "/images/book3.webp" },
+    { id: 1, title: "كتاب إسلامي 1", price: "50", image: "/images/book1.jpg" },
+    { id: 2, title: "كتاب إسلامي 2", price: "60", image: "/images/book2.jpg" },
+    { id: 3, title: "كتاب إسلامي 3", price: "40", image: "/images/book3.jpg" },
   ];
 
   return (

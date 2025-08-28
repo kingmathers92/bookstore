@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "ثمرات الأوراق - متجر الكتب الإسلامية",
   description:
