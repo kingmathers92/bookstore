@@ -1,15 +1,26 @@
 "use client";
 
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function CategoryFilter() {
   return (
     <div className="w-full max-w-xs">
       <Select>
-        <option value="all">الكل</option>
-        <option value="quran">قرآن</option>
-        <option value="hadith">حديث</option>
-        <option value="tafsir">تفسير</option>
+        <SelectTrigger className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-700">
+          <SelectValue placeholder="الكل" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">الكل</SelectItem>
+          <SelectItem value="quran">قرآن</SelectItem>
+          <SelectItem value="hadith">حديث</SelectItem>
+          <SelectItem value="tafsir">تفسير</SelectItem>
+        </SelectContent>
       </Select>
     </div>
   );

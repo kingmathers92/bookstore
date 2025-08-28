@@ -8,7 +8,7 @@ export default function SearchBar() {
       <Input
         type="text"
         placeholder="ابحث عن كتاب..."
-        className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--emerald-700)]"
+        className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-700"
       />
     </div>
   );

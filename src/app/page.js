@@ -1,7 +1,7 @@
-import Hero from "../components/Hero";
-import BookCard from "../components/BookCard";
-import SearchBar from "../components/SearchBar";
-import CategoryFilter from "../components/CategoryFilter";
+import Hero from "@/components/Hero";
+import BookCard from "@/components/BookCard";
+import SearchBar from "@/components/SearchBar";
+import CategoryFilter from "@/components/CategoryFilter";
 
 export default function Home() {
   const books = [
@@ -14,7 +14,7 @@ export default function Home() {
     <div className="min-h-screen">
       <Hero />
       <section className="container mx-auto py-12 px-4">
-        <h2 className="text-4xl font-bold text-center mb-8 text-[var(--green-900)]">
+        <h2 className="text-4xl font-bold text-center mb-8 text-green-900">
           الكتب المميزة
         </h2>
         <div className="flex flex-col sm:flex-row gap-6 mb-8">
