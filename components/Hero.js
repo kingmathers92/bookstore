@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ShoppingCart } from "lucide-react";
 
 export default function Hero() {
   return (
@@ -33,6 +34,7 @@ export default function Hero() {
                   className="bg-emerald-700 text-cream-100 hover:bg-green-900 transition duration-300"
                   aria-label="تسوق الآن"
                 >
+                  <ShoppingCart />
                   تسوق الآن
                 </Button>
               </Link>
