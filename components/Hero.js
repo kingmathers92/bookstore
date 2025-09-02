@@ -8,14 +8,15 @@ export default function Hero() {
   return (
     <section
       className="relative h-[500px] bg-cover bg-center arabesque-bg"
-      style={{ backgroundImage: "url('/images/hero.png')" }}
+      style={{ backgroundImage: "url('/images/hero.webp')" }} // Changed to .webp
+      aria-label="شعار متجر ثمرات الأوراق"
     >
       <div className="absolute inset-0 bg-gradient-to-t from-teal-800/50 via-transparent to-gold-300/50 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
-          className="text-center px-4"
+          className="text-center px-4 sm:px-6 md:px-8"
         >
           <h1 className="text-5xl md:text-6xl font-bold text-gold-300 drop-shadow-lg">
             مرحبًا بكم في ثمرات الأوراق
@@ -24,7 +25,10 @@ export default function Hero() {
             اكتشفوا مجموعتنا الواسعة من الكتب الإسلامية التي تغذي العقل والروح
           </p>
           <Link href="/shop">
-            <Button className="bg-emerald-700 text-cream-100 hover:bg-green-900 transition duration-300">
+            <Button
+              className="bg-emerald-700 text-cream-100 hover:bg-green-900 transition duration-300"
+              aria-label="تسوق الآن"
+            >
               تسوق الآن
             </Button>
           </Link>

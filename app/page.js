@@ -5,15 +5,36 @@ import CategoryFilter from "@/components/CategoryFilter";
 
 export default function Home() {
   const books = [
-    { id: 1, title: "كتاب إسلامي 1", price: "50", image: "/images/book1.jpg" },
-    { id: 2, title: "كتاب إسلامي 2", price: "60", image: "/images/book2.jpg" },
-    { id: 3, title: "كتاب إسلامي 3", price: "40", image: "/images/book3.jpg" },
+    {
+      id: 1,
+      title: "كتاب إسلامي 1",
+      price: "50",
+      image: "/images/book1.jpg",
+      alt: "غلاف كتاب إسلامي 1",
+    },
+    {
+      id: 2,
+      title: "كتاب إسلامي 2",
+      price: "60",
+      image: "/images/book2.jpg",
+      alt: "غلاف كتاب إسلامي 2",
+    },
+    {
+      id: 3,
+      title: "كتاب إسلامي 3",
+      price: "40",
+      image: "/images/book3.jpg",
+      alt: "غلاف كتاب إسلامي 3",
+    },
   ];
 
   return (
     <div className="min-h-screen">
       <Hero />
-      <section className="container mx-auto py-12 px-4">
+      <section
+        className="container mx-auto py-12 px-4"
+        aria-label="قسم الكتب المميزة"
+      >
         <h2 className="text-4xl font-bold text-center mb-8 text-green-900">
           الكتب المميزة
         </h2>
@@ -28,6 +49,7 @@ export default function Home() {
               title={book.title}
               price={book.price}
               image={book.image}
+              alt={book.alt}
             />
           ))}
         </div>
