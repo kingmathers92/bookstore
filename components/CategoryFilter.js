@@ -7,11 +7,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useStore } from "@/lib/store";
 
 export default function CategoryFilter() {
+  const { category, setCategory } = useStore();
+
   return (
     <div className="w-full max-w-xs">
-      <Select>
+      <Select value={category} onValueChange={setCategory}>
         <SelectTrigger className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-700">
           <SelectValue placeholder="الكل" />
         </SelectTrigger>

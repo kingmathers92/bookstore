@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 export default function Hero() {
   return (
     <section
-      className="relative h-[500px] bg-cover bg-center arabesque-bg"
+      className="relative h-[500px] bg-cover bg-center"
       style={{ backgroundImage: "url('/images/hero.png')" }}
       aria-label="شعار متجر ثمرات الأوراق"
     >
