@@ -14,7 +14,7 @@ export default function Home() {
       title: "كتاب إسلامي 1",
       price: 50,
       category: "quran",
-      image: "/images/book1.webp",
+      image: "/images/book1.jpg",
       alt: "غلاف كتاب إسلامي 1",
     },
     {
@@ -22,7 +22,7 @@ export default function Home() {
       title: "كتاب إسلامي 2",
       price: 60,
       category: "hadith",
-      image: "/images/book2.webp",
+      image: "/images/book2.jpg",
       alt: "غلاف كتاب إسلامي 2",
     },
     {
@@ -30,7 +30,7 @@ export default function Home() {
       title: "كتاب إسلامي 3",
       price: 40,
       category: "tafsir",
-      image: "/images/book3.webp",
+      image: "/images/book3.jpg",
       alt: "غلاف كتاب إسلامي 3",
     },
   ].filter(
