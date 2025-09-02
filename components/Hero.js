@@ -8,7 +8,7 @@ export default function Hero() {
   return (
     <section
       className="relative h-[500px] bg-cover bg-center arabesque-bg"
-      style={{ backgroundImage: "url('/images/hero.webp')" }} // Changed to .webp
+      style={{ backgroundImage: "url('/images/hero.png')" }}
       aria-label="شعار متجر ثمرات الأوراق"
     >
       <div className="absolute inset-0 bg-gradient-to-t from-teal-800/50 via-transparent to-gold-300/50 flex items-center justify-center">
