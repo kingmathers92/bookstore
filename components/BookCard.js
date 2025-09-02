@@ -3,8 +3,11 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useStore } from "@/lib/store";
 
-export default function BookCard({ title, price, image, alt }) {
+export default function BookCard({ title, price, image, alt, id }) {
+  const addToCart = useStore((state) => state.addToCart);
+
   return (
     <motion.div
       whileHover={{ scale: 1.05, rotate: 0.5 }}
@@ -18,6 +21,9 @@ export default function BookCard({ title, price, image, alt }) {
             alt={alt}
             className="w-full h-56 object-cover rounded-t-lg"
             loading="lazy"
+            onError={(e) => {
+              e.target.src = "/images/placeholder.webp";
+            }}
           />
         </CardHeader>
         <CardContent className="p-4">
@@ -27,7 +33,7 @@ export default function BookCard({ title, price, image, alt }) {
           <p className="text-gray-600 mb-4">{price} ر.س</p>
           <Button
             className="bg-emerald-700 text-cream-100 hover:bg-green-900 w-full"
-            aria-label="أضف إلى السلة"
+            onClick={() => addToCart({ id, title, price })}
           >
             أضف إلى السلة
           </Button>
