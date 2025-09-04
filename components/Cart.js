@@ -1,6 +1,9 @@
 "use client";
 
 import { useStore } from "@/lib/store";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Trash } from "lucide-react";
 
 export default function Cart() {
   const { cart, removeFromCart } = useStore();
@@ -11,22 +14,23 @@ export default function Cart() {
       {cart.length === 0 ? (
         <p>السلة فارغة</p>
       ) : (
-        <div className="grid gap-4">
+        <div className="space-y-4">
           {cart.map((item) => (
-            <div
-              key={item.id}
-              className="flex justify-between items-center border p-4 rounded"
-            >
-              <span>
-                {item.title} - {item.price} ر.س
-              </span>
-              <button
-                onClick={() => removeFromCart(item.id)}
-                className="bg-red-500 text-white p-2 rounded"
-              >
-                حذف
-              </button>
-            </div>
+            <Card key={item.id}>
+              <CardHeader>
+                <CardTitle>{item.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex justify-between items-center">
+                <span>{item.price} ر.س</span>
+                <Button
+                  variant="destructive"
+                  onClick={() => removeFromCart(item.id)}
+                  className="flex items-center gap-2"
+                >
+                  <Trash size={16} /> حذف
+                </Button>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}

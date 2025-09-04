@@ -2,19 +2,26 @@
 
 import { Input } from "@/components/ui/input";
 import { useStore } from "@/lib/store";
+import { Search } from "lucide-react";
 
 export default function SearchBar() {
   const { searchQuery, setSearchQuery } = useStore();
 
   return (
     <div className="w-full max-w-md">
-      <Input
-        type="text"
-        placeholder="ابحث عن كتاب..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-700"
-      />
+      <div className="relative">
+        <Input
+          type="text"
+          placeholder="ابحث عن كتاب..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-10"
+        />
+        <Search
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          size={20}
+        />
+      </div>
     </div>
   );
 }

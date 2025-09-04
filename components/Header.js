@@ -6,7 +6,7 @@ import { useStore } from "@/lib/store";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
-import { Menu } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,10 +48,10 @@ export default function Header() {
               </Link>
               <Link
                 href="/cart"
-                className="hover:text-gold-300 transition-colors text-lg"
+                className="hover:text-gold-300 transition-colors text-lg flex items-center gap-2"
                 onClick={() => setIsOpen(false)}
               >
-                السلة ({cart.length})
+                <ShoppingCart size={16} /> السلة ({cart.length})
               </Link>
               {user ? (
                 <Button
@@ -88,9 +88,9 @@ export default function Header() {
           </Link>
           <Link
             href="/cart"
-            className="hover:text-gold-300 transition-colors text-lg"
+            className="hover:text-gold-300 transition-colors text-lg flex items-center gap-2"
           >
-            السلة ({cart.length})
+            <ShoppingCart size={16} /> السلة ({cart.length})
           </Link>
           {user ? (
             <Button
