@@ -26,16 +26,15 @@ export default function Hero() {
                 مرحبًا بكم في ثمرات الأوراق
               </h1>
               <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-cream-100">
-                اكتشفوا مجموعتنا الواسعة من الكتب الإسلامية التي تغذي العقل
-                والروح
+                اكتشفوا مجموعتنا الواسعة من الكتب الإسلامية، بما في ذلك دلائل
+                القرآن الحصرية
               </p>
               <Link href="/shop">
                 <Button
-                  className="bg-emerald-700 text-cream-100 hover:bg-green-900 transition duration-300"
+                  className="bg-emerald-700 text-cream-100 hover:bg-green-900 transition duration-300 flex items-center gap-2"
                   aria-label="تسوق الآن"
                 >
-                  <ShoppingCart />
-                  تسوق الآن
+                  <ShoppingCart size={20} /> تسوق الآن
                 </Button>
               </Link>
             </CardContent>
