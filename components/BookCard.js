@@ -25,7 +25,7 @@ export default function BookCard({ title, price, image, alt, id }) {
               className="w-full h-56 object-cover rounded-t-lg"
               loading="lazy"
               onError={(e) => {
-                e.target.src = "/images/placeholder.webp";
+                e.target.src = "/images/placeholder.png";
               }}
             />
           ) : (
