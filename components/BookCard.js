@@ -5,10 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStore } from "@/lib/store";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 
 export default function BookCard({ title, price, image, alt, id }) {
   const addToCart = useStore((state) => state.addToCart);
+  const reviews = [{ rating: 4.5, comment: "ممتاز جدًا!" }]; // dummy data
 
   return (
     <motion.div
@@ -40,11 +41,20 @@ export default function BookCard({ title, price, image, alt, id }) {
             {price ? `${price} ر.س` : <Skeleton className="h-4 w-1/2" />}
           </p>
           <Button
-            className="bg-emerald-700 text-cream-100 hover:bg-green-900 w-full flex items-center gap-2"
+            className="bg-emerald-700 text-cream-100 hover:bg-green-900 w-full flex items-center gap-2 mb-2"
             onClick={() => addToCart({ id, title, price })}
           >
             <ShoppingCart size={16} /> أضف إلى السلة
           </Button>
+          {reviews.length > 0 && (
+            <div className="flex items-center gap-1 text-yellow-500">
+              <Star size={16} />
+              <span>{reviews[0].rating.toFixed(1)}</span>
+              <span className="text-gray-600 text-sm ml-1">
+                ({reviews[0].comment})
+              </span>
+            </div>
+          )}
         </CardContent>
       </Card>
     </motion.div>
