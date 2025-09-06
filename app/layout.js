@@ -1,20 +1,8 @@
 import "./globals.css";
-import { Noto_Kufi_Arabic, Amiri } from "next/font/google";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import LiveChat from "../components/LiveChat";
-
-const notoKufi = Noto_Kufi_Arabic({
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  variable: "--font-primary",
-});
-
-const amiri = Amiri({
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  variable: "--font-secondary",
-});
+import BackToTop from "../components/BackToTop";
 
 export const metadata = {
   title: "ثمرات الأوراق - متجر الكتب الإسلامية",
@@ -51,6 +39,7 @@ export default function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <LiveChat />
+        <BackToTop />
       </body>
     </html>
   );
