@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import LanguageToggle from "@/components/LanguageToggle";
 import { useStore } from "@/lib/store";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ export default function Header() {
           </SheetTrigger>
           <SheetContent side="right" className="bg-green-900 text-cream-100">
             <nav className="flex flex-col gap-4 mt-4">
+              <LanguageToggle />
               <Link
                 href="/"
                 className="hover:text-gold-300 transition-colors text-lg"
@@ -74,6 +76,7 @@ export default function Header() {
           </SheetContent>
         </Sheet>
         <nav className="hidden sm:flex gap-6">
+          <LanguageToggle />
           <Link
             href="/"
             className="hover:text-gold-300 transition-colors text-lg"
