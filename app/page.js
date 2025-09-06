@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import BookCard from "@/components/BookCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
+import BookOfTheDay from "@/components/BookOfTheDay";
 import { useStore } from "@/lib/store";
 
 export default function Home() {
@@ -44,6 +45,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <Hero />
+      <BookOfTheDay />
       <section
         className="container mx-auto py-12 px-4"
         aria-label="قسم الكتب المميزة"
