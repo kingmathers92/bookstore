@@ -25,6 +25,8 @@ export default function BookCard({ title, price, image, alt, id }) {
               alt={alt}
               className="w-full h-56 object-cover rounded-t-lg"
               loading="lazy"
+              decoding="async"
+              fetchpriority="low"
               onError={(e) => {
                 e.target.src = "/images/placeholder.png";
               }}
