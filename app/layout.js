@@ -19,8 +19,9 @@ const amiri = Amiri({
 export const metadata = {
   title: "ثمرات الأوراق - متجر الكتب الإسلامية",
   description:
-    "متجر كتب إسلامية عبر الإنترنت يقدم مجموعة واسعة من الكتب الإسلامية باللغة العربية.",
-  keywords: "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية",
+    "اكتشف مجموعة واسعة من الكتب الإسلامية عالية الجودة في متجر ثمرات الأوراق.",
+  keywords:
+    "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية, قرآن, حديث, تفسير",
   openGraph: {
     title: "ثمرات الأوراق",
     description: "متجر الكتب الإسلامية الأفضل عبر الإنترنت.",
@@ -44,11 +45,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html
-      lang="ar"
-      dir="rtl"
-      className={`${notoKufi.variable} ${amiri.variable}`}
-    >
+    <html>
       <body>
         <Header />
         <main>{children}</main>
