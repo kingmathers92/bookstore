@@ -2,6 +2,7 @@ import "./globals.css";
 import { Noto_Kufi_Arabic, Amiri } from "next/font/google";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import LiveChat from "../components/LiveChat";
 
 const notoKufi = Noto_Kufi_Arabic({
   subsets: ["arabic"],
@@ -20,6 +21,25 @@ export const metadata = {
   description:
     "متجر كتب إسلامية عبر الإنترنت يقدم مجموعة واسعة من الكتب الإسلامية باللغة العربية.",
   keywords: "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية",
+  openGraph: {
+    title: "ثمرات الأوراق",
+    description: "متجر الكتب الإسلامية الأفضل عبر الإنترنت.",
+    url: "https://thamaratalawrak.com",
+    images: [
+      {
+        url: "/images/hero.webp",
+        width: 800,
+        height: 600,
+        alt: "شعار متجر ثمرات الأوراق",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ثمرات الأوراق",
+    description: "اكتشف الكتب الإسلامية المميزة!",
+    images: ["/images/hero.webp"],
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -33,6 +53,7 @@ export default function RootLayout({ children }) {
         <Header />
         <main>{children}</main>
         <Footer />
+        <LiveChat />
       </body>
     </html>
   );
