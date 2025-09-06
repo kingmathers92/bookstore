@@ -123,23 +123,6 @@ body {
   line-height: 1.6;
 }
 
-.arabesque-bg {
-  background-image: url("/images/arabesque-pattern.webp");
-  background-size: 200px;
-  background-repeat: repeat;
-  opacity: 0.1;
-}
-
-.islamic-pattern {
-  background-image: url("/images/geometric-pattern.webp");
-  background-size: 300px;
-  background-repeat: repeat;
-  opacity: 0.05;
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
