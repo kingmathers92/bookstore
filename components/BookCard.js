@@ -1,11 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStore } from "@/lib/store";
-import { ShoppingCart, Star } from "lucid-react";
+import { ShoppingCart, Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function BookCard({ id }) {
