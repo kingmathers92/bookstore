@@ -20,7 +20,7 @@ export default function BookOfTheDay() {
       <Card className="max-w-md mx-auto">
         <CardHeader>
           <img
-            src="/images/book1.webp"
+            src="/images/book1.jpg"
             alt="كتاب اليوم"
             className="w-full h-48 object-cover rounded-t-lg"
           />

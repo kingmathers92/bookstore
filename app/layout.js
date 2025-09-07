@@ -16,7 +16,7 @@ export const metadata = {
     url: "https://thamaratalawrak.com",
     images: [
       {
-        url: "/images/hero.webp",
+        url: "/images/hero.jpg",
         width: 800,
         height: 600,
         alt: "شعار متجر ثمرات الأوراق",
@@ -27,7 +27,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "ثمرات الأوراق",
     description: "اكتشف الكتب الإسلامية المميزة!",
-    images: ["/images/hero.webp"],
+    images: ["/images/hero.jpg"],
   },
 };
 

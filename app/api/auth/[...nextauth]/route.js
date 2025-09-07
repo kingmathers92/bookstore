@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { supabase } from "@/lib/supabase";
 
 const handler = NextAuth({
   providers: [
@@ -10,13 +11,12 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (
-          credentials.email === "user@example.com" &&
-          credentials.password === "password"
-        ) {
-          return { id: 1, name: "User", email: "user@example.com" };
-        }
-        return null;
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: credentials.email,
+          password: credentials.password,
+        });
+        if (error) return null;
+        return data.user;
       },
     }),
   ],
@@ -24,7 +24,6 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.name = user.name;
         token.email = user.email;
       }
       return token;
@@ -32,7 +31,6 @@ const handler = NextAuth({
     async session({ session, token }) {
       session.user = {
         id: token.id,
-        name: token.name,
         email: token.email,
       };
       return session;

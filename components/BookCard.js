@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +24,18 @@ export default function BookCard({ id }) {
     };
     fetchBook();
   }, [id]);
+
+  const addBook = async () => {
+    const { error } = await supabase.from("books").insert({
+      title: "كتاب إسلامي جديد",
+      price: 40,
+      category: "tafsir",
+      image: "/images/book3.jpg",
+      alt: "غلاف كتاب إسلامي 3",
+    });
+    if (error) console.error("Error adding book:", error);
+    else alert("Book added successfully!");
+  };
 
   if (!book) return <Skeleton className="w-full h-56" />;
 
@@ -57,8 +68,14 @@ export default function BookCard({ id }) {
           >
             <ShoppingCart size={16} /> أضف إلى السلة
           </Button>
+          <Button
+            className="bg-green-900 text-cream-100 w-full mt-2"
+            onClick={addBook}
+          >
+            أضف كتابًا جديدًا
+          </Button>
           {book.reviews && book.reviews.length > 0 && (
-            <div className="flex items-center gap-1 text-yellow-500">
+            <div className="flex items-center gap-1 text-yellow-500 mt-2">
               <Star size={16} />
               <span>{book.reviews[0].rating.toFixed(1)}</span>
               <span className="text-gray-600 text-sm ml-1">
