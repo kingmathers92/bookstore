@@ -2,7 +2,9 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import LiveChat from "../components/LiveChat";
-import BackToTop from "../components/BackToTop";
+import ScrollToTop from "../components/BackToTop";
+import { ArrowUp } from "lucide-react";
+import CartSync from "../components/CartSync";
 
 export const metadata = {
   title: "ثمرات الأوراق - متجر الكتب الإسلامية",
@@ -39,7 +41,14 @@ export default function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <LiveChat />
-        <BackToTop />
+        <ScrollToTop
+          minHeight={20}
+          scrollTo={0}
+          className="fixed right-4 bottom-4 bg-emerald-700 text-cream-100 hover:bg-green-900 rounded-full w-14 h-14 flex items-center justify-center"
+        >
+          <ArrowUp size={24} />
+        </ScrollToTop>
+        <CartSync />
       </body>
     </html>
   );
