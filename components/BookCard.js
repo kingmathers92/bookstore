@@ -14,6 +14,10 @@ export default function BookCard({ id }) {
 
   useEffect(() => {
     const fetchBook = async () => {
+      if (!id) {
+        console.error("ID is undefined");
+        return;
+      }
       const { data, error } = await supabase
         .from("books")
         .select("*")
