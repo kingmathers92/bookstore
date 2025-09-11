@@ -17,10 +17,17 @@ export default function Home() {
   useEffect(() => {
     const fetchBooks = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from("books").select("*");
+      const { data, error, status } = await supabase.from("books").select("*");
+      console.log("Fetch response:", { data, error, status }); // logged api status to debug why books weren't being displayed
       if (error) {
-        console.error("Error fetching books:", error);
+        console.error(
+          "Error fetching books:",
+          error.message,
+          "Status:",
+          status
+        );
       } else {
+        console.log("Fetched books:", data);
         setBooks(data || []);
       }
       setLoading(false);
@@ -28,13 +35,16 @@ export default function Home() {
     fetchBooks();
   }, []);
 
+  console.log("Filter conditions:", { searchQuery, category, priceRange });
   const filteredBooks = books.filter(
     (book) =>
       book.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
       (category === "all" || book.category === category) &&
-      book.price >= priceRange[0] &&
-      book.price <= priceRange[1]
+      (book.price == null ||
+        (book.price >= priceRange[0] && book.price <= priceRange[1]))
   );
+
+  console.log("Filtered books:", filteredBooks);
 
   if (loading) return <div className="text-center py-12">Loading...</div>;
 
@@ -54,16 +64,20 @@ export default function Home() {
           <CategoryFilter />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {filteredBooks.map((book) => (
-            <BookCard
-              key={book.id}
-              id={book.id}
-              title={book.title}
-              price={book.price}
-              image={book.image}
-              alt={book.alt}
-            />
-          ))}
+          {filteredBooks.length > 0 ? (
+            filteredBooks.map((book) => (
+              <BookCard
+                key={book.id}
+                id={book.id}
+                title={book.title}
+                price={book.price || 0}
+                image={book.image}
+                alt={book.alt}
+              />
+            ))
+          ) : (
+            <div className="text-center py-12">No books found</div>
+          )}
         </div>
       </section>
     </div>
