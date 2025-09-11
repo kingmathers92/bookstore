@@ -8,20 +8,23 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import { Menu, ShoppingCart } from "lucide-react";
+import translations from "@/lib/transltaions";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const { cart, user, logout } = useStore();
+  const { cart, user, logout, language } = useStore();
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
     logout();
   };
 
+  const t = translations[language];
+
   return (
     <header className="bg-green-900 text-cream-100 py-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center px-4">
-        <h1 className="text-3xl font-bold text-gold-300">ثمرات الأوراق</h1>
+        <h1 className="text-3xl font-bold text-gold-300">{t.title}</h1>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button
@@ -39,21 +42,22 @@ export default function Header() {
                 className="hover:text-gold-300 transition-colors text-lg"
                 onClick={() => setIsOpen(false)}
               >
-                الرئيسية
+                {t.home}
               </Link>
               <Link
                 href="/shop"
                 className="hover:text-gold-300 transition-colors text-lg"
                 onClick={() => setIsOpen(false)}
               >
-                المتجر
+                {t.shop}
               </Link>
               <Link
                 href="/cart"
                 className="hover:text-gold-300 transition-colors text-lg flex items-center gap-2"
                 onClick={() => setIsOpen(false)}
               >
-                <ShoppingCart size={16} /> السلة ({cart.length})
+                <ShoppingCart size={16} />{" "}
+                {t.cart.replace("{count}", cart.length)}
               </Link>
               {user ? (
                 <Button
@@ -61,7 +65,7 @@ export default function Header() {
                   onClick={handleLogout}
                   className="hover:text-gold-300 text-lg"
                 >
-                  تسجيل الخروج
+                  {t.signOut}
                 </Button>
               ) : (
                 <Link
@@ -69,7 +73,7 @@ export default function Header() {
                   className="hover:text-gold-300 transition-colors text-lg"
                   onClick={() => setIsOpen(false)}
                 >
-                  تسجيل الدخول
+                  {t.signIn}
                 </Link>
               )}
             </nav>
@@ -81,19 +85,19 @@ export default function Header() {
             href="/"
             className="hover:text-gold-300 transition-colors text-lg"
           >
-            الرئيسية
+            {t.home}
           </Link>
           <Link
             href="/shop"
             className="hover:text-gold-300 transition-colors text-lg"
           >
-            المتجر
+            {t.shop}
           </Link>
           <Link
             href="/cart"
             className="hover:text-gold-300 transition-colors text-lg flex items-center gap-2"
           >
-            <ShoppingCart size={16} /> السلة ({cart.length})
+            <ShoppingCart size={16} /> {t.cart.replace("{count}", cart.length)}
           </Link>
           {user ? (
             <Button
@@ -101,14 +105,14 @@ export default function Header() {
               onClick={handleLogout}
               className="hover:text-gold-300 text-lg"
             >
-              تسجيل الخروج
+              {t.signOut}
             </Button>
           ) : (
             <Link
               href="/auth/signin"
               className="hover:text-gold-300 transition-colors text-lg"
             >
-              تسجيل الدخول
+              {t.signIn}
             </Link>
           )}
         </nav>
