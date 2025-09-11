@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
-import translations from "@/lib/translations";
+import translations from "@/lib/transltaions";
 
 const LoadingSpinner = () => {
   const { language } = useStore();

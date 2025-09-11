@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
 import { useStore } from "@/lib/store";
-import translations from "@/lib/translations";
+import translations from "@/lib/transltaions";
 
 export default function LanguageToggle() {
   const { language, setLanguage } = useStore();
