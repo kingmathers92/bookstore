@@ -5,6 +5,7 @@ import BookCard from "@/components/BookCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import BookOfTheDay from "@/components/BookOfTheDay";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { useStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -46,7 +47,7 @@ export default function Home() {
 
   console.log("Filtered books:", filteredBooks);
 
-  if (loading) return <div className="text-center py-12">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen">
