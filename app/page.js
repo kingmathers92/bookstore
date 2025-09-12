@@ -5,15 +5,17 @@ import BookCard from "@/components/BookCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import BookOfTheDay from "@/components/BookOfTheDay";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { useStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import translations from "@/lib/translations";
 
 export default function Home() {
-  const { searchQuery, category, priceRange } = useStore();
+  const { searchQuery, category, priceRange, language } = useStore();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const t = translations[language];
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -53,12 +55,9 @@ export default function Home() {
     <div className="min-h-screen">
       <Hero />
       <BookOfTheDay />
-      <section
-        className="container mx-auto py-12 px-4"
-        aria-label="قسم الكتب المميزة"
-      >
+      <section className="container mx-auto py-12 px-4" aria-label={t.title}>
         <h2 className="text-4xl font-bold text-center mb-8 text-green-900 md:text-5xl">
-          الكتب المميزة
+          {t.title}
         </h2>
         <div className="flex flex-col sm:flex-row gap-4 mb-8 md:gap-6">
           <SearchBar />
@@ -77,7 +76,7 @@ export default function Home() {
               />
             ))
           ) : (
-            <div className="text-center py-12">No books found</div>
+            <div className="text-center py-12">{t.noBooksFound}</div>
           )}
         </div>
       </section>
