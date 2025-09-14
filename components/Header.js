@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import { Menu, ShoppingCart } from "lucide-react";
-import translations from "@/lib/transltaions";
+import translations from "@/lib/translations";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
