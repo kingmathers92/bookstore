@@ -23,7 +23,7 @@ export default function LanguageToggle() {
         aria-label={`Switch to ${language === "ar" ? "English" : "العربية"}`}
       >
         <Globe size={16} />
-        {language === "ar" ? "Switch to English" : "التبديل إلى العربية"}
+        {language === "ar" ? "English" : "العربية"}
       </Button>
     </div>
   );
