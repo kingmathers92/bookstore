@@ -7,11 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
+import translations from "@/lib/translations";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const setUser = useStore((state) => state.setUser);
+  const { language } = useStore();
+  const t = translations[language];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +24,7 @@ export default function SignIn() {
       password,
     });
     if (result?.error) {
-      alert("خطأ في تسجيل الدخول");
+      alert(t.signInError);
     } else {
       setUser({ id: 1, name: "User", email });
     }
@@ -32,7 +35,7 @@ export default function SignIn() {
       <Card className="max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
-            <User size={24} /> تسجيل الدخول
+            <User size={24} /> {t.signInTitle}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -41,21 +44,21 @@ export default function SignIn() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="البريد الإلكتروني"
+              placeholder={t.signInEmailPlaceholder}
               className="w-full"
             />
             <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="كلمة المرور"
+              placeholder={t.signInPasswordPlaceholder}
               className="w-full"
             />
             <Button
               type="submit"
               className="bg-emerald-700 text-cream-100 w-full"
             >
-              تسجيل الدخول
+              {t.signInButton}
             </Button>
           </form>
         </CardContent>
