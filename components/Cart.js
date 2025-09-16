@@ -4,15 +4,17 @@ import { useStore } from "@/lib/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
+import translations from "@/lib/translations";
 
 export default function Cart() {
-  const { cart, removeFromCart } = useStore();
+  const { cart, removeFromCart, language } = useStore();
+  const t = translations[language];
 
   return (
     <div className="container mx-auto py-8">
-      <h2 className="text-3xl font-bold text-green-900 mb-4">السلة</h2>
+      <h2 className="text-3xl font-bold text-green-900 mb-4">{t.cartTitle}</h2>
       {cart.length === 0 ? (
-        <p>السلة فارغة</p>
+        <p>{t.cartEmpty}</p>
       ) : (
         <div className="space-y-4">
           {cart.map((item) => (
@@ -27,7 +29,7 @@ export default function Cart() {
                   onClick={() => removeFromCart(item.id)}
                   className="flex items-center gap-2"
                 >
-                  <Trash size={16} /> حذف
+                  <Trash size={16} /> {t.cartRemove}
                 </Button>
               </CardContent>
             </Card>
