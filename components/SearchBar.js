@@ -3,16 +3,18 @@
 import { Input } from "@/components/ui/input";
 import { useStore } from "@/lib/store";
 import { Search } from "lucide-react";
+import translations from "@/lib/translations";
 
 export default function SearchBar() {
-  const { searchQuery, setSearchQuery } = useStore();
+  const { searchQuery, setSearchQuery, language } = useStore();
+  const t = translations[language];
 
   return (
     <div className="w-full max-w-md">
       <div className="relative">
         <Input
           type="text"
-          placeholder="ابحث عن كتاب..."
+          placeholder={t.searchPlaceholder}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pl-10"
