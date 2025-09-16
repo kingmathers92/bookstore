@@ -5,6 +5,7 @@ import BookCard from "@/components/BookCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import BookOfTheDay from "@/components/BookOfTheDay";
+import Link from "next/link";
 import { useStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
@@ -56,9 +57,12 @@ export default function Home() {
       <Hero />
       <BookOfTheDay />
       <section className="container mx-auto py-12 px-4" aria-label={t.title}>
-        <h2 className="text-4xl font-bold text-center mb-8 text-green-900 md:text-5xl">
+        <Link
+          href="/"
+          className="text-4xl font-bold text-center mb-8 text-green-900 md:text-5xl hover:cursor-pointer"
+        >
           {t.title}
-        </h2>
+        </Link>
         <div className="flex flex-col sm:flex-row gap-4 mb-8 md:gap-6">
           <SearchBar />
           <CategoryFilter />
