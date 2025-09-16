@@ -31,7 +31,7 @@ export default function BackToTop() {
     <div className="fixed bottom-20 right-4 z-50 hover:cursor-pointer">
       {isVisible && (
         <Button
-          className="bg-emerald-700 text-cream-100 hover:bg-green-900 rounded-full w-14 h-14 flex items-center justify-center"
+          className="bg-gold-beige hover:bg-header-gradient-end rounded-full w-14 h-14 flex items-center justify-center"
           onClick={scrollToTop}
           aria-label="العودة إلى الأعلى"
         >
