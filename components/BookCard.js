@@ -57,11 +57,11 @@ export default function BookCard({ id, title, price, image, alt }) {
     <motion.div
       whileHover={{ scale: 1.05, rotate: 0.5 }}
       transition={{ duration: 0.4 }}
-      aria-label={`${t.bookCardPrice.replace("{price}", displayBook.price)} - ${
+      aria-label={`${t.bookCardPrice.replace("{price", displayBook.price)} - ${
         displayBook.title
       }`}
     >
-      <Card className="border-t-4 border-gold-300 overflow-hidden">
+      <Card className="border-t-4 border-primary overflow-hidden hover:shadow-xl transition-shadow">
         <CardHeader>
           <img
             src={displayBook.image}
@@ -74,20 +74,20 @@ export default function BookCard({ id, title, price, image, alt }) {
           />
         </CardHeader>
         <CardContent className="p-4">
-          <CardTitle className="text-xl font-semibold text-gray-800 mb-2">
+          <CardTitle className="text-xl font-semibold text-foreground mb-2">
             {displayBook.title}
           </CardTitle>
-          <p className="text-gray-600 mb-4">
+          <p className="text-muted-foreground mb-4">
             {t.bookCardPrice.replace("{price}", displayBook.price)}
           </p>
           <Button
-            className="bg-emerald-700 text-cream-100 hover:bg-green-900 w-full flex items-center gap-2 mb-2"
+            className="bg-primary text-primary-foreground hover:bg-accent w-full flex items-center gap-2 mb-2"
             onClick={() => addToCart(displayBook)}
           >
             <ShoppingCart size={16} /> {t.bookCardAddToCart}
           </Button>
           <Button
-            className="bg-green-900 text-cream-100 w-full mt-2"
+            className="bg-muted text-muted-foreground hover:bg-accent w-full mt-2"
             onClick={addBook}
           >
             {t.bookCardAddNewBook}
@@ -101,7 +101,7 @@ export default function BookCard({ id, title, price, image, alt }) {
                   displayBook.reviews[0].rating.toFixed(1)
                 )}
               </span>
-              <span className="text-gray-600 text-sm ml-1">
+              <span className="text-muted-foreground text-sm ml-1">
                 {t.bookCardReviewComment.replace(
                   "{comment}",
                   displayBook.reviews[0].comment

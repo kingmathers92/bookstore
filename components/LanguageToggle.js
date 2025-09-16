@@ -19,7 +19,7 @@ export default function LanguageToggle() {
       <Button
         variant="outline"
         onClick={toggleLanguage}
-        className="bg-emerald-700 text-cream-100 flex items-center gap-2 hover:cursor-pointer"
+        className="bg-primary text-primary-foreground hover:bg-accent flex items-center gap-2 hover:cursor-pointer"
         aria-label={`Switch to ${language === "ar" ? "English" : "العربية"}`}
       >
         <Globe size={16} />

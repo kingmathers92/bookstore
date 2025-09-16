@@ -44,7 +44,7 @@ export default function RootLayout({ children }) {
         <ScrollToTop
           minHeight={20}
           scrollTo={0}
-          className="fixed right-4 bottom-4 bg-emerald-700 text-cream-100 hover:bg-green-900 rounded-full w-14 h-14 flex items-center justify-center"
+          className="fixed right-4 bottom-4 bg-primary text-primary-foreground hover:bg-accent rounded-full w-14 h-14 flex items-center justify-center transition-colors"
         >
           <ArrowUp size={24} />
         </ScrollToTop>

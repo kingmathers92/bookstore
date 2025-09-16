@@ -36,6 +36,9 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-header-gradient-start: var(--header-gradient-start);
+  --color-header-gradient-end: var(--header-gradient-end);
+  --color-gold-beige: var(--gold-beige);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -75,6 +78,9 @@
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
+  --header-gradient-start: oklch(0.75 0.09 76);
+  --header-gradient-end: oklch(0.6 0.15 60);
+  --gold-beige: oklch(0.75 0.09 76);
 }
 
 .dark {
@@ -109,16 +115,19 @@
   --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.553 0.013 58.071);
+  --header-gradient-start: oklch(0.8 0.07 76);
+  --header-gradient-end: oklch(0.5 0.12 60);
+  --gold-beige: oklch(0.8 0.07 76);
 }
 
 html {
-  background-color: var(--beige-100);
+  background-color: var(--background);
   direction: rtl;
 }
 
 body {
-  background-color: var(--beige-100);
-  color: oklch(0.2 0.01 50);
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: "Noto Kufi Arabic", sans-serif;
   line-height: 1.6;
 }

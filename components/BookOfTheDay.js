@@ -21,10 +21,13 @@ export default function BookOfTheDay() {
 
   return (
     <div className="container mx-auto py-8 text-center">
-      <h3 className="text-2xl font-bold text-green-900 mb-4">
+      <h3
+        className="text-2xl font-bold text-primary mb-4 hover:text-accent transition-colors"
+        aria-label={t.bookOfTheDay}
+      >
         {t.bookOfTheDay}
       </h3>
-      <Card className="max-w-md mx-auto">
+      <Card className="max-w-md mx-auto border-t-4 border-primary hover:shadow-xl transition-shadow">
         <CardHeader>
           <img
             src="/images/book1.jpg"
@@ -32,8 +35,9 @@ export default function BookOfTheDay() {
             className="w-full h-48 object-cover rounded-t-lg"
           />
         </CardHeader>
-        <CardContent className="flex items-center gap-2">
-          <Clock size={16} /> <CardTitle>{t.bookOfTheDayCheckLater}</CardTitle>
+        <CardContent className="flex items-center gap-2 text-foreground">
+          <Clock size={16} />
+          <CardTitle>{t.bookOfTheDayCheckLater}</CardTitle>
         </CardContent>
       </Card>
     </div>

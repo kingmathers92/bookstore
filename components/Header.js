@@ -7,7 +7,8 @@ import { useStore } from "@/lib/store";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
-import { Menu, ShoppingCart } from "lucide-react";
+import { Menu, ShoppingCart, User } from "lucide-react";
+import { motion } from "framer-motion";
 import translations from "@/lib/translations";
 
 export default function Header() {
@@ -22,100 +23,131 @@ export default function Header() {
   const t = translations[language];
 
   return (
-    <header className="bg-green-900 text-cream-100 py-4 shadow-md">
-      <div className="container mx-auto flex justify-between items-center px-4">
-        <h1 className="text-3xl font-bold text-gold-300">{t.title}</h1>
+    <header
+      className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-[var(--header-gradient-start)] to-[var(--header-gradient-end)] border-b border-primary/20 shadow-lg"
+      style={{
+        background:
+          "linear-gradient(to right, var(--header-gradient-start), var(--header-gradient-end))",
+      }}
+    >
+      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+        <motion.div
+          className="text-3xl font-bold text-primary-foreground"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Link href="/" className="hover:text-accent transition-colors">
+            {t.title}
+          </Link>
+        </motion.div>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-8">
+          <Link
+            href="/"
+            className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium"
+          >
+            {t.home}
+          </Link>
+          <Link
+            href="/shop"
+            className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium"
+          >
+            {t.shop}
+          </Link>
+        </nav>
+
+        {/* Right Section (Cart/User) */}
+        <div className="flex items-center gap-6">
+          <Link
+            href="/cart"
+            className="text-primary-foreground hover:text-accent transition-colors text-lg flex items-center gap-2"
+          >
+            <ShoppingCart size={20} />
+            <span>{t.cart.replace("{count}", cart.length)}</span>
+          </Link>
+          {user ? (
+            <Button
+              variant="ghost"
+              onClick={handleLogout}
+              className="text-primary-foreground hover:text-accent text-lg flex items-center gap-2"
+            >
+              <User size={20} />
+              {t.signOut}
+            </Button>
+          ) : (
+            <Link
+              href="/auth/signin"
+              className="text-primary-foreground hover:text-accent transition-colors text-lg flex items-center gap-2"
+            >
+              <User size={20} />
+              {t.signIn}
+            </Link>
+          )}
+          <LanguageToggle />
+        </div>
+
+        {/* Mobile Menu Trigger */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
-              className="sm:hidden text-cream-100 flex items-center"
+              className="md:hidden text-primary-foreground flex items-center"
             >
               <Menu size={24} />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="bg-green-900 text-cream-100">
-            <nav className="flex flex-col gap-4 mt-4">
-              <LanguageToggle />
+          <SheetContent
+            side="right"
+            className="bg-[var(--header-gradient-start)] text-primary-foreground w-[280px]"
+          >
+            <nav className="flex flex-col gap-6 mt-8">
               <Link
                 href="/"
-                className="hover:text-gold-300 transition-colors text-lg"
+                className="hover:text-accent transition-colors text-lg"
                 onClick={() => setIsOpen(false)}
               >
                 {t.home}
               </Link>
               <Link
                 href="/shop"
-                className="hover:text-gold-300 transition-colors text-lg"
+                className="hover:text-accent transition-colors text-lg"
                 onClick={() => setIsOpen(false)}
               >
                 {t.shop}
               </Link>
               <Link
                 href="/cart"
-                className="hover:text-gold-300 transition-colors text-lg flex items-center gap-2"
+                className="hover:text-accent transition-colors text-lg flex items-center gap-2"
                 onClick={() => setIsOpen(false)}
               >
-                <ShoppingCart size={16} />{" "}
+                <ShoppingCart size={20} />
                 {t.cart.replace("{count}", cart.length)}
               </Link>
               {user ? (
                 <Button
                   variant="ghost"
                   onClick={handleLogout}
-                  className="hover:text-gold-300 text-lg"
+                  className="hover:text-accent text-lg flex items-center gap-2"
                 >
+                  <User size={20} />
                   {t.signOut}
                 </Button>
               ) : (
                 <Link
                   href="/auth/signin"
-                  className="hover:text-gold-300 transition-colors text-lg"
+                  className="hover:text-accent transition-colors text-lg flex items-center gap-2"
                   onClick={() => setIsOpen(false)}
                 >
+                  <User size={20} />
                   {t.signIn}
                 </Link>
               )}
+              <LanguageToggle />
             </nav>
           </SheetContent>
         </Sheet>
-        <nav className="hidden sm:flex gap-6">
-          <LanguageToggle />
-          <Link
-            href="/"
-            className="hover:text-gold-300 transition-colors text-lg"
-          >
-            {t.home}
-          </Link>
-          <Link
-            href="/shop"
-            className="hover:text-gold-300 transition-colors text-lg"
-          >
-            {t.shop}
-          </Link>
-          <Link
-            href="/cart"
-            className="hover:text-gold-300 transition-colors text-lg flex items-center gap-2"
-          >
-            <ShoppingCart size={16} /> {t.cart.replace("{count}", cart.length)}
-          </Link>
-          {user ? (
-            <Button
-              variant="ghost"
-              onClick={handleLogout}
-              className="hover:text-gold-300 text-lg"
-            >
-              {t.signOut}
-            </Button>
-          ) : (
-            <Link
-              href="/auth/signin"
-              className="hover:text-gold-300 transition-colors text-lg"
-            >
-              {t.signIn}
-            </Link>
-          )}
-        </nav>
       </div>
     </header>
   );

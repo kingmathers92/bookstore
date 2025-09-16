@@ -35,7 +35,7 @@ export default function Hero() {
               </p>
               <Link href="/shop">
                 <Button
-                  className="bg-emerald-700 text-cream-100 hover:bg-green-900 transition duration-300 flex items-center gap-2"
+                  className="bg-primary text-primary-foreground hover:bg-accent transition duration-300 flex items-center gap-2 hover:cursor-pointer"
                   aria-label={t.heroShopNow}
                 >
                   <ShoppingCart size={20} /> {t.heroShopNow}
