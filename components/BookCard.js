@@ -61,7 +61,7 @@ export default function BookCard({ id, title, price, image, alt }) {
         displayBook.title
       }`}
     >
-      <Card className="border-t-4 border-primary overflow-hidden hover:shadow-xl transition-shadow">
+      <Card className="w-72 h-120 border-t-4 gap-2 border-primary overflow-hidden hover:shadow-xl transition-shadow">
         <CardHeader>
           <img
             src={displayBook.image}
