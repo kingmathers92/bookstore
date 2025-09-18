@@ -24,7 +24,7 @@ export default function Home() {
         .from("books")
         .select("*")
         .order("book_id", { ascending: true });
-      console.log("Fetch response:", { data, error, status }); // logged api status to debug why books weren't being displayed
+      console.log("Fetch response:", { data, error, status });
       if (error) {
         console.error(
           "Error fetching books:",
@@ -55,7 +55,7 @@ export default function Home() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="min-h-screen">
+    <div>
       <Hero />
       <BookOfTheDay />
       <section className="container mx-auto py-12 px-4" aria-label={t.title}>

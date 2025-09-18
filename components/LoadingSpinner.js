@@ -11,21 +11,23 @@ const LoadingSpinner = () => {
   const t = translations[language];
 
   return (
-    <Card className="border-t-4 border-gold-300 bg-gray-900 text-cream-100 w-full max-w-md mx-auto mt-12 p-6">
-      <CardContent className="flex flex-col items-center justify-center space-y-4">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 1,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        >
-          <Loader2 className="h-12 w-12 text-emerald-700" />
-        </motion.div>
-        <p className="text-lg font-semibold text-center">{t.loading}</p>
-      </CardContent>
-    </Card>
+    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-r from-[var(--header-gradient-start)]/80 to-[var(--header-gradient-end)]/80 z-50">
+      <Card className="bg-gradient-to-r from-[var(--header-gradient-start)] to-[var(--header-gradient-end)] text-primary-foreground w-full max-w-md p-6 shadow-lg">
+        <CardContent className="flex flex-col items-center justify-center space-y-4">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          >
+            <Loader2 className="h-12 w-12 text-[var(--accent-start)]" />
+          </motion.div>
+          <p className="text-lg font-semibold text-center">{t.loading}</p>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
