@@ -53,18 +53,20 @@ export default function Header() {
         <NavigationMenu className="hidden md:block ml-10">
           <NavigationMenuList className="space-x-4">
             <NavigationMenuItem>
-              <Link href="/shop" passHref>
-                <NavigationMenuLink className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium px-4 py-2">
-                  {t.shop}
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                href="/shop"
+                className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium px-4 py-2"
+              >
+                {t.shop}
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/" passHref>
-                <NavigationMenuLink className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium px-4 py-2">
-                  {t.home}
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                href="/"
+                className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium px-4 py-2"
+              >
+                {t.home}
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

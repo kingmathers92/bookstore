@@ -7,42 +7,22 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStore } from "@/lib/store";
 import { ShoppingCart, Star } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import Image from "next/image";
 import translations from "@/lib/translations";
 
-export default function BookCard({ id, title, price, image, alt, category }) {
+export default function BookCard({ id, title, price, image, inStock }) {
   const addToCart = useStore((state) => state.addToCart);
   const { language } = useStore();
   const [book, setBook] = useState(null);
+  const [imgSrc, setImgSrc] = useState(image || "/images/placeholder.png");
   const t = translations[language];
 
-  useEffect(() => {
-    const fetchBook = async () => {
-      if (!id) {
-        console.error("ID is undefined");
-        return;
-      }
-      const { data, error } = await supabase
-        .from("books")
-        .select("*")
-        .eq("id", id)
-        .single();
-      if (error) {
-        console.error("Error fetching book:", error);
-      } else {
-        console.log("Fetched book data:", data);
-        setBook(data);
-      }
-    };
-    fetchBook();
-  }, [id]);
-
-  const displayBook = book || {
+  const displayBook = {
+    book_id: id,
     title,
     price,
-    image,
-    alt,
-    category: category || "uncategorized",
+    image: imgSrc,
+    inStock: inStock !== undefined ? inStock : true,
   };
 
   if (!displayBook) return <Skeleton className="w-full h-56" />;
@@ -55,10 +35,11 @@ export default function BookCard({ id, title, price, image, alt, category }) {
     uncategorized: "bg-primary/50",
     default: "bg-primary/50",
   };
-  const safeCategory = displayBook.category
-    ? displayBook.category.toLowerCase()
-    : "uncategorized";
+  const safeCategory = displayBook.category?.toLowerCase() || "uncategorized";
   const badgeColor = categoryColors[safeCategory] || categoryColors.default;
+
+  // debugging image source
+  //console.log("Image src for", title, ":", imgSrc);
 
   return (
     <motion.div
@@ -74,13 +55,18 @@ export default function BookCard({ id, title, price, image, alt, category }) {
     >
       <Card className="border-t-4 border-primary overflow-hidden transition-all duration-300 hover:border-accent hover:shadow-xl">
         <CardHeader className="p-0 relative">
-          <img
-            src={displayBook.image}
-            alt={displayBook.alt}
-            className="w-full h-56 object-cover rounded-t-lg"
+          <Image
+            src={imgSrc.trimEnd()}
+            alt={displayBook.title}
+            width={300}
+            height={224}
+            className="w-full object-cover rounded-t-lg"
             loading="lazy"
-            onError={(e) => {
-              e.target.src = "/images/placeholder.png";
+            onError={() => {
+              if (imgSrc !== "/images/placeholder.png") {
+                console.log("Image failed, using placeholder for", title);
+                setImgSrc("/images/placeholder.png");
+              }
             }}
           />
           <div
@@ -101,6 +87,7 @@ export default function BookCard({ id, title, price, image, alt, category }) {
           <Button
             className="bg-primary text-primary-foreground hover:bg-accent hover:shadow-md w-full flex items-center gap-2 mb-2 transition-all duration-300 rounded-lg"
             onClick={() => addToCart(displayBook)}
+            disabled={!displayBook.inStock}
           >
             <ShoppingCart size={18} /> {t.bookCardAddToCart}
           </Button>

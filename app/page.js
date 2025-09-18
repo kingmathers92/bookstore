@@ -20,8 +20,11 @@ export default function Home() {
   useEffect(() => {
     const fetchBooks = async () => {
       setLoading(true);
-      const { data, error, status } = await supabase.from("books").select("*");
-      console.log("Fetch response:", { data, error, status });
+      const { data, error, status } = await supabase
+        .from("books")
+        .select("*")
+        .order("book_id", { ascending: true });
+      console.log("Fetch response:", { data, error, status }); // logged api status to debug why books weren't being displayed
       if (error) {
         console.error(
           "Error fetching books:",
@@ -67,12 +70,12 @@ export default function Home() {
           {filteredBooks.length > 0 ? (
             filteredBooks.map((book) => (
               <BookCard
-                key={book.id}
-                id={book.id}
+                key={book.book_id}
+                id={book.book_id}
                 title={book.title}
                 price={book.price || 0}
                 image={book.image}
-                alt={book.alt}
+                inStock={book.inStock}
               />
             ))
           ) : (
