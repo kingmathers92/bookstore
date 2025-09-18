@@ -54,7 +54,7 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/shop"
-                className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium px-4 py-2"
+                className="text-primary-foreground hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
               >
                 {t.shop}
               </NavigationMenuLink>
@@ -62,7 +62,7 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/"
-                className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium px-4 py-2"
+                className="text-primary-foreground hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
               >
                 {t.home}
               </NavigationMenuLink>
