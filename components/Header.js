@@ -54,7 +54,7 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/shop"
-                className="text-primary-foreground hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+                className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
               >
                 {t.shop}
               </NavigationMenuLink>
@@ -62,7 +62,7 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/"
-                className="text-primary-foreground hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+                className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
               >
                 {t.home}
               </NavigationMenuLink>
@@ -74,7 +74,7 @@ export default function Header() {
         <div className="flex items-center gap-6">
           <Link
             href="/cart"
-            className="text-primary-foreground hover:text-accent transition-colors text-lg flex items-center gap-1"
+            className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg flex items-center gap-1 px-4 py-2 rounded-md"
           >
             <ShoppingCart size={20} />
             {t.cart.replace("{count}", cart.length)}
@@ -112,26 +112,32 @@ export default function Header() {
           </SheetTrigger>
           <SheetContent
             side="right"
-            className="bg-[var(--header-gradient-start)] text-primary-foreground w-[280px]"
+            className="bg-gradient-to-r from-[var(--header-gradient-start)] to-[var(--header-gradient-end)] text-primary-foreground w-[280px] p-6 rounded-l-xl shadow-2xl"
           >
-            <nav className="flex flex-col gap-6 mt-8">
+            <motion.nav
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 50 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col gap-6 mt-4"
+            >
               <Link
                 href="/"
-                className="hover:text-accent transition-colors text-lg"
+                className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
                 onClick={() => setIsOpen(false)}
               >
                 {t.home}
               </Link>
               <Link
                 href="/shop"
-                className="hover:text-accent transition-colors text-lg"
+                className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
                 onClick={() => setIsOpen(false)}
               >
                 {t.shop}
               </Link>
               <Link
                 href="/cart"
-                className="hover:text-accent transition-colors text-lg flex items-center gap-2"
+                className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md"
                 onClick={() => setIsOpen(false)}
               >
                 <ShoppingCart size={20} />
@@ -141,7 +147,7 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   onClick={handleLogout}
-                  className="hover:text-accent text-lg flex items-center gap-2"
+                  className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md"
                 >
                   <User size={20} />
                   {t.signOut}
@@ -149,15 +155,17 @@ export default function Header() {
               ) : (
                 <Link
                   href="/auth/signin"
-                  className="hover:text-accent transition-colors text-lg flex items-center gap-2"
+                  className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md"
                   onClick={() => setIsOpen(false)}
                 >
                   <User size={20} />
                   {t.signIn}
                 </Link>
               )}
-              <LanguageToggle />
-            </nav>
+              <div className="mt-4">
+                <LanguageToggle />
+              </div>
+            </motion.nav>
           </SheetContent>
         </Sheet>
       </div>
