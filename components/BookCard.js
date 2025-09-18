@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,9 @@ import { ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
 import translations from "@/lib/translations";
 
-export default function BookCard({ id, title, price, image, inStock }) {
+const BookCard = ({ id, title, price, image, inStock }) => {
   const addToCart = useStore((state) => state.addToCart);
   const { language } = useStore();
-  const [book, setBook] = useState(null);
   const [imgSrc, setImgSrc] = useState(image || "/images/placeholder.png");
   const t = translations[language];
 
@@ -38,22 +37,20 @@ export default function BookCard({ id, title, price, image, inStock }) {
   const safeCategory = displayBook.category?.toLowerCase() || "uncategorized";
   const badgeColor = categoryColors[safeCategory] || categoryColors.default;
 
-  // debugging image source
-  //console.log("Image src for", title, ":", imgSrc);
-
   return (
     <motion.div
+      initial={{ scale: 1 }}
       whileHover={{
-        scale: 1.05,
-        boxShadow: "0 12px 24px rgba(212, 190, 131, 0.3)",
+        scale: 1.03,
+        boxShadow: "0 8px 16px rgba(212, 190, 131, 0.2)",
       }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       className="group"
       aria-label={`${t.bookCardPrice.replace("{price}", displayBook.price)} - ${
         displayBook.title
       }`}
     >
-      <Card className="border-t-4 border-primary overflow-hidden transition-all duration-300 hover:border-accent hover:shadow-xl">
+      <Card className="border-t-4 border-primary overflow-hidden transition-all duration-200 hover:border-accent hover:shadow-md">
         <CardHeader className="p-0 relative">
           <Image
             src={imgSrc.trimEnd()}
@@ -62,20 +59,14 @@ export default function BookCard({ id, title, price, image, inStock }) {
             height={224}
             className="w-full object-cover rounded-t-lg"
             loading="lazy"
-            onError={() => {
-              if (imgSrc !== "/images/placeholder.png") {
-                console.log("Image failed, using placeholder for", title);
-                setImgSrc("/images/placeholder.png");
-              }
-            }}
+            onError={() => setImgSrc("/images/placeholder.png")}
           />
           <div
-            className={`absolute top-2 left-2 px-3 py-1 text-xs font-semibold text-primary-foreground rounded-full ${badgeColor} shadow-lg transition-all duration-300 group-hover:scale-110`}
+            className={`absolute top-2 left-2 px-3 py-1 text-xs font-semibold text-primary-foreground rounded-full ${badgeColor} shadow-md transition-all duration-200 group-hover:scale-105`}
           >
             {displayBook.category || "Uncategorized"}
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="absolute inset-0 border-2 border-primary/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse-slow" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-200" />
         </CardHeader>
         <CardContent className="p-4 bg-card/95 backdrop-blur-sm">
           <CardTitle className="text-xl font-bold text-foreground mb-2 line-clamp-2 drop-shadow-sm">
@@ -85,7 +76,7 @@ export default function BookCard({ id, title, price, image, inStock }) {
             {t.bookCardPrice.replace("{price}", displayBook.price || 0)} ر.س
           </p>
           <Button
-            className="bg-primary text-primary-foreground hover:bg-accent hover:shadow-md w-full flex items-center gap-2 mb-2 transition-all duration-300 rounded-lg"
+            className="bg-primary text-primary-foreground hover:bg-accent hover:shadow-sm w-full flex items-center gap-2 mb-2 transition-all duration-200 rounded-lg"
             onClick={() => addToCart(displayBook)}
             disabled={!displayBook.inStock}
           >
@@ -112,4 +103,6 @@ export default function BookCard({ id, title, price, image, inStock }) {
       </Card>
     </motion.div>
   );
-}
+};
+
+export default memo(BookCard);

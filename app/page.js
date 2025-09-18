@@ -1,20 +1,38 @@
 "use client";
 
+import React, { useState, useEffect, useMemo } from "react";
 import Hero from "@/components/Hero";
-import BookCard from "@/components/BookCard";
+import BookOfTheDay from "@/components/BookOfTheDay";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
-import BookOfTheDay from "@/components/BookOfTheDay";
 import { useStore } from "@/lib/store";
-import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
+import useSWR from "swr";
+const BookCard = React.lazy(() => import("@/components/BookCard"));
+
+const fetcher = async () => {
+  const { data, error, status } = await supabase
+    .from("books")
+    .select("*")
+    .order("book_id", { ascending: true })
+    .limit(50);
+  if (error)
+    throw new Error(
+      `Error fetching books: ${error.message}, Status: ${status}`
+    );
+  return data || [];
+};
 
 export default function Home() {
   const { searchQuery, category, priceRange, language } = useStore();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { data: swrBooks, error } = useSWR("books", fetcher, {
+    fallbackData: books,
+    refreshInterval: 300000,
+  });
   const t = translations[language];
 
   useEffect(() => {
@@ -56,6 +74,10 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (swrBooks && swrBooks !== books) setBooks(swrBooks);
+  }, [swrBooks, books]);
+
   const filteredBooks = useMemo(() => {
     return books.filter(
       (book) =>
@@ -67,6 +89,8 @@ export default function Home() {
   }, [books, searchQuery, category, priceRange]);
 
   if (loading) return <LoadingSpinner />;
+
+  if (error) return <div>Error loading books: {error.message}</div>;
 
   return (
     <div>
@@ -80,24 +104,26 @@ export default function Home() {
           <SearchBar />
           <CategoryFilter />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
-          {filteredBooks.length > 0 ? (
-            filteredBooks.map((book) => (
-              <BookCard
-                key={book.book_id}
-                id={book.book_id}
-                title={book.title}
-                price={book.price || 0}
-                image={book.image}
-                inStock={book.inStock}
-              />
-            ))
-          ) : (
-            <div className="text-center py-12 text-foreground">
-              {t.noBooksFound}
-            </div>
-          )}
-        </div>
+        <React.Suspense fallback={<div>Loading books...</div>}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+            {filteredBooks.length > 0 ? (
+              filteredBooks.map((book) => (
+                <BookCard
+                  key={book.book_id}
+                  id={book.book_id}
+                  title={book.title}
+                  price={book.price || 0}
+                  image={book.image}
+                  inStock={book.inStock}
+                />
+              ))
+            ) : (
+              <div className="text-center py-12 text-foreground">
+                {t.noBooksFound}
+              </div>
+            )}
+          </div>
+        </React.Suspense>
       </section>
     </div>
   );
