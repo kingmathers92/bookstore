@@ -37,7 +37,6 @@ export default function Header() {
       }}
     >
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        {/* Logo on the left */}
         <motion.div
           className="text-3xl font-bold text-primary-foreground"
           initial={{ opacity: 0, x: -20 }}
@@ -75,10 +74,10 @@ export default function Header() {
         <div className="flex items-center gap-6">
           <Link
             href="/cart"
-            className="text-primary-foreground hover:text-accent transition-colors text-lg flex items-center gap-2"
+            className="text-primary-foreground hover:text-accent transition-colors text-lg flex items-center gap-1"
           >
             <ShoppingCart size={20} />
-            <span>{t.cart.replace("{count}", cart.length)}</span>
+            {t.cart.replace("{count}", cart.length)}
           </Link>
           {user ? (
             <Button
