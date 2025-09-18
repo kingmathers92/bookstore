@@ -126,7 +126,7 @@ html {
 }
 
 body {
-  background-color: var(--background);
+  background-color: #f4e4d4;
   color: var(--foreground);
   font-family: "Noto Kufi Arabic", sans-serif;
   line-height: 1.6;
