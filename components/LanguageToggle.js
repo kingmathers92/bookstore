@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
 import { useStore } from "@/lib/store";
-import translations from "@/lib/translations";
 
 export default function LanguageToggle() {
   const { language, setLanguage } = useStore();
@@ -15,16 +13,14 @@ export default function LanguageToggle() {
   };
 
   return (
-    <div className="container mx-auto py-2 text-center">
-      <Button
-        variant="outline"
-        onClick={toggleLanguage}
-        className="bg-primary text-primary-foreground hover:bg-accent flex items-center gap-2 hover:cursor-pointer"
-        aria-label={`Switch to ${language === "ar" ? "English" : "العربية"}`}
-      >
-        <Globe size={16} />
-        {language === "ar" ? "English" : "العربية"}
-      </Button>
-    </div>
+    <Button
+      variant="outline"
+      onClick={toggleLanguage}
+      className="bg-gradient-to-r from-[var(--header-gradient-start)] to-[var(--header-gradient-end)] text-primary-foreground hover:bg-accent hover:text-primary-foreground hover:shadow-md transition-all duration-300 rounded-full px-4 py-2 flex items-center gap-2 hover:cursor-pointer"
+      aria-label={`Switch to ${language === "ar" ? "English" : "العربية"}`}
+    >
+      <Globe size={16} />
+      {language === "ar" ? "English" : "العربية"}
+    </Button>
   );
 }
