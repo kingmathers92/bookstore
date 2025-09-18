@@ -61,12 +61,12 @@ export default function BookCard({ id, title, price, image, alt }) {
         displayBook.title
       }`}
     >
-      <Card className="w-72 h-120 border-t-4 gap-2 border-primary overflow-hidden hover:shadow-xl transition-shadow">
-        <CardHeader>
+      <Card className="w-72 h-120 border-t-4 gap-2 border-primary overflow-hidden hover:shadow-xl transition-shadow ">
+        <CardHeader className="p-0 h-1/2">
           <img
             src={displayBook.image}
             alt={displayBook.alt}
-            className="w-full h-56 object-cover rounded-t-lg"
+            className="w-full bt-0 h-60 object-cover"
             loading="lazy"
             onError={(e) => {
               e.target.src = "/images/placeholder.png";

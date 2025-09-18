@@ -9,6 +9,12 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import { Menu, ShoppingCart, User } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
 import translations from "@/lib/translations";
 
 export default function Header() {
@@ -30,7 +36,8 @@ export default function Header() {
           "linear-gradient(to right, var(--header-gradient-start), var(--header-gradient-end))",
       }}
     >
-      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+      <div className="container mx-auto flex items-center justify-between py-4 px-6">
+        {/* Logo on the left */}
         <motion.div
           className="text-3xl font-bold text-primary-foreground"
           initial={{ opacity: 0, x: -20 }}
@@ -42,23 +49,27 @@ export default function Header() {
           </Link>
         </motion.div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <Link
-            href="/"
-            className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium"
-          >
-            {t.home}
-          </Link>
-          <Link
-            href="/shop"
-            className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium"
-          >
-            {t.shop}
-          </Link>
-        </nav>
+        {/* Navigation Links on the left side */}
+        <NavigationMenu className="hidden md:block ml-10">
+          <NavigationMenuList className="space-x-4">
+            <NavigationMenuItem>
+              <Link href="/shop" passHref>
+                <NavigationMenuLink className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium px-4 py-2">
+                  {t.shop}
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/" passHref>
+                <NavigationMenuLink className="text-primary-foreground hover:text-accent transition-colors text-lg font-medium px-4 py-2">
+                  {t.home}
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
 
-        {/* Right Section (Cart/User) */}
+        {/* Right Section (Cart/User/Language) */}
         <div className="flex items-center gap-6">
           <Link
             href="/cart"
