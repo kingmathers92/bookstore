@@ -6,7 +6,7 @@ import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import BookOfTheDay from "@/components/BookOfTheDay";
 import { useStore } from "@/lib/store";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
@@ -18,39 +18,53 @@ export default function Home() {
   const t = translations[language];
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchBooks = async () => {
       setLoading(true);
-      const { data, error, status } = await supabase
-        .from("books")
-        .select("*")
-        .order("book_id", { ascending: true });
-      console.log("Fetch response:", { data, error, status });
-      if (error) {
-        console.error(
-          "Error fetching books:",
-          error.message,
-          "Status:",
-          status
-        );
-      } else {
-        console.log("Fetched books:", data);
-        setBooks(data || []);
+      try {
+        const { data, error, status } = await supabase
+          .from("books")
+          .select("*")
+          .order("book_id", { ascending: true })
+          .limit(50);
+        if (isMounted) {
+          if (error) {
+            console.error(
+              "Error fetching books:",
+              error.message,
+              "Status:",
+              status
+            );
+          } else {
+            setBooks(data || []);
+          }
+          setLoading(false);
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error("Fetch error:", err);
+          setLoading(false);
+        }
       }
-      setLoading(false);
     };
+
     fetchBooks();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  console.log("Filter conditions:", { searchQuery, category, priceRange });
-  const filteredBooks = books.filter(
-    (book) =>
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (category === "all" || book.category === category) &&
-      (book.price == null ||
-        (book.price >= priceRange[0] && book.price <= priceRange[1]))
-  );
-
-  console.log("Filtered books:", filteredBooks);
+  const filteredBooks = useMemo(() => {
+    return books.filter(
+      (book) =>
+        book.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (category === "all" || book.category === category) &&
+        (book.price == null ||
+          (book.price >= priceRange[0] && book.price <= priceRange[1]))
+    );
+  }, [books, searchQuery, category, priceRange]);
 
   if (loading) return <LoadingSpinner />;
 
