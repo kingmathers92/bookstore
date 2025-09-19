@@ -44,8 +44,7 @@ export default function Home() {
         const { data, error, status } = await supabase
           .from("books")
           .select("*")
-          .order("book_id", { ascending: true })
-          .limit(50);
+          .order("book_id", { ascending: true });
         if (isMounted) {
           if (error) {
             console.error(

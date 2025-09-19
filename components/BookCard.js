@@ -49,15 +49,19 @@ const BookCard = ({ id, title, price, image, inStock }) => {
       aria-label={`${t.bookCardPrice.replace("{price}", displayBook.price)} - ${
         displayBook.title
       }`}
+      style={{ height: "100%" }}
     >
-      <Card className="border-t-4 border-primary overflow-hidden transition-all duration-200 hover:border-accent hover:shadow-md">
-        <CardHeader className="p-0 relative">
+      <Card className="border-t-4 border-primary overflow-hidden transition-all duration-200 hover:border-accent hover:shadow-md h-full flex flex-col">
+        <CardHeader
+          className="p-0 relative flex-shrink-0"
+          style={{ height: "224px" }}
+        >
           <Image
             src={imgSrc.trimEnd()}
             alt={displayBook.title}
             width={300}
             height={224}
-            className="w-full object-cover rounded-t-lg"
+            className="w-full h-full object-cover rounded-t-lg"
             loading="lazy"
             onError={() => setImgSrc("/images/placeholder.png")}
           />
@@ -68,7 +72,7 @@ const BookCard = ({ id, title, price, image, inStock }) => {
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-200" />
         </CardHeader>
-        <CardContent className="p-4 bg-card/95 backdrop-blur-sm">
+        <CardContent className="p-4 bg-card/95 backdrop-blur-sm flex-grow">
           <CardTitle className="text-xl font-bold text-foreground mb-2 line-clamp-2 drop-shadow-sm">
             {displayBook.title}
           </CardTitle>
