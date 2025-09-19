@@ -1,4 +1,5 @@
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import LiveChat from "../components/LiveChat";
@@ -49,6 +50,7 @@ export default function RootLayout({ children }) {
           <ArrowUp size={24} />
         </ScrollToTop>
         <CartSync />
+        <SpeedInsights />
       </body>
     </html>
   );
