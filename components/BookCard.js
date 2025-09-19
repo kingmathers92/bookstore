@@ -78,16 +78,16 @@ const BookCard = ({
         boxShadow: "0 8px 16px rgba(212, 190, 131, 0.2)",
       }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="group"
+      className="group relative"
       aria-label={`${t.bookCardPrice.replace("{price}", displayBook.price)} - ${
         displayBook.title
       }`}
-      style={{ height: "100%" }}
+      style={{ height: "100%", minHeight: "400px" }}
     >
       <Card className="border-t-4 border-primary overflow-hidden transition-all duration-200 hover:border-accent hover:shadow-md h-full flex flex-col">
         <CardHeader
-          className="p-0 relative flex-shrink-0"
-          style={{ height: "224px" }}
+          className="p-0 relative flex-shrink-0 overflow-hidden"
+          style={{ height: "224px", position: "relative" }}
         >
           <Image
             src={imgSrc.trimEnd()}
@@ -100,13 +100,14 @@ const BookCard = ({
           />
           <div
             className={`absolute top-2 left-2 px-3 py-1 text-xs font-semibold text-white rounded-full ${badgeColor} shadow-md transition-all duration-200 group-hover:scale-105`}
+            style={{ zIndex: 10, maxWidth: "calc(100% - 16px)" }}
           >
             {displayBook.category || "Uncategorized"}
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-200" />
         </CardHeader>
         <CardContent
-          className="p-4 bg-card/95 flex-grow flex flex-col justify-between overflow-hidden"
+          className="p-4 bg-card/95 flex-grow flex flex-col justify-between overflow-hidden relative"
           style={{ height: "176px" }}
         >
           <div>
@@ -145,7 +146,7 @@ const BookCard = ({
           </div>
           <div
             className={`absolute bottom-2 right-2 px-3 py-1 text-xs font-semibold rounded-full ${stockColor} ${stockTextColor} shadow-md transition-all duration-200`}
-            style={{ zIndex: 10 }}
+            style={{ zIndex: 10, maxWidth: "calc(100% - 16px)" }}
           >
             {stockText}
           </div>

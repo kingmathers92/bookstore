@@ -100,7 +100,10 @@ export default function Home() {
     <div>
       <Hero />
       <BookOfTheDay />
-      <section className="container mx-auto py-12 px-4" aria-label={t.title}>
+      <section
+        className="container mx-auto py-12 px-4 overflow-hidden"
+        aria-label={t.title}
+      >
         <h2 className="text-4xl font-bold text-center mb-8 text-primary hover:text-accent md:text-5xl transition-colors">
           {t.title}
         </h2>
@@ -109,7 +112,7 @@ export default function Home() {
           <CategoryFilter />
         </div>
         <React.Suspense fallback={<div>Loading books...</div>}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 overflow-hidden">
             {filteredBooks.length > 0 ? (
               filteredBooks.map((book) => (
                 <BookCard
