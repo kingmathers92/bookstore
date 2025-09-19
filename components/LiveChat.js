@@ -48,7 +48,7 @@ export default function LiveChat() {
 
   const handleClose = () => {
     setIsOpen(false);
-    setMessages([]);
+    setMessages([]); // Clear messages on close
   };
 
   return (
