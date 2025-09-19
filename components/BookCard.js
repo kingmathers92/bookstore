@@ -10,7 +10,16 @@ import { ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
 import translations from "@/lib/translations";
 
-const BookCard = ({ id, title, price, image, inStock }) => {
+const BookCard = ({
+  id,
+  title_en,
+  title_ar,
+  category_en,
+  category_ar,
+  price,
+  image,
+  inStock,
+}) => {
   const addToCart = useStore((state) => state.addToCart);
   const { language } = useStore();
   const [imgSrc, setImgSrc] = useState(image || "/images/placeholder.png");
@@ -18,10 +27,14 @@ const BookCard = ({ id, title, price, image, inStock }) => {
 
   const displayBook = {
     book_id: id,
-    title,
+    title: language === "ar" ? title_ar || title_en : title_en || title_ar,
     price,
     image: imgSrc,
     inStock: inStock !== undefined ? inStock : true,
+    category:
+      language === "ar"
+        ? category_ar || category_en
+        : category_en || category_ar,
   };
 
   if (!displayBook) return <Skeleton className="w-full h-56" />;

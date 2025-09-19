@@ -78,14 +78,19 @@ export default function Home() {
   }, [swrBooks, books]);
 
   const filteredBooks = useMemo(() => {
-    return books.filter(
-      (book) =>
-        book.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        (category === "all" || book.category === category) &&
+    return books.filter((book) => {
+      const title =
+        language === "ar"
+          ? book.title_ar || book.title_en
+          : book.title_en || book.title_ar;
+      return (
+        title?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (category === "all" || book.category_en === category) &&
         (book.price == null ||
           (book.price >= priceRange[0] && book.price <= priceRange[1]))
-    );
-  }, [books, searchQuery, category, priceRange]);
+      );
+    });
+  }, [books, searchQuery, category, priceRange, language]);
 
   if (loading) return <LoadingSpinner />;
 
@@ -110,7 +115,10 @@ export default function Home() {
                 <BookCard
                   key={book.book_id}
                   id={book.book_id}
-                  title={book.title}
+                  title_en={book.title_en}
+                  title_ar={book.title_ar}
+                  category_en={book.category_en}
+                  category_ar={book.category_ar}
                   price={book.price || 0}
                   image={book.image}
                   inStock={book.inStock}
