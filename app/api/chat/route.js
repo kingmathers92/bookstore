@@ -34,12 +34,14 @@ export async function POST(request) {
 
     const faqAnswer = faqDictionary[normalizedMessage];
     if (faqAnswer) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       return new Response(JSON.stringify({ reply: faqAnswer }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
 
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     return new Response(
       JSON.stringify({
         reply:
