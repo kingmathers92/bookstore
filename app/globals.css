@@ -134,10 +134,19 @@ body {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 scroll-smooth;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    @apply px-2;
+  }
+  h2 {
+    @apply text-2xl;
   }
 }
 
