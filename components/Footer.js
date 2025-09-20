@@ -1,7 +1,7 @@
 "use client";
 
 import { useStore } from "@/lib/store";
-import { motion } from "framer-motion"; // For subtle animation
+import { motion } from "framer-motion";
 import translations from "@/lib/translations";
 
 export default function Footer() {

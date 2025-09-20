@@ -123,6 +123,7 @@
 html {
   background-color: var(--background);
   direction: rtl;
+  overflow-x: hidden;
 }
 
 body {
@@ -130,11 +131,14 @@ body {
   color: var(--foreground);
   font-family: "Noto Kufi Arabic", sans-serif;
   line-height: 1.6;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50 scroll-smooth;
+    box-sizing: border-box;
   }
   body {
     @apply bg-background text-foreground font-sans;

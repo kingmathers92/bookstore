@@ -12,11 +12,13 @@ export const metadata = {
     "اكتشف مجموعة واسعة من الكتب الإسلامية عالية الجودة في متجر ثمرات الأوراق.",
   keywords:
     "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية, قرآن, حديث, تفسير",
+  viewport:
+    "width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
-    android: "/android-icon-36x36.png",
+    android: "/android-chrome-192x192.png",
   },
   openGraph: {
     title: "ثمرات الأوراق",
