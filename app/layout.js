@@ -1,5 +1,4 @@
 import "./globals.css";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import LiveChat from "../components/LiveChat";
@@ -13,6 +12,12 @@ export const metadata = {
     "اكتشف مجموعة واسعة من الكتب الإسلامية عالية الجودة في متجر ثمرات الأوراق.",
   keywords:
     "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية, قرآن, حديث, تفسير",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+    android: "/android-icon-36x36.png",
+  },
   openGraph: {
     title: "ثمرات الأوراق",
     description: "متجر الكتب الإسلامية الأفضل عبر الإنترنت.",
@@ -50,7 +55,6 @@ export default function RootLayout({ children }) {
           <ArrowUp size={24} />
         </ScrollToTop>
         <CartSync />
-        <SpeedInsights />
       </body>
     </html>
   );
