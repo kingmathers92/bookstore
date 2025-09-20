@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useStore } from "@/lib/store";
@@ -16,6 +15,8 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import translations from "@/lib/translations";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +44,19 @@ export default function Header() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Link href="/" className="hover:text-accent transition-colors">
+          <Link href="/" className="block md:hidden hover:cursor-pointer">
+            <Image
+              src="/images/logo.jpg"
+              alt="Thamarat Al-Awraq Logo"
+              width={60}
+              height={60}
+              className="rounded-full hover:opacity-80 transition-opacity duration-300"
+            />
+          </Link>
+          <Link
+            href="/"
+            className="hidden md:block hover:text-accent transition-colors hover:cursor-pointer"
+          >
             {t.title}
           </Link>
         </motion.div>
@@ -79,24 +92,6 @@ export default function Header() {
             <ShoppingCart size={20} />
             {t.cart.replace("{count}", cart.length)}
           </Link>
-          {user ? (
-            <Button
-              variant="ghost"
-              onClick={handleLogout}
-              className="text-primary-foreground hover:text-accent text-lg flex items-center gap-2"
-            >
-              <User size={20} />
-              {t.signOut}
-            </Button>
-          ) : (
-            <Link
-              href="/auth/signin"
-              className="text-primary-foreground hover:text-accent transition-colors text-lg flex items-center gap-2"
-            >
-              <User size={20} />
-              {t.signIn}
-            </Link>
-          )}
           <LanguageToggle />
         </div>
 
