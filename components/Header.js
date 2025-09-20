@@ -157,9 +157,6 @@ export default function Header() {
                   {t.signIn}
                 </Link>
               )}
-              <div className="mt-4">
-                <LanguageToggle />
-              </div>
             </motion.nav>
           </SheetContent>
         </Sheet>
