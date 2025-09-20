@@ -120,7 +120,7 @@ const BookCard = ({
           </div>
           <div>
             <Button
-              className="bg-primary text-primary-foreground hover:bg-accent hover:shadow-sm w-full flex items-center gap-2 mb-2 transition-all duration-200 rounded-lg"
+              className="bg-primary text-primary-foreground hover:bg-accent hover:shadow-sm w-full flex items-center gap-2 mb-8 transition-all duration-200 rounded-lg"
               onClick={() => addToCart(displayBook)}
               disabled={!displayBook.inStock}
             >
