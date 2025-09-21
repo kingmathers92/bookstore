@@ -88,12 +88,6 @@ To enhance the functionality and user experience of Thamarat Al-Awrak, consider 
   - Include filters for book availability, rating, or language.
   - Implement autocomplete suggestions for search input.
 
-- **User Reviews and Ratings**:
-
-  - Allow users to rate and review books.
-  - Display average ratings and review summaries on book cards.
-  - Moderate reviews to ensure quality content.
-
 - **Wishlist Feature**:
 
   - Let users save books to a wishlist for later purchase.
@@ -112,33 +106,11 @@ To enhance the functionality and user experience of Thamarat Al-Awrak, consider 
   - Provide real-time tracking updates (e.g., via API integration).
   - Send email notifications for order status changes.
 
-- **Mobile App Integration**:
-
-  - Develop a companion mobile app using React Native or Capacitor.
-  - Sync data between web and mobile versions.
-  - Offer push notifications for new releases or deals.
-
 - **Admin Dashboard**:
 
   - Create a dashboard for managing books, users, and orders.
   - Allow admins to add, edit, or delete products.
   - Generate sales reports and analytics.
-
-- **Payment and Delivery Options**:
-
-  - Integrate with local delivery services in Arabic-speaking regions.
-
-- **Community Features**:
-  - Add a forum or discussion board for Islamic book topics.
-  - Enable users to share book recommendations.
-  - Host virtual book reading events or webinars.
-
-## Implementation Notes
-
-- **Prioritization**: Start with user authentication and cart functionality to enable basic e-commerce.
-- **Tech Stack**: Leverage existing Next.js API routes for backend logic and shadcn/ui for UI components.
-- **Testing**: Ensure each feature is tested for RTL compatibility and mobile responsiveness.
-- **Collaboration**: Use GitHub Issues to track feature development and pull requests for contributions.
 
 _Last updated: August 30, 2025_
 
