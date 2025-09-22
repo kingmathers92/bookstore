@@ -10,6 +10,7 @@ import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
 import useSWR from "swr";
+import PriceRangeFilter from "@/components/PriceRangeFilter";
 const BookCard = React.lazy(() => import("@/components/BookCard"));
 
 const fetcher = async () => {
@@ -110,6 +111,7 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4 mb-8 md:gap-6">
           <SearchBar />
           <CategoryFilter />
+          <PriceRangeFilter />
         </div>
         <React.Suspense fallback={<div>Loading books...</div>}>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 overflow-hidden">
