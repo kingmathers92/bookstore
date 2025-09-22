@@ -11,7 +11,7 @@ export default function PriceRangeFilter() {
   return (
     <div className="w-full max-w-xs">
       <label className="block text-sm font-medium mb-2">
-        {t.priceRangeLabel || "Price Range (SAR)"}
+        {t.priceRangeLabel || "Price Range (TND)"}
       </label>
       <Slider
         min={0}
@@ -22,8 +22,8 @@ export default function PriceRangeFilter() {
         className="w-full"
       />
       <div className="flex justify-between mt-2">
-        <span>{priceRange[0]} ر.س</span>
-        <span>{priceRange[1]} ر.س</span>
+        <span>{priceRange[0]} د.ت.</span>
+        <span>{priceRange[1]} د.ت.</span>
       </div>
     </div>
   );
