@@ -115,7 +115,7 @@ const BookCard = ({
               {displayBook.title}
             </CardTitle>
             <p className="text-lg text-muted-foreground mb-4 font-medium">
-              {t.bookCardPrice.replace("{price}", displayBook.price || 0)} ر.س
+              {t.bookCardPrice.replace("{price}", displayBook.price || 0)}
             </p>
           </div>
           <div>
