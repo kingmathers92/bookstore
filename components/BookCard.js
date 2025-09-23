@@ -91,7 +91,7 @@ const BookCard = ({
         >
           <Image
             src={imgSrc.trimEnd()}
-            alt={displayBook.title}
+            alt={`${displayBook.title} book cover`}
             width={300}
             height={224}
             className="w-full h-full object-cover rounded-t-lg"
