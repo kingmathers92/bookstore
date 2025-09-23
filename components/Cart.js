@@ -28,6 +28,7 @@ export default function Cart() {
                   variant="destructive"
                   onClick={() => removeFromCart(item.id)}
                   className="flex items-center gap-2"
+                  aria-label={`${t.cartRemove} ${item.title}`}
                 >
                   <Trash size={16} /> {t.cartRemove}
                 </Button>
