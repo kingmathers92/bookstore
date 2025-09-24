@@ -11,7 +11,7 @@
 - separate category and in stock to esternal componenets
 - update books images
 - find away to better host images adn compress and cache them
-- book info/detail view
+- /books/[id] info/detail view
 - search/filter/autocomplete/Add typing indicators and message history persistence using Supabase.
 - admin dashboard to manage users and books/crud
 
