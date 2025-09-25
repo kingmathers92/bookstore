@@ -9,6 +9,7 @@ import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import translations from "@/lib/translations";
+import Image from "next/image";
 
 export default function BookOfTheDay() {
   const { language } = useStore();
@@ -143,10 +144,15 @@ export default function BookOfTheDay() {
         >
           <CardHeader className="p-0 relative overflow-hidden">
             <div className="relative w-full h-48">
-              <img
+              <Image
                 src={bookOfTheDay?.image}
                 alt={bookOfTheDay?.title || t.bookOfTheDay || "Book of the Day"}
+                width={400}
+                height={192}
                 className="w-full h-full object-cover rounded-t-lg"
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL="/images/placeholder.png"
               />
               <div
                 className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,215,0,0.2),transparent_50%)] opacity-70"
@@ -161,7 +167,6 @@ export default function BookOfTheDay() {
                 className="absolute inset-0 border-4 border-primary/50 rounded-t-lg animate-pulse-slow"
                 style={{ width: "100%", height: "100%" }}
               />
-
               <div
                 className={`absolute top-2 left-2 px-2 py-1 text-xs font-semibold text-white rounded-full ${badgeColor} shadow-md transition-all duration-200 hover:scale-105`}
                 style={{ zIndex: 10, maxWidth: "calc(100% - 16px)" }}
@@ -176,33 +181,34 @@ export default function BookOfTheDay() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-6 text-left bg-card/80 backdrop-blur-sm relative">
-            <CardTitle className="text-xl md:text-2xl font-extrabold text-primary-foreground mb-3 drop-shadow-md">
-              {bookOfTheDay?.title || "تفسير الجلالين"}
-            </CardTitle>
-            <p className="text-lg text-primary-foreground mb-4">
-              {formattedPrice}
-            </p>
-            <div className="flex items-center gap-2 text-muted-foreground mb-4">
-              <Clock size={18} />
-              <span className="text-sm">
-                {t.bookOfTheDayCheckLater || "Check later for details"}
-              </span>
-            </div>
-            <Button
-              className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-sm hover:cursor-pointer w-full flex items-center gap-2 mb-8 transition-all duration-200 rounded-lg"
-              asChild
-            >
-              <Link href="/shop">
-                <Eye size={18} /> {t.bookOfTheDayViewDetails || "View Details"}
-              </Link>
-            </Button>
-
-            <div
-              className={`absolute bottom-2 right-2 px-2 py-1 text-xs font-semibold rounded-full ${stockColor} ${stockTextColor} shadow-md transition-all duration-200`}
-              style={{ zIndex: 10, maxWidth: "calc(100% - 16px)" }}
-            >
-              {stockText}
+          <CardContent className="p-6 text-left bg-card/80 backdrop-blur-sm relative flex flex-col justify-between h-full">
+            <div>
+              <CardTitle className="text-xl md:text-2xl font-extrabold text-primary-foreground mb-3 drop-shadow-md">
+                {bookOfTheDay?.title || "تفسير الجلالين"}
+              </CardTitle>
+              <p className="text-lg text-primary-foreground mb-4">
+                {formattedPrice}
+              </p>
+              <div className="flex items-center gap-2 text-muted-foreground mb-4">
+                <Clock size={18} />
+                <span className="text-sm">
+                  {t.bookOfTheDayCheckLater || "Check later for details"}
+                </span>
+              </div>
+              <Button
+                className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-md transition-all duration-300 flex items-center gap-2 w-full md:w-auto mb-4"
+                asChild
+              >
+                <Link href="/shop">
+                  <Eye size={18} />{" "}
+                  {t.bookOfTheDayViewDetails || "View Details"}
+                </Link>
+              </Button>
+              <div
+                className={`absolute bottom-2 right-2 px-3 py-1 text-xs font-semibold rounded-full ${stockColor} ${stockTextColor} shadow-md transition-all duration-200`}
+              >
+                {stockText}
+              </div>
             </div>
           </CardContent>
         </Card>
