@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import Hero from "@/components/Hero";
 import BookOfTheDay from "@/components/BookOfTheDay";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
+import PriceRangeFilter from "@/components/PriceRangeFilter";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
 import useSWR from "swr";
-import PriceRangeFilter from "@/components/PriceRangeFilter";
 const BookCard = React.lazy(() => import("@/components/BookCard"));
 
 const fetcher = async () => {
@@ -28,58 +28,17 @@ const fetcher = async () => {
 
 export default function Home() {
   const { searchQuery, category, priceRange, language } = useStore();
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { data: swrBooks, error } = useSWR("books", fetcher, {
-    fallbackData: books,
+  const {
+    data: books,
+    error,
+    isLoading,
+  } = useSWR("books", fetcher, {
     refreshInterval: 300000,
   });
   const t = translations[language];
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchBooks = async () => {
-      setLoading(true);
-      try {
-        const { data, error, status } = await supabase
-          .from("books")
-          .select("*")
-          .order("book_id", { ascending: true });
-        if (isMounted) {
-          if (error) {
-            console.error(
-              "Error fetching books:",
-              error.message,
-              "Status:",
-              status
-            );
-          } else {
-            setBooks(data || []);
-          }
-          setLoading(false);
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error("Fetch error:", err);
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchBooks();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (swrBooks && swrBooks !== books) setBooks(swrBooks);
-  }, [swrBooks, books]);
-
   const filteredBooks = useMemo(() => {
-    return books.filter((book) => {
+    return (books || []).filter((book) => {
       const title =
         language === "ar"
           ? book.title_ar || book.title_en
@@ -93,8 +52,7 @@ export default function Home() {
     });
   }, [books, searchQuery, category, priceRange, language]);
 
-  if (loading) return <LoadingSpinner />;
-
+  if (isLoading) return <LoadingSpinner />;
   if (error) return <div>Error loading books: {error.message}</div>;
 
   return (

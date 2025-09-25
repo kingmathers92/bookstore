@@ -14,5 +14,6 @@
 - /books/[id] info/detail view
 - search/filter/autocomplete/Add typing indicators and message history persistence using Supabase.
 - admin dashboard to manage users and books/crud
+- Error Handling: Improve error messages in SignIn and LiveChat with user-friendly alerts.
 
 # testing
