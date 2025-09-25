@@ -12,6 +12,8 @@ const nextConfig = {
     };
     return config;
   },
+  reactStrictMode: true,
+  suppressHydrationWarning: true,
 };
 
 export default nextConfig;
