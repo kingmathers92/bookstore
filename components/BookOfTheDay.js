@@ -190,7 +190,7 @@ export default function BookOfTheDay() {
               </span>
             </div>
             <Button
-              className="bg-primary text-primary-foreground hover:bg-accent hover:shadow-md transition-all duration-300 flex items-center gap-2 w-full md:w-auto"
+              className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-sm hover:cursor-pointer w-full flex items-center gap-2 mb-8 transition-all duration-200 rounded-lg"
               asChild
             >
               <Link href="/shop">
