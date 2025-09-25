@@ -69,7 +69,7 @@ export default function Header() {
                 href="/shop"
                 className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
               >
-                {t.shop}
+                {t.shop || "Shop"}
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
