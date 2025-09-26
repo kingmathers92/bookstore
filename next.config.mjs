@@ -5,6 +5,7 @@ const nextConfig = {
     formats: ["image/webp"],
     minimumCacheTTL: 60,
     contentDispositionType: "inline",
+    domains: ["i.pravatar.cc"],
   },
   webpack(config) {
     config.optimization.splitChunks = {

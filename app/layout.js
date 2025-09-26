@@ -40,6 +40,7 @@ export const metadata = {
     images: ["/images/hero.jpg"],
   },
 };
+// app/layout.js (from your original code)
 export default function RootLayout({ children }) {
   return (
     <html className="flex flex-col min-h-screen">
