@@ -86,14 +86,14 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-background">
+    <section className="py-16 bg-background-gold">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center text-foreground mb-12">
           What Our Customers Say
         </h2>
         <div className="space-y-12">
           {/* first row, right to left */}
-          <div className="overflow-hidden h-48">
+          <div className="overflow-hidden h-60">
             <motion.div
               className="flex gap-6"
               animate={{ x: ["0%", "-100%"] }}
@@ -145,7 +145,7 @@ const Testimonials = () => {
           </div>
 
           {/* second row, left to right */}
-          <div className="overflow-hidden h-48">
+          <div className="overflow-hidden h-60">
             <motion.div
               className="flex gap-6"
               animate={{ x: ["0%", "100%"] }}
