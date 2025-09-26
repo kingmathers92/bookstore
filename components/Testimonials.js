@@ -122,7 +122,7 @@ const Testimonials = () => {
                     </CardHeader>
                     <CardContent>
                       <p className="text-foreground mb-4 italic leading-relaxed line-clamp-3">
-                        "{testimonial.text}"
+                        &quot;{testimonial.text}&quot;
                       </p>
                       <div className="flex items-center min-h-[40px]">
                         <Image
@@ -174,7 +174,7 @@ const Testimonials = () => {
                     </CardHeader>
                     <CardContent>
                       <p className="text-foreground mb-4 italic leading-relaxed line-clamp-3">
-                        "{testimonial.text}"
+                        &quot;{testimonial.text}&quot;
                       </p>
                       <div className="flex items-center min-h-[40px]">
                         <Image
@@ -226,7 +226,7 @@ const Testimonials = () => {
                     </CardHeader>
                     <CardContent>
                       <p className="text-foreground mb-4 italic leading-relaxed line-clamp-3">
-                        "{testimonial.text}"
+                        &quot;{testimonial.text}&quot;
                       </p>
                       <div className="flex items-center min-h-[40px]">
                         <Image
