@@ -86,7 +86,10 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-background-gold">
+    <section
+      className="py-16 bg-background-gold"
+      aria-label="Customer Testimonials Section"
+    >
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center text-foreground mb-12">
           What Our Customers Say
@@ -98,7 +101,7 @@ const Testimonials = () => {
               className="flex gap-6"
               animate={{ x: ["0%", "-100%"] }}
               transition={{
-                duration: 30,
+                duration: window.innerWidth < 768 ? 20 : 30,
                 repeat: Infinity,
                 ease: "linear",
               }}
@@ -126,11 +129,12 @@ const Testimonials = () => {
                       </p>
                       <div className="flex items-center min-h-[40px]">
                         <Image
-                          src={testimonial.avatar}
+                          src={testimonial.avatar || "/placeholder.jpg"}
                           alt={testimonial.author}
                           width={40}
                           height={40}
                           className="rounded-full mr-3"
+                          priority={index === 0}
                           onError={(e) => (e.target.style.display = "none")}
                         />
                         <p className="font-semibold text-foreground">
@@ -150,7 +154,7 @@ const Testimonials = () => {
               className="flex gap-6"
               animate={{ x: ["0%", "100%"] }}
               transition={{
-                duration: 30,
+                duration: window.innerWidth < 768 ? 20 : 30,
                 repeat: Infinity,
                 ease: "linear",
               }}
@@ -178,11 +182,12 @@ const Testimonials = () => {
                       </p>
                       <div className="flex items-center min-h-[40px]">
                         <Image
-                          src={testimonial.avatar}
+                          src={testimonial.avatar || "/placeholder.jpg"}
                           alt={testimonial.author}
                           width={40}
                           height={40}
                           className="rounded-full mr-3"
+                          priority={index === 0}
                           onError={(e) => (e.target.style.display = "none")}
                         />
                         <p className="font-semibold text-foreground">
@@ -197,12 +202,12 @@ const Testimonials = () => {
           </div>
 
           {/* 3rd row, right to left */}
-          <div className="overflow-hidden h-48">
+          <div className="overflow-hidden h-60">
             <motion.div
               className="flex gap-6"
               animate={{ x: ["0%", "-100%"] }}
               transition={{
-                duration: 30,
+                duration: window.innerWidth < 768 ? 20 : 30,
                 repeat: Infinity,
                 ease: "linear",
               }}
@@ -230,11 +235,12 @@ const Testimonials = () => {
                       </p>
                       <div className="flex items-center min-h-[40px]">
                         <Image
-                          src={testimonial.avatar}
+                          src={testimonial.avatar || "/placeholder.jpg"}
                           alt={testimonial.author}
                           width={40}
                           height={40}
                           className="rounded-full mr-3"
+                          priority={index === 0}
                           onError={(e) => (e.target.style.display = "none")}
                         />
                         <p className="font-semibold text-foreground">

@@ -6,6 +6,7 @@ const nextConfig = {
     minimumCacheTTL: 60,
     contentDispositionType: "inline",
     domains: ["i.pravatar.cc"],
+    loader: "default",
   },
   webpack(config) {
     config.optimization.splitChunks = {
