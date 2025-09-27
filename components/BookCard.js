@@ -126,23 +126,6 @@ const BookCard = ({
             >
               <ShoppingCart size={18} /> {t.bookCardAddToCart}
             </Button>
-            {displayBook.reviews && displayBook.reviews.length > 0 && (
-              <div className="flex items-center gap-2 text-yellow-500 mt-2">
-                <Star size={18} />
-                <span className="text-sm font-medium">
-                  {t.bookCardReviewRating.replace(
-                    "{rating}",
-                    displayBook.reviews[0].rating.toFixed(1)
-                  )}
-                </span>
-                <span className="text-muted-foreground text-xs line-clamp-1">
-                  {t.bookCardReviewComment.replace(
-                    "{comment}",
-                    displayBook.reviews[0].comment
-                  )}
-                </span>
-              </div>
-            )}
           </div>
           <div
             className={`absolute bottom-2 right-2 px-3 py-1 text-xs font-semibold rounded-full ${stockColor} ${stockTextColor} shadow-md transition-all duration-200`}
