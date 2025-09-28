@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 
 const Testimonials = () => {
-  // dummy data for now
+  // Dummy data for now
   const [testimonials, setTestimonials] = useState([
     {
       id: 1,
@@ -81,27 +81,27 @@ const Testimonials = () => {
     },
   ]);
 
-  useEffect(() => {
-    setTestimonials((prev) => [...prev]);
-  }, []);
+  // useEffect(() => {
+  //   setTestimonials((prev) => [...prev]);
+  // }, []);
 
   return (
     <section
-      className="py-16 bg-background-gold"
+      className="py-8 bg-background-gold sm:py-12"
       aria-label="Customer Testimonials Section"
     >
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center text-foreground mb-12">
+      <div className="container mx-auto px-4 sm:px-6">
+        <h2 className="text-2xl font-bold text-center text-foreground mb-6 sm:text-3xl sm:mb-12">
           What Our Customers Say
         </h2>
-        <div className="space-y-12">
+        <div className="space-y-8 sm:space-y-12">
           {/* first row, right to left */}
-          <div className="overflow-hidden h-60">
+          <div className="overflow-hidden h-40 sm:h-60">
             <motion.div
-              className="flex gap-6"
+              className="flex gap-4 sm:gap-6"
               animate={{ x: ["0%", "-100%"] }}
               transition={{
-                duration: window.innerWidth < 768 ? 20 : 30,
+                duration: window.innerWidth < 768 ? 15 : 60,
                 repeat: Infinity,
                 ease: "linear",
               }}
@@ -109,35 +109,35 @@ const Testimonials = () => {
               {[...testimonials, ...testimonials].map((testimonial, index) => (
                 <motion.div
                   key={`${testimonial.id}-row1-${index}`}
-                  className="flex-shrink-0 w-80 max-w-xs"
+                  className="flex-shrink-0 w-48 max-w-full sm:w-80 sm:max-w-xs"
                   whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                 >
                   <Card className="shadow-lg border-border h-full">
                     <CardHeader>
-                      <div className="flex items-center mb-2">
+                      <div className="flex items-center mb-1 sm:mb-2">
                         {[...Array(testimonial.rating)].map((_, i) => (
                           <Star
                             key={i}
-                            className="w-4 h-4 text-yellow-400 fill-current"
+                            className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current"
                           />
                         ))}
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-foreground mb-4 italic leading-relaxed line-clamp-3">
+                      <p className="text-sm sm:text-base text-foreground mb-2 sm:mb-4 italic leading-relaxed line-clamp-2 sm:line-clamp-3">
                         &quot;{testimonial.text}&quot;
                       </p>
-                      <div className="flex items-center min-h-[40px]">
+                      <div className="flex items-center min-h-[30px] sm:min-h-[40px]">
                         <Image
                           src={testimonial.avatar || "/placeholder.jpg"}
                           alt={testimonial.author}
-                          width={40}
-                          height={40}
-                          className="rounded-full mr-3"
+                          width={30}
+                          height={30}
+                          className="rounded-full mr-2 sm:mr-3"
                           priority={index === 0}
                           onError={(e) => (e.target.style.display = "none")}
                         />
-                        <p className="font-semibold text-foreground">
+                        <p className="text-xs sm:text-sm font-semibold text-foreground">
                           {testimonial.author}
                         </p>
                       </div>
@@ -149,12 +149,12 @@ const Testimonials = () => {
           </div>
 
           {/* second row, left to right */}
-          <div className="overflow-hidden h-60">
+          <div className="overflow-hidden h-40 sm:h-60">
             <motion.div
-              className="flex gap-6"
+              className="flex gap-4 sm:gap-6"
               animate={{ x: ["0%", "100%"] }}
               transition={{
-                duration: window.innerWidth < 768 ? 20 : 30,
+                duration: window.innerWidth < 768 ? 15 : 60,
                 repeat: Infinity,
                 ease: "linear",
               }}
@@ -162,35 +162,35 @@ const Testimonials = () => {
               {[...testimonials, ...testimonials].map((testimonial, index) => (
                 <motion.div
                   key={`${testimonial.id}-row2-${index}`}
-                  className="flex-shrink-0 w-80 max-w-xs"
+                  className="flex-shrink-0 w-48 max-w-full sm:w-80 sm:max-w-xs"
                   whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                 >
                   <Card className="shadow-lg border-border h-full">
                     <CardHeader>
-                      <div className="flex items-center mb-2">
+                      <div className="flex items-center mb-1 sm:mb-2">
                         {[...Array(testimonial.rating)].map((_, i) => (
                           <Star
                             key={i}
-                            className="w-4 h-4 text-yellow-400 fill-current"
+                            className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current"
                           />
                         ))}
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-foreground mb-4 italic leading-relaxed line-clamp-3">
+                      <p className="text-sm sm:text-base text-foreground mb-2 sm:mb-4 italic leading-relaxed line-clamp-2 sm:line-clamp-3">
                         &quot;{testimonial.text}&quot;
                       </p>
-                      <div className="flex items-center min-h-[40px]">
+                      <div className="flex items-center min-h-[30px] sm:min-h-[40px]">
                         <Image
                           src={testimonial.avatar || "/placeholder.jpg"}
                           alt={testimonial.author}
-                          width={40}
-                          height={40}
-                          className="rounded-full mr-3"
+                          width={30}
+                          height={30}
+                          className="rounded-full mr-2 sm:mr-3"
                           priority={index === 0}
                           onError={(e) => (e.target.style.display = "none")}
                         />
-                        <p className="font-semibold text-foreground">
+                        <p className="text-xs sm:text-sm font-semibold text-foreground">
                           {testimonial.author}
                         </p>
                       </div>
@@ -202,12 +202,12 @@ const Testimonials = () => {
           </div>
 
           {/* 3rd row, right to left */}
-          <div className="overflow-hidden h-60">
+          <div className="overflow-hidden h-40 sm:h-60">
             <motion.div
-              className="flex gap-6"
+              className="flex gap-4 sm:gap-6"
               animate={{ x: ["0%", "-100%"] }}
               transition={{
-                duration: window.innerWidth < 768 ? 20 : 30,
+                duration: window.innerWidth < 768 ? 15 : 60,
                 repeat: Infinity,
                 ease: "linear",
               }}
@@ -215,35 +215,35 @@ const Testimonials = () => {
               {[...testimonials, ...testimonials].map((testimonial, index) => (
                 <motion.div
                   key={`${testimonial.id}-row3-${index}`}
-                  className="flex-shrink-0 w-80 max-w-xs"
+                  className="flex-shrink-0 w-48 max-w-full sm:w-80 sm:max-w-xs"
                   whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                 >
                   <Card className="shadow-lg border-border h-full">
                     <CardHeader>
-                      <div className="flex items-center mb-2">
+                      <div className="flex items-center mb-1 sm:mb-2">
                         {[...Array(testimonial.rating)].map((_, i) => (
                           <Star
                             key={i}
-                            className="w-4 h-4 text-yellow-400 fill-current"
+                            className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current"
                           />
                         ))}
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-foreground mb-4 italic leading-relaxed line-clamp-3">
+                      <p className="text-sm sm:text-base text-foreground mb-2 sm:mb-4 italic leading-relaxed line-clamp-2 sm:line-clamp-3">
                         &quot;{testimonial.text}&quot;
                       </p>
-                      <div className="flex items-center min-h-[40px]">
+                      <div className="flex items-center min-h-[30px] sm:min-h-[40px]">
                         <Image
                           src={testimonial.avatar || "/placeholder.jpg"}
                           alt={testimonial.author}
-                          width={40}
-                          height={40}
-                          className="rounded-full mr-3"
+                          width={30}
+                          height={30}
+                          className="rounded-full mr-2 sm:mr-3"
                           priority={index === 0}
                           onError={(e) => (e.target.style.display = "none")}
                         />
-                        <p className="font-semibold text-foreground">
+                        <p className="text-xs sm:text-sm font-semibold text-foreground">
                           {testimonial.author}
                         </p>
                       </div>
