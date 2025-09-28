@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,14 @@ export default function Cart() {
   const t = translations[language];
 
   const totalPrice = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="container mx-auto py-4 sm:py-8">
@@ -39,7 +48,7 @@ export default function Cart() {
                   className="flex items-center gap-1 sm:gap-2 p-1 sm:p-2"
                   aria-label={`${t.cartRemove} ${item.title}`}
                 >
-                  <Trash size={14} sm:size={16} /> {t.cartRemove}
+                  <Trash size={isMobile ? 14 : 16} /> {t.cartRemove}
                 </Button>
               </CardContent>
             </Card>
