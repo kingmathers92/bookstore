@@ -7,7 +7,14 @@ export default function CartSync() {
   const { syncCartWithSupabase } = useStore();
 
   useEffect(() => {
-    syncCartWithSupabase();
+    const sync = async () => {
+      try {
+        await syncCartWithSupabase();
+      } catch (error) {
+        console.error("Cart sync failed:", error.message);
+      }
+    };
+    sync();
   }, [syncCartWithSupabase]);
 
   return null;
