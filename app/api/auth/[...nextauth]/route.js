@@ -1,8 +1,9 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { supabase } from "@/lib/supabase";
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -16,8 +17,14 @@ const handler = NextAuth({
           password: credentials.password,
         });
         if (error) return null;
-        return data.user;
+        return data.user
+          ? { id: data.user.id, name: data.user.email, email: data.user.email }
+          : null;
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
   callbacks: {
@@ -39,6 +46,8 @@ const handler = NextAuth({
   pages: {
     signIn: "/auth/signin",
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
