@@ -1,11 +1,12 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import GoogleSignIn from "@/components/GoogleSignIn";
 import { User } from "lucide-react";
 import translations from "@/lib/translations";
 
@@ -27,12 +28,18 @@ export default function SignIn() {
     if (result?.error) {
       alert(t.signInError);
     } else {
-      const user = {
-        id: result.user.id,
-        name: result.user.name,
-        email: result.user.email,
-      };
-      setUser(user);
+      const { data: session } = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      if (session) {
+        setUser({
+          id: session.user.id,
+          name: session.user.name,
+          email: session.user.email,
+        });
+      }
     }
   };
 
@@ -41,7 +48,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="container mx-auto py-12 mt-25">
+    <div className="container mx-auto py-12">
       <Card className="max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
@@ -66,7 +73,7 @@ export default function SignIn() {
             />
             <Button
               type="submit"
-              className="bg-emerald-700 text-cream-100 w-full hover:cursor-pointer"
+              className="bg-emerald-700 text-cream-100 w-full"
             >
               {t.signInButton}
             </Button>
@@ -75,7 +82,7 @@ export default function SignIn() {
             <p className="text-muted-foreground mb-2">{t.or}</p>
             <Button
               onClick={handleGoogleSignIn}
-              className="bg-emerald-700 text-white w-full flex items-center justify-center gap-2 hover:cursor-pointer"
+              className="bg-emerald-700 text-white w-full flex items-center justify-center gap-2"
             >
               <svg
                 width="18"

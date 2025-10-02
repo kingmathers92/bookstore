@@ -61,10 +61,19 @@ export default function Header() {
           </Link>
         </motion.div>
 
-        {/* Navigation Links on the left side */}
+        {/* Navigation Links on the right side */}
         <NavigationMenu className="hidden md:block ml-10">
           <NavigationMenuList className="space-x-4">
             <NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  href="/auth/signin"
+                  className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {t.signIn}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
               <NavigationMenuLink
                 href="/shop"
                 className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
@@ -83,7 +92,7 @@ export default function Header() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Right Section (Cart/User/Language) */}
+        {/* Left Section (Cart/User/Language) */}
         <div className="flex items-center gap-6">
           <Link
             href="/cart"
