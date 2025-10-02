@@ -6,6 +6,7 @@ export const metadata = {
     "اكتشف مجموعة واسعة من الكتب الإسلامية عالية الجودة في متجر ثمرات الأوراق.",
   keywords:
     "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية, قرآن, حديث, تفسير",
+  metadataBase: new URL("https://thamaratalawrak.com"),
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
