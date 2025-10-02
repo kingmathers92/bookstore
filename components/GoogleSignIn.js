@@ -1,6 +1,6 @@
 "use client";
 
-import { supabase } from "@/lib/supabase";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import translations from "@/lib/translations";
@@ -10,25 +10,13 @@ export default function GoogleSignIn({ language }) {
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      console.error("Google sign-in error:", error.message);
-      alert("Sign-in failed. Please try again.");
-    } else {
-      router.refresh();
-    }
+    await signIn("google", { callbackUrl: "/" });
   };
 
   return (
     <Button
       onClick={handleGoogleSignIn}
-      className="bg-emerald-700 text-white w-full flex items-center justify-center gap-2 hover:cursor-pointer"
+      className="bg-red-600 text-white w-full flex items-center justify-center gap-2"
     >
       <svg
         width="18"
