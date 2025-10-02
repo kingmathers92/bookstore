@@ -65,15 +65,14 @@ export default function Header() {
         <NavigationMenu className="hidden md:block ml-10">
           <NavigationMenuList className="space-x-4">
             <NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  href="/auth/signin"
-                  className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {t.signIn}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+              <NavigationMenuLink
+                href="/"
+                className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+              >
+                {t.home}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <NavigationMenuLink
                 href="/shop"
                 className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
@@ -83,10 +82,10 @@ export default function Header() {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink
-                href="/"
+                href="/auth/signin"
                 className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
               >
-                {t.home}
+                {t.signIn}
               </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
