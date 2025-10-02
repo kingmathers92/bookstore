@@ -1,11 +1,4 @@
-import { SessionProvider } from "next-auth/react";
-import "./globals.css";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import LiveChat from "../components/LiveChat";
-import ScrollToTop from "../components/BackToTop";
-import { ArrowUp } from "lucide-react";
-import CartSync from "../components/CartSync";
+import ClientLayout from "./client-layout";
 
 export const metadata = {
   title: "ثمرات الأوراق - متجر الكتب الإسلامية",
@@ -13,8 +6,6 @@ export const metadata = {
     "اكتشف مجموعة واسعة من الكتب الإسلامية عالية الجودة في متجر ثمرات الأوراق.",
   keywords:
     "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية, قرآن, حديث, تفسير",
-  viewport:
-    "width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
@@ -42,24 +33,18 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  userScalable: "no",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html className="flex flex-col min-h-screen">
       <body className="flex flex-col min-h-screen">
-        <SessionProvider>
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-          <LiveChat />
-          <ScrollToTop
-            minHeight={20}
-            scrollTo={0}
-            className="fixed right-4 bottom-4 bg-primary text-primary-foreground hover:bg-accent rounded-full w-14 h-14 flex items-center justify-center transition-colors"
-          >
-            <ArrowUp size={24} />
-          </ScrollToTop>
-          <CartSync />
-        </SessionProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

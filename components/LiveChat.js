@@ -55,6 +55,18 @@ export default function LiveChat() {
     setMessages([]);
   };
 
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      !document.getElementById("livechat-script")
+    ) {
+      const script = document.createElement("script");
+      script.id = "livechat-script";
+      script.src = "https://your-livechat-script-url";
+      document.body.appendChild(script);
+    }
+  }, []);
+
   return (
     <div className="fixed bottom-4 right-4 z-50">
       <Button

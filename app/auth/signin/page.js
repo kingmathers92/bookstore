@@ -44,7 +44,6 @@ export default function SignIn() {
     }
   };
 
-  // login status for user
   if (status === "authenticated" && session) {
     return (
       <div className="container mx-auto py-12">
@@ -102,7 +101,7 @@ export default function SignIn() {
           </form>
           <div className="mt-4 text-center">
             <p className="text-muted-foreground mb-2">{t.or}</p>
-            <GoogleSignIn language={language} />{" "}
+            <GoogleSignIn language={language} />
           </div>
           <div className="mt-4 text-center">
             <p className="text-muted-foreground">{t.noAccount}</p>
