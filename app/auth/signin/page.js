@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import GoogleSignIn from "@/components/GoogleSignIn";
 import { User } from "lucide-react";
 import translations from "@/lib/translations";
+import Link from "next/link";
 
 export default function SignIn() {
   const { data: session, status } = useSession();
@@ -29,16 +30,16 @@ export default function SignIn() {
     if (result?.error) {
       alert(t.signInError);
     } else {
-      const { data: sessionData } = await signIn("credentials", {
+      const { user } = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
-      if (sessionData) {
+      if (user) {
         setUser({
-          id: sessionData.user.id,
-          name: sessionData.user.name,
-          email: sessionData.user.email,
+          id: user.id,
+          name: user.name || user.email,
+          email: user.email,
         });
       }
     }
@@ -57,7 +58,7 @@ export default function SignIn() {
           <CardContent className="text-center space-y-4">
             <p className="text-muted-foreground">{t.loggedInAs}</p>
             <Button
-              onClick={() => logout()}
+              onClick={() => signOut({ redirect: "/auth/signin" })}
               className="bg-red-600 text-white w-full"
             >
               {t.logout}
@@ -105,15 +106,11 @@ export default function SignIn() {
           </div>
           <div className="mt-4 text-center">
             <p className="text-muted-foreground">{t.noAccount}</p>
-            <Button
-              variant="link"
-              onClick={() =>
-                signIn("credentials", { callbackUrl: "/auth/register" })
-              }
-              className="text-emerald-700"
-            >
-              {t.register}
-            </Button>
+            <Link href="/auth/register">
+              <Button variant="link" className="text-emerald-700">
+                {t.register}
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
