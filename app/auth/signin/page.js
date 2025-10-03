@@ -95,19 +95,24 @@ export default function SignIn() {
             />
             <Button
               type="submit"
-              className="bg-emerald-700 text-cream-100 w-full"
+              className="bg-emerald-700 text-cream-100 w-full hover:cursor-pointer"
             >
               {t.signInButton}
             </Button>
           </form>
           <div className="mt-4 text-center">
-            <p className="text-muted-foreground mb-2">{t.or}</p>
+            <p className="text-muted-foreground mb-2 hover:cursor-pointer">
+              {t.or}
+            </p>
             <GoogleSignIn language={language} />
           </div>
           <div className="mt-4 text-center">
             <p className="text-muted-foreground">{t.noAccount}</p>
             <Link href="/auth/register">
-              <Button variant="link" className="text-emerald-700">
+              <Button
+                variant="link"
+                className="text-emerald-700 hover:cursor-pointer"
+              >
                 {t.register}
               </Button>
             </Link>

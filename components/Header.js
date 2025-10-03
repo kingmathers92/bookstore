@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useStore } from "@/lib/store";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -17,17 +17,23 @@ import {
 import translations from "@/lib/translations";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { cart, user, logout, language } = useStore();
+  const pathname = usePathname();
+  const { data: session, status } = useSession();
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
+    await signOut({ redirect: "/auth/signin" });
     logout();
   };
 
   const t = translations[language];
+
+  const isActive = (path) => pathname === path;
 
   return (
     <header
@@ -55,19 +61,24 @@ export default function Header() {
           </Link>
           <Link
             href="/"
-            className="hidden md:block hover:text-accent transition-colors hover:cursor-pointer"
+            className={`hidden md:block hover:text-accent transition-colors hover:cursor-pointer ${
+              isActive("/") ? "text-accent font-bold" : ""
+            }`}
           >
             {t.title}
           </Link>
         </motion.div>
 
-        {/* Navigation Links on the right side */}
         <NavigationMenu className="hidden md:block ml-10">
           <NavigationMenuList className="space-x-4">
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/"
-                className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+                className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                  isActive("/")
+                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                    : ""
+                }`}
               >
                 {t.home}
               </NavigationMenuLink>
@@ -75,7 +86,11 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/shop"
-                className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+                className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                  isActive("/shop")
+                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                    : ""
+                }`}
               >
                 {t.shop || "Shop"}
               </NavigationMenuLink>
@@ -83,7 +98,11 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/auth/signin"
-                className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+                className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                  isActive("/auth/signin")
+                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                    : ""
+                }`}
               >
                 {t.signIn}
               </NavigationMenuLink>
@@ -91,19 +110,36 @@ export default function Header() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Left Section (Cart/User/Language) */}
         <div className="flex items-center gap-6">
           <Link
             href="/cart"
-            className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg flex items-center gap-1 px-4 py-2 rounded-md"
+            className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg flex items-center gap-1 px-4 py-2 rounded-md ${
+              isActive("/cart")
+                ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                : ""
+            }`}
           >
             <ShoppingCart size={20} />
             {t.cart.replace("{count}", cart.length)}
           </Link>
+          {session && (
+            <div className="relative">
+              <span className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full border-2 border-white"></span>
+              <User size={20} className="text-primary-foreground" />
+            </div>
+          )}
+          {!session && (
+            <Link
+              href="/auth/signin"
+              className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg flex items-center gap-1 px-4 py-2 rounded-md"
+            >
+              <User size={20} />
+              {t.signIn}
+            </Link>
+          )}
           <LanguageToggle />
         </div>
 
-        {/* Mobile Menu Trigger */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button
@@ -126,21 +162,33 @@ export default function Header() {
             >
               <Link
                 href="/"
-                className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+                className={`hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                  isActive("/")
+                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                    : ""
+                }`}
                 onClick={() => setIsOpen(false)}
               >
                 {t.home}
               </Link>
               <Link
                 href="/shop"
-                className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md"
+                className={`hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                  isActive("/shop")
+                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                    : ""
+                }`}
                 onClick={() => setIsOpen(false)}
               >
                 {t.shop}
               </Link>
               <Link
                 href="/cart"
-                className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md"
+                className={`hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md ${
+                  isActive("/cart")
+                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                    : ""
+                }`}
                 onClick={() => setIsOpen(false)}
               >
                 <ShoppingCart size={20} />
@@ -150,7 +198,7 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   onClick={handleLogout}
-                  className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md"
+                  className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md hover:cursor-pointer"
                 >
                   <User size={20} />
                   {t.signOut}
@@ -158,7 +206,11 @@ export default function Header() {
               ) : (
                 <Link
                   href="/auth/signin"
-                  className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md"
+                  className={`hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md hover:cursor-pointer ${
+                    isActive("/auth/signin")
+                      ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                      : ""
+                  }`}
                   onClick={() => setIsOpen(false)}
                 >
                   <User size={20} />
