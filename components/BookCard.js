@@ -6,9 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStore } from "@/lib/store";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import translations from "@/lib/translations";
+import CategoryBadge from "./CategoryBadge";
+import StockStatus from "./StockStatus";
 
 const BookCard = ({
   id,
@@ -39,37 +41,6 @@ const BookCard = ({
 
   if (!displayBook) return <Skeleton className="w-full h-56" />;
 
-  const categoryColors = {
-    tafsir: "bg-primary",
-    hadith: "bg-green-500",
-    fiqh: "bg-yellow-500",
-    biography: "bg-blue-600",
-    uncategorized: "bg-gray-300",
-    history: "bg-purple-500",
-    default: "bg-gray-200",
-  };
-  const categoryMap = {
-    تفسير: "tafsir",
-    حديث: "hadith",
-    فقه: "fiqh",
-    سيرة: "biography",
-  };
-  const safeCategory = displayBook.category?.toLowerCase();
-  const mappedCategory =
-    categoryMap[safeCategory] || safeCategory || "uncategorized";
-  const badgeColor = categoryColors[mappedCategory] || categoryColors.default;
-
-  const stockText =
-    language === "ar"
-      ? inStock
-        ? "متوفر"
-        : "غير متوفر"
-      : inStock
-      ? "In Stock"
-      : "Sold Out";
-  const stockColor = inStock ? "bg-green-600" : "bg-red-600";
-  const stockTextColor = "text-white";
-
   return (
     <motion.div
       initial={{ scale: 1 }}
@@ -98,12 +69,7 @@ const BookCard = ({
             loading="lazy"
             onError={() => setImgSrc("/images/placeholder.png")}
           />
-          <div
-            className={`absolute top-2 left-2 px-3 py-1 text-xs font-semibold text-white rounded-full ${badgeColor} shadow-md transition-all duration-200 group-hover:scale-105`}
-            style={{ zIndex: 10, maxWidth: "calc(100% - 16px)" }}
-          >
-            {displayBook.category || "Uncategorized"}
-          </div>
+          <CategoryBadge category={displayBook.category} />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-80 transition-opacity duration-200" />
         </CardHeader>
         <CardContent
@@ -127,12 +93,7 @@ const BookCard = ({
               <ShoppingCart size={18} /> {t.bookCardAddToCart}
             </Button>
           </div>
-          <div
-            className={`absolute bottom-2 right-2 px-3 py-1 text-xs font-semibold rounded-full ${stockColor} ${stockTextColor} shadow-md transition-all duration-200`}
-            style={{ zIndex: 10, maxWidth: "calc(100% - 16px)" }}
-          >
-            {stockText}
-          </div>
+          <StockStatus inStock={displayBook.inStock} language={language} />
         </CardContent>
       </Card>
     </motion.div>
