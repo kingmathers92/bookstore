@@ -96,16 +96,35 @@ export default function Header() {
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink
-                href="/auth/signin"
-                className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
-                  isActive("/auth/signin")
-                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                    : ""
-                }`}
-              >
-                {t.signIn}
-              </NavigationMenuLink>
+              {session ? (
+                <NavigationMenuLink
+                  asChild
+                  className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                    isActive("/auth/signin")
+                      ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                      : ""
+                  }`}
+                >
+                  <Button
+                    variant="link"
+                    onClick={handleLogout}
+                    className="p-0 h-auto text-lg font-medium flex items-center gap-1 hover:cursor-pointer"
+                  >
+                    {t.signOut}
+                  </Button>
+                </NavigationMenuLink>
+              ) : (
+                <NavigationMenuLink
+                  href="/auth/signin"
+                  className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                    isActive("/auth/signin")
+                      ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
+                      : ""
+                  }`}
+                >
+                  {t.signIn}
+                </NavigationMenuLink>
+              )}
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
@@ -133,7 +152,6 @@ export default function Header() {
               href="/auth/signin"
               className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg flex items-center gap-1 px-4 py-2 rounded-md"
             >
-              <User size={20} />
               {t.signIn}
             </Link>
           )}
@@ -194,13 +212,12 @@ export default function Header() {
                 <ShoppingCart size={20} />
                 {t.cart.replace("{count}", cart.length)}
               </Link>
-              {user ? (
+              {session ? (
                 <Button
                   variant="ghost"
                   onClick={handleLogout}
                   className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md hover:cursor-pointer"
                 >
-                  <User size={20} />
                   {t.signOut}
                 </Button>
               ) : (
@@ -213,7 +230,6 @@ export default function Header() {
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
-                  <User size={20} />
                   {t.signIn}
                 </Link>
               )}
