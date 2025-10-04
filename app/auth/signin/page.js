@@ -70,7 +70,7 @@ export default function SignIn() {
   }
 
   return (
-    <div className="container mx-auto py-12">
+    <div className="container mx-auto py-12 justify-center mt-25">
       <Card className="max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
