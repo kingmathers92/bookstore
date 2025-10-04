@@ -66,6 +66,7 @@ const BookCard = ({
             width={300}
             height={224}
             className="w-full h-full object-cover rounded-t-lg"
+            sizes="(max-width: 768px) 100vw, 300px"
             loading="lazy"
             onError={() => setImgSrc("/images/placeholder.png")}
           />
@@ -77,7 +78,7 @@ const BookCard = ({
           style={{ height: "176px" }}
         >
           <div>
-            <CardTitle className="text-xl font-bold text-foreground mb-2 line-clamp-2 drop-shadow-sm">
+            <CardTitle className="text-xl font-bold text-foreground mb-2 line-clamp-1 overflow-hidden text-ellipsis">
               {displayBook.title}
             </CardTitle>
             <p className="text-lg text-muted-foreground mb-4 font-medium">
