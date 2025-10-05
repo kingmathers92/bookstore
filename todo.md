@@ -3,6 +3,7 @@
 - store images in supabase cdk link, compress and cache them
 - update readme
 - finish livechat
+- hero container in mobile fix
 - finish cart/order/payment on delivery
 - wish list/Notify users of price drops or availability.
 - update books images
