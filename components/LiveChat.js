@@ -34,18 +34,25 @@ export default function LiveChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
       });
+      if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
       setIsThinking(false);
       if (data.reply) {
         setMessages((prev) => [...prev, { text: data.reply, isUser: false }]);
       } else if (data.error) {
-        setMessages((prev) => [...prev, { text: data.error, isUser: false }]);
+        setMessages((prev) => [
+          ...prev,
+          { text: `Error: ${data.error}`, isUser: false },
+        ]);
       }
     } catch (error) {
       setIsThinking(false);
       setMessages((prev) => [
         ...prev,
-        { text: "Error: Could not connect to chat", isUser: false },
+        {
+          text: `Error: Could not connect to chat. ${error.message}`,
+          isUser: false,
+        },
       ]);
     }
   };
@@ -70,7 +77,7 @@ export default function LiveChat() {
   return (
     <div className="fixed bottom-4 right-4 z-50">
       <Button
-        className="bg-gold-beige text-cream-100 hover:bg-header-gradient-end rounded-full w-14 h-14 flex items-center justify-center cursor-pointer" // Cursor pointer on hover
+        className="bg-gold-beige text-cream-100 hover:bg-header-gradient-end rounded-full w-14 h-14 flex items-center justify-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="فتح الدردشة المباشرة"
       >
