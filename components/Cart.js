@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -20,6 +21,7 @@ import { toast } from "@/components/ui/sonner";
 export default function Cart() {
   const { cart, removeFromCart, language } = useStore();
   const t = translations[language];
+  const router = useRouter();
 
   const totalPrice = cart.reduce(
     (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
@@ -114,8 +116,7 @@ export default function Cart() {
   return (
     <div className="container mx-auto py-6 sm:py-8 lg:py-12 max-w-4xl">
       {" "}
-      {/* Constrain width */}
-      <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold text-green-900 mb-6 sm:mb-8 text-center">
+      <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold text-green-900 mb-6 sm:mb-8 text-center mt-8">
         {t.cartTitle}
       </h2>
       {cart.length === 0 ? (
@@ -142,7 +143,7 @@ export default function Cart() {
                   <Button
                     variant="destructive"
                     onClick={() => handleRemove(item.book_id)}
-                    className="w-full sm:w-auto mt-2 sm:mt-0 px-3 py-2 flex items-center gap-2"
+                    className="w-full sm:w-auto mt-2 sm:mt-0 px-3 py-2 flex items-center gap-2 hover:cursor-pointer"
                     aria-label={`${t.cartRemove} ${item.title}`}
                   >
                     <Trash size={isMobile ? 14 : 16} /> {t.cartRemove}
@@ -232,7 +233,7 @@ export default function Cart() {
                   </div>
                   <Button
                     type="submit"
-                    className="bg-emerald-700 text-cream-100 px-4 py-2 w-full sm:w-auto hover:bg-emerald-800 transition-colors"
+                    className="bg-emerald-700 text-cream-100 px-4 py-2 w-full sm:w-auto hover:bg-emerald-800 transition-colors hover:cursor-pointer"
                   >
                     {t.cartPlaceOrder}
                   </Button>
@@ -240,6 +241,16 @@ export default function Cart() {
               </CardContent>
             </Card>
           )}
+          <div className="text-center mb-6 sm:mb-8">
+            <Button
+              variant="outline"
+              className="bg-emerald-700 text-cream-100 hover:bg-emerald-800 transition-colors px-4 py-2 mt-6 hover:cursor-pointer"
+              aria-label={t.backToStore}
+              onClick={() => router.back()}
+            >
+              {t.backToStore}
+            </Button>
+          </div>
         </>
       )}
     </div>
