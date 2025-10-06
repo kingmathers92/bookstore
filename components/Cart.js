@@ -21,6 +21,14 @@ export default function Cart() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleRemove = async (bookId) => {
+    try {
+      await removeFromCart(bookId);
+    } catch (error) {
+      alert(`Error removing item: ${error.message}`);
+    }
+  };
+
   return (
     <div className="container mx-auto py-4 sm:py-8">
       <h2 className="text-2xl sm:text-3xl font-bold text-green-900 mb-2 sm:mb-4">
@@ -44,7 +52,7 @@ export default function Cart() {
                 <span className="text-sm sm:text-base">{item.price} ر.س</span>
                 <Button
                   variant="destructive"
-                  onClick={() => removeFromCart(item.book_id)}
+                  onClick={() => handleRemove(item.book_id)}
                   className="flex items-center gap-1 sm:gap-2 p-1 sm:p-2"
                   aria-label={`${t.cartRemove} ${item.title}`}
                 >
