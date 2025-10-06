@@ -22,32 +22,44 @@ export default function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-    if (result?.error) {
-      alert(t.signInError);
-    } else {
-      const { user } = await signIn("credentials", {
+    try {
+      const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
-      if (user) {
-        setUser({
-          id: user.id,
-          name: user.name || user.email,
-          email: user.email,
+      if (result?.error) {
+        alert(
+          t.signInError ||
+            `Sign-in failed: ${result.error}. Please check your credentials and try again.`
+        );
+      } else {
+        const { user } = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
         });
+        if (user) {
+          setUser({
+            id: user.id,
+            name: user.name || user.email,
+            email: user.email,
+          });
+        } else {
+          alert(t.signInError || "Sign-in failed. Please try again.");
+        }
       }
+    } catch (error) {
+      alert(
+        t.signInError ||
+          `An error occurred during sign-in: ${error.message}. Please try again later.`
+      );
     }
   };
 
   if (status === "authenticated" && session) {
     return (
-      <div className="container mx-auto py-12">
+      <div className="container mx-auto py-12" style={{ paddingTop: "80px" }}>
         <Card className="max-w-md mx-auto">
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
@@ -70,7 +82,10 @@ export default function SignIn() {
   }
 
   return (
-    <div className="container mx-auto py-12 justify-center mt-25">
+    <div
+      className="container mx-auto py-12 justify-center"
+      style={{ paddingTop: "80px" }}
+    >
       <Card className="max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
