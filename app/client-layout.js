@@ -8,12 +8,14 @@ import LiveChat from "../components/LiveChat";
 import ScrollToTop from "../components/BackToTop";
 import { ArrowUp } from "lucide-react";
 import CartSync from "../components/CartSync";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function ClientLayout({ children }) {
   return (
     <SessionProvider>
       <Header />
       <main className="flex-grow">{children}</main>
+      <Toaster />
       <Footer />
       <LiveChat />
       <ScrollToTop
