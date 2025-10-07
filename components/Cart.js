@@ -19,7 +19,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "@/components/ui/sonner";
 
 export default function Cart() {
-  const { cart, removeFromCart, language } = useStore();
+  const { cart, removeFromCart, language, user } = useStore();
   const t = translations[language];
   const router = useRouter();
 
@@ -68,28 +68,42 @@ export default function Cart() {
     }
 
     const orderDetails = {
-      userId: useStore.getState().user?.id || "guest",
-      items: cart.map((item) => ({
-        bookId: item.book_id,
-        title: item.title,
-        price: item.price,
-        quantity: item.quantity || 1,
-      })),
-      totalPrice,
-      ...formData,
+      user_id: user?.id || null,
+      items: JSON.stringify(
+        cart.map((item) => ({
+          book_id: item.book_id,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity || 1,
+        }))
+      ),
+      total_price: totalPrice,
+      name: formData.name,
+      address: formData.address,
+      phone: formData.phone,
       status: "pending",
-      orderDate: new Date().toISOString(),
+      order_date: new Date().toISOString(),
     };
 
     try {
-      const { error } = await supabase.from("orders").insert(orderDetails);
-      if (error) throw error;
+      const { data, error } = await supabase
+        .from("orders")
+        .insert([orderDetails])
+        .single();
+      if (error) {
+        console.error("Supabase Error:", error);
+        throw new Error(
+          `Supabase Error: ${error.message || JSON.stringify(error)}`
+        );
+      } else if (!data) {
+        throw new Error("No data returned from Supabase insert");
+      }
 
-      await fetch("/api/sendOrderEmail", {
+      const emailResponse = await fetch("/api/sendOrderEmail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          to: "orders@thamarat-alawarak.com",
+          to: "orders@thamarat-alawrak.com",
           subject: "New Order - Cash on Delivery",
           text: `New order from ${
             formData.name
@@ -99,23 +113,31 @@ export default function Cart() {
         }),
       });
 
+      if (!emailResponse.ok) {
+        const errorText = await emailResponse.text();
+        throw new Error(`Email Error: ${emailResponse.status} - ${errorText}`);
+      }
+
+      const store = useStore.getState();
+      store.set({ cart: [] });
+      if (!store.user?.id) localStorage.setItem("cart", JSON.stringify([]));
+
       toast.success(t.cartOrderSuccess || "Order Placed!", {
         description:
           t.cartOrderConfirm ||
           "Your order has been placed for cash on delivery. We'll contact you soon.",
       });
-      setFormData({ name: "", address: "", phone: "" });
-      useStore.getState().set({ cart: [] });
+      router.push("/");
     } catch (error) {
       toast.error(t.cartOrderError || "Error", {
         description: `Failed to place order: ${error.message}`,
       });
+      console.error("Order Submission Error:", error);
     }
   };
 
   return (
     <div className="container mx-auto py-6 sm:py-8 lg:py-12 max-w-4xl">
-      {" "}
       <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold text-green-900 mb-6 sm:mb-8 text-center mt-8">
         {t.cartTitle}
       </h2>
