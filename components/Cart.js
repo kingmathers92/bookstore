@@ -16,17 +16,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import translations from "@/lib/translations";
 import { supabase } from "@/lib/supabase";
-import { toast } from "@/components/ui/sonner";
+import { Toaster, toast } from "@/components/ui/sonner";
 
 export default function Cart() {
-  const { cart, removeFromCart, language, user } = useStore();
+  const { cart, removeFromCart, language, user, syncCartFromLocalStorage } =
+    useStore();
   const t = translations[language];
   const router = useRouter();
-
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
-    0
-  );
 
   const [isMobile, setIsMobile] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -37,11 +33,17 @@ export default function Cart() {
   });
 
   useEffect(() => {
+    syncCartFromLocalStorage();
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [syncCartFromLocalStorage]);
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
+    0
+  );
 
   const handleRemove = async (bookId) => {
     try {
@@ -90,37 +92,13 @@ export default function Cart() {
         .from("orders")
         .insert([orderDetails])
         .single();
-      if (error) {
-        console.error("Supabase Error:", error);
-        throw new Error(
-          `Supabase Error: ${error.message || JSON.stringify(error)}`
-        );
-      } else if (!data) {
-        throw new Error("No data returned from Supabase insert");
+      if (error || !data) {
+        console.error("Supabase Error:", error || "No data returned");
+        throw new Error(`Supabase Error: ${error?.message || "Insert failed"}`);
       }
 
-      const emailResponse = await fetch("/api/sendOrderEmail", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: "orders@thamarat-alawrak.com",
-          subject: "New Order - Cash on Delivery",
-          text: `New order from ${
-            formData.name
-          }\nTotal: ${totalPrice} ر.س\nItems: ${JSON.stringify(
-            orderDetails.items
-          )}\nAddress: ${formData.address}\nPhone: ${formData.phone}`,
-        }),
-      });
-
-      if (!emailResponse.ok) {
-        const errorText = await emailResponse.text();
-        throw new Error(`Email Error: ${emailResponse.status} - ${errorText}`);
-      }
-
-      const store = useStore.getState();
-      store.set({ cart: [] });
-      if (!store.user?.id) localStorage.setItem("cart", JSON.stringify([]));
+      useStore.setState({ cart: [] });
+      if (!user?.id) localStorage.setItem("cart", JSON.stringify([]));
 
       toast.success(t.cartOrderSuccess || "Order Placed!", {
         description:
