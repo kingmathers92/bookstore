@@ -171,24 +171,16 @@ body {
 }
 
 .dot-flashing {
-  position: relative;
+  display: inline-block;
   width: 6px;
   height: 6px;
-  margin: 0 2px;
-  background-color: #333;
+  background-color: #666;
   border-radius: 50%;
+  margin: 0 2px;
   animation: dotFlashing 1.4s infinite linear alternate;
-  animation-fill-mode: both;
 }
-
 @keyframes dotFlashing {
-  0% {
-    opacity: 0.2;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.2;
-  }
+  0% { opacity: 0.2; }
+  20% { opacity: 1; }
+  100% { opacity: 0.2; }
 }
