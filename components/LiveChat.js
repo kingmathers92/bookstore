@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, MessageSquare, X, Minus } from "lucide-react";
+import { useStore } from "@/lib/store";
 import { toast } from "@/components/ui/sonner";
 
 export default function LiveChat() {
@@ -13,12 +14,55 @@ export default function LiveChat() {
   const [isThinking, setIsThinking] = useState(false);
   const chatEndRef = useRef(null);
 
-  const predefinedQuestions = [
-    "How can I track my order?",
-    "What is your return policy?",
-    "Do you offer international shipping?",
-    "How can I contact customer support?",
-  ];
+  const { language } = useStore();
+
+  const translations = {
+    en: {
+      title: "Live Chat",
+      placeholder: "Type your message or select a question...",
+      questions: [
+        "How can I track my order?",
+        "What is your return policy?",
+        "Do you offer international shipping?",
+        "How can I contact customer support?",
+      ],
+      responses: {
+        "How can I track my order?":
+          "You can track your order by logging into your account and visiting the 'Order History' section.",
+        "What is your return policy?":
+          "We offer a 30-day return policy. Items must be unused and in original packaging.",
+        "Do you offer international shipping?":
+          "Yes, we offer international shipping. Shipping costs and times vary by region.",
+        "How can I contact customer support?":
+          "You can contact us via email at support@thamaratalawrak.com or call us at +123-456-7890.",
+        default:
+          "Sorry, I can only answer predefined questions. Please select one from the suggestions!",
+      },
+    },
+    ar: {
+      title: "الدردشة المباشرة",
+      placeholder: "اكتب رسالتك أو اختر سؤالاً...",
+      questions: [
+        "كيف يمكنني تتبع طلبيتي؟",
+        "ما هي سياسة الإرجاع؟",
+        "هل تقدمون شحنًا دوليًا؟",
+        "كيف يمكنني التواصل مع الدعم الفني؟",
+      ],
+      responses: {
+        "كيف يمكنني تتبع طلبيتي؟":
+          "يمكنك تتبع طلبيتك من خلال تسجيل الدخول إلى حسابك وزيارة قسم 'سجل الطلبات'.",
+        "ما هي سياسة الإرجاع؟":
+          "نقدم سياسة إرجاع لمدة 30 يومًا. يجب أن تكون المنتجات غير مستخدمة وفي عبوتها الأصلية.",
+        "هل تقدمون شحنًا دوليًا؟": "نعم، نقدم الشحن الدولي. تختلف التكاليف والأوقات حسب المنطقة.",
+        "كيف يمكنني التواصل مع الدعم الفني؟":
+          "يمكنك التواصل معنا عبر البريد الإلكتروني support@thamaratalawrak.com أو الاتصال على +123-456-7890.",
+        default:
+          "عذرًا، يمكنني الإجابة فقط على الأسئلة المحددة مسبقًا. يرجى اختيار واحدة من الاقتراحات!",
+      },
+    },
+  };
+
+  const { title, placeholder, questions, responses } = translations[language] || translations.en;
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,12 +74,20 @@ export default function LiveChat() {
 
   const handleSend = () => {
     const trimmedInput = input.trim();
-    if (!trimmedInput && !predefinedQuestions.includes(trimmedInput)) {
-      toast.error("Please enter a message or select a question!");
+    if (!trimmedInput && !questions.includes(trimmedInput)) {
+      toast.error(
+        language === "ar"
+          ? "يرجى إدخال رسالة أو اختيار سؤال!"
+          : "Please enter a message or select a question!",
+      );
       return;
     }
     if (trimmedInput.length > 500) {
-      toast.error("Message too long! Please keep it under 500 characters.");
+      toast.error(
+        language === "ar"
+          ? "الرسالة طويلة جدًا! يرجى الاحتفاظ بها تحت 500 حرف."
+          : "Message too long! Please keep it under 500 characters.",
+      );
       return;
     }
 
@@ -45,27 +97,7 @@ export default function LiveChat() {
     setIsThinking(true);
 
     setTimeout(() => {
-      let botReply;
-      switch (trimmedInput) {
-        case "How can I track my order?":
-          botReply =
-            "You can track your order by logging into your account and visiting the 'Order History' section.";
-          break;
-        case "What is your return policy?":
-          botReply =
-            "We offer a 30-day return policy. Items must be unused and in original packaging.";
-          break;
-        case "Do you offer international shipping?":
-          botReply = "No, we offer international shipping.";
-          break;
-        case "How can I contact customer support?":
-          botReply =
-            "You can contact us via email at support@thamaratalawrak.com or call us at +123-456-7890.";
-          break;
-        default:
-          botReply =
-            "Sorry, I can only answer predefined questions. Please select one from the suggestions!";
-      }
+      const botReply = responses[trimmedInput] || responses.default;
       setIsThinking(false);
       setMessages((prev) => [...prev, { text: botReply, isUser: false, timestamp: new Date() }]);
     }, 1000);
@@ -73,7 +105,11 @@ export default function LiveChat() {
 
   const handleSelectQuestion = (question) => {
     if (messages.length >= 10) {
-      toast.warning("Chat limit reached! Please start a new session.");
+      toast.warning(
+        language === "ar"
+          ? "تم الوصول إلى حد الدردشة! يرجى بدء جلسة جديدة."
+          : "Chat limit reached! Please start a new session.",
+      );
       return;
     }
     setInput(question);
@@ -86,7 +122,12 @@ export default function LiveChat() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50" role="region" aria-label="Live Chat Widget">
+    <div
+      className="fixed bottom-4 right-4 z-50"
+      role="region"
+      aria-label={language === "ar" ? "أداة الدردشة المباشرة" : "Live Chat Widget"}
+      dir={language === "ar" ? "rtl" : "ltr"}
+    >
       <Button
         className="bg-gold-beige text-cream-100 hover:bg-header-gradient-end rounded-full w-14 h-14 flex items-center justify-center cursor-pointer transition-colors"
         onClick={() => setIsOpen(!isOpen)}
@@ -102,20 +143,26 @@ export default function LiveChat() {
           style={{ backgroundColor: "#F5F5F5" }}
           role="dialog"
           aria-labelledby="live-chat-title"
+          dir={language === "ar" ? "rtl" : "ltr"}
         >
           <div className="flex justify-between items-center mb-2">
             <h3 id="live-chat-title" className="text-lg font-semibold">
-              Live Chat
+              {title}
             </h3>
             <div>
-              <Button variant="ghost" size="sm" onClick={handleClose} aria-label="Close chat">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClose}
+                aria-label={language === "ar" ? "إغلاق الدردشة" : "Close chat"}
+              >
                 <X size={16} />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(false)}
-                aria-label="Minimize chat"
+                aria-label={language === "ar" ? "تصغير الدردشة" : "Minimize chat"}
                 className="ml-2"
               >
                 <Minus size={16} />
@@ -141,14 +188,16 @@ export default function LiveChat() {
                 <span className="dot-flashing"></span>
                 <span className="dot-flashing" style={{ animationDelay: "0.2s" }}></span>
                 <span className="dot-flashing" style={{ animationDelay: "0.4s" }}></span>
-                <span className="ml-2">Thinking...</span>
+                <span className="ml-2">
+                  {language === "ar" ? "جاري التفكير..." : "Thinking..."}
+                </span>
               </div>
             )}
             <div ref={chatEndRef} />
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex gap-2 flex-wrap">
-              {predefinedQuestions.map((question, index) => (
+              {questions.map((question, index) => (
                 <Button
                   key={index}
                   variant="outline"
@@ -169,17 +218,18 @@ export default function LiveChat() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSend()}
                 className="flex-1 focus-visible:ring-primary"
-                placeholder="Type your message or select a question..."
+                placeholder={placeholder}
                 aria-label="Chat input"
                 maxLength={500}
+                dir={language === "ar" ? "rtl" : "ltr"}
               />
               <Button
                 onClick={handleSend}
                 className="bg-primary text-white hover:bg-primary/90"
-                aria-label="Send message"
+                aria-label={language === "ar" ? "إرسال الرسالة" : "Send message"}
                 disabled={
                   isThinking ||
-                  (!input.trim() && !predefinedQuestions.includes(input)) ||
+                  (!input.trim() && !questions.includes(input)) ||
                   messages.length >= 10
                 }
               >

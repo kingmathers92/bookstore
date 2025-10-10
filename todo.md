@@ -2,7 +2,6 @@
 
 - store images in supabase cdk link, compress and cache them
 - update readme
-- finish livechat
 - wish list/Notify users of price drops or availability.
 - update books images
 - /books/[id] info/detail view
