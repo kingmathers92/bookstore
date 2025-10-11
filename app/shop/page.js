@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import Hero from "@/components/Hero";
 import BookOfTheDay from "@/components/BookOfTheDay";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
@@ -19,10 +18,7 @@ const fetcher = async () => {
     .select("*")
     .order("book_id", { ascending: true })
     .limit(50);
-  if (error)
-    throw new Error(
-      `Error fetching books: ${error.message}, Status: ${status}`
-    );
+  if (error) throw new Error(`Error fetching books: ${error.message}, Status: ${status}`);
   return data || [];
 };
 
@@ -40,14 +36,11 @@ export default function Shop() {
   const filteredBooks = useMemo(() => {
     return (books || []).filter((book) => {
       const title =
-        language === "ar"
-          ? book.title_ar || book.title_en
-          : book.title_en || book.title_ar;
+        language === "ar" ? book.title_ar || book.title_en : book.title_en || book.title_ar;
       return (
         title?.toLowerCase().includes(searchQuery.toLowerCase()) &&
         (category === "all" || book.category_en === category) &&
-        (book.price == null ||
-          (book.price >= priceRange[0] && book.price <= priceRange[1]))
+        (book.price == null || (book.price >= priceRange[0] && book.price <= priceRange[1]))
       );
     });
   }, [books, searchQuery, category, priceRange, language]);
@@ -58,10 +51,7 @@ export default function Shop() {
   return (
     <div>
       <BookOfTheDay />
-      <section
-        className="container mx-auto py-12 px-4 overflow-hidden"
-        aria-label={t.title}
-      >
+      <section className="container mx-auto py-12 px-4 overflow-hidden" aria-label={t.title}>
         <h2 className="text-4xl font-bold text-center mb-8 text-primary hover:text-accent md:text-5xl transition-colors">
           {t.title}
         </h2>
@@ -87,9 +77,7 @@ export default function Shop() {
                 />
               ))
             ) : (
-              <div className="text-center py-12 text-foreground">
-                {t.noBooksFound}
-              </div>
+              <div className="text-center py-12 text-foreground">{t.noBooksFound}</div>
             )}
           </div>
         </React.Suspense>
