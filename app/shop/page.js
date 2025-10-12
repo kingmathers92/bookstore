@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import BookOfTheDay from "@/components/BookOfTheDay";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
@@ -23,7 +22,7 @@ const fetcher = async () => {
 };
 
 export default function Shop() {
-  const { searchQuery, category, priceRange, language } = useStore();
+  const { searchQuery, category, priceRange, language, isTyping } = useStore();
   const {
     data: books,
     error,
@@ -49,8 +48,7 @@ export default function Shop() {
   if (error) return <div>Error loading books: {error.message}</div>;
 
   return (
-    <div>
-      <BookOfTheDay />
+    <div dir={language === "ar" ? "rtl" : "ltr"} className="mt-8">
       <section className="container mx-auto py-12 px-4 overflow-hidden" aria-label={t.title}>
         <h2 className="text-4xl font-bold text-center mb-8 text-primary hover:text-accent md:text-5xl transition-colors">
           {t.title}
@@ -81,6 +79,14 @@ export default function Shop() {
             )}
           </div>
         </React.Suspense>
+        {isTyping && (
+          <div className="text-center text-muted-foreground mt-4 flex items-center justify-center">
+            <span className="dot-flashing"></span>
+            <span className="dot-flashing" style={{ animationDelay: "0.2s" }}></span>
+            <span className="dot-flashing" style={{ animationDelay: "0.4s" }}></span>
+            <span className="ml-2">{language === "ar" ? "جاري الكتابة..." : "Typing..."}</span>
+          </div>
+        )}
       </section>
     </div>
   );
