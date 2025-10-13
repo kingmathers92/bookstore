@@ -36,10 +36,17 @@ export const authOptions = {
   ],
   debug: process.env.NODE_ENV === "development",
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
+    async jwt({ token, account, profile }) {
+      if (account?.provider === "google" && profile) {
+        token.id = profile.sub;
+        token.email = profile.email;
+        token.name = profile.name;
+        token.picture = profile.picture;
+      } else if (token.email) {
+        const { data, error } = await supabase.auth.getUser(token.email);
+        if (data?.user) {
+          token.id = data.user.id;
+        }
       }
       return token;
     },
@@ -47,6 +54,8 @@ export const authOptions = {
       session.user = {
         id: token.id,
         email: token.email,
+        name: token.name,
+        picture: token.picture,
       };
       return session;
     },

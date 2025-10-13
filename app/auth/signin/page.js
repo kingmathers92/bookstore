@@ -31,7 +31,7 @@ export default function SignIn() {
       if (result?.error) {
         alert(
           t.signInError ||
-            `Sign-in failed: ${result.error}. Please check your credentials and try again.`
+            `Sign-in failed: ${result.error}. Please check your credentials and try again.`,
         );
       } else {
         const { user } = await signIn("credentials", {
@@ -52,19 +52,24 @@ export default function SignIn() {
     } catch (error) {
       alert(
         t.signInError ||
-          `An error occurred during sign-in: ${error.message}. Please try again later.`
+          `An error occurred during sign-in: ${error.message}. Please try again later.`,
       );
     }
   };
 
   if (status === "authenticated" && session) {
+    setUser({
+      id: session.user.id,
+      name: session.user.name,
+      email: session.user.email,
+      user_metadata: { name: session.user.name, avatar_url: session.user.picture },
+    });
     return (
       <div className="container mx-auto py-12" style={{ paddingTop: "80px" }}>
         <Card className="max-w-md mx-auto">
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
-              <User size={24} /> {t.welcome}{" "}
-              {session.user.name || session.user.email}
+              <User size={24} /> {t.welcome} {session.user.name || session.user.email}
             </CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-4">
@@ -82,10 +87,7 @@ export default function SignIn() {
   }
 
   return (
-    <div
-      className="container mx-auto py-12 justify-center"
-      style={{ paddingTop: "80px" }}
-    >
+    <div className="container mx-auto py-12 justify-center" style={{ paddingTop: "80px" }}>
       <Card className="max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
@@ -116,18 +118,13 @@ export default function SignIn() {
             </Button>
           </form>
           <div className="mt-4 text-center">
-            <p className="text-muted-foreground mb-2 hover:cursor-pointer">
-              {t.or}
-            </p>
+            <p className="text-muted-foreground mb-2 hover:cursor-pointer">{t.or}</p>
             <GoogleSignIn language={language} />
           </div>
           <div className="mt-4 text-center">
             <p className="text-muted-foreground">{t.noAccount}</p>
             <Link href="/auth/register">
-              <Button
-                variant="link"
-                className="text-emerald-700 hover:cursor-pointer"
-              >
+              <Button variant="link" className="text-emerald-700 hover:cursor-pointer">
                 {t.register}
               </Button>
             </Link>
