@@ -1,10 +1,10 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 
 export default function NotificationToast({ message, open }) {
-  const { toast } = useToast();
+  const { toast } = Toaster();
 
   useEffect(() => {
     if (open && message) {

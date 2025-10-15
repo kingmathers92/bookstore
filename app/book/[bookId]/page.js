@@ -13,6 +13,7 @@ import useSWR from "swr";
 import Image from "next/image";
 import translations from "@/lib/translations";
 import { Skeleton } from "@/components/ui/skeleton";
+import NotificationToast from "@/components/NotificationToast";
 
 const fetchBook = async (bookId) => {
   const { data, error } = await supabase.from("books").select("*").eq("book_id", bookId).single();
@@ -40,6 +41,8 @@ export default function BookDetail() {
   const [notifyStockAvailable, setNotifyStockAvailable] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState(false);
   const [notifyInApp, setNotifyInApp] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const {
     data: book,
@@ -102,6 +105,12 @@ export default function BookDetail() {
       notifyEmail,
       notifyInApp,
     });
+    if (notifyInApp) {
+      setToastMessage(notifyPriceDrop ? "Price drop alert set!" : "Stock alert set!");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 6000); // Match toast duration
+    }
+    // Reset notification preferences
     setNotifyPriceDrop(false);
     setNotifyStockAvailable(false);
     setNotifyEmail(false);
@@ -232,6 +241,7 @@ export default function BookDetail() {
           </Button>
         </CardFooter>
       </Card>
+      <NotificationToast message={toastMessage} open={showToast} />
     </div>
   );
 }
