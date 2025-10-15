@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import useSWR from "swr";
 import Image from "next/image";
 import translations from "@/lib/translations";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const fetchBook = async (bookId) => {
   const { data, error } = await supabase.from("books").select("*").eq("book_id", bookId).single();
@@ -51,7 +51,30 @@ export default function BookDetail() {
     if (!bookId) router.push("/shop");
   }, [bookId, router]);
 
-  if (bookLoading || ratingLoading) return <LoadingSpinner />;
+  if (bookLoading || ratingLoading) {
+    return (
+      <div className="container mx-auto py-12 px-4" dir={language === "ar" ? "rtl" : "ltr"}>
+        <Card className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg border border-gray-200">
+          <CardHeader className="p-6">
+            <Skeleton className="h-8 w-3/4 mb-2" />
+            <Skeleton className="h-6 w-1/2" />
+          </CardHeader>
+          <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Skeleton className="h-96 w-full" />
+            <div className="space-y-4">
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-6 w-1/4" />
+              <Skeleton className="h-10 w-1/2" />
+            </div>
+          </CardContent>
+          <CardFooter className="p-6 flex justify-end">
+            <Skeleton className="h-10 w-1/3" />
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
   if (bookError || ratingError)
     return <div>{t.errorLoadingBook || "Error loading book details"}</div>;
   if (!book) return null;
@@ -64,63 +87,68 @@ export default function BookDetail() {
 
   return (
     <div className="container mx-auto py-12 px-4" dir={language === "ar" ? "rtl" : "ltr"}>
-      <Card className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-        <CardHeader className="p-6">
-          <h2 className="text-3xl font-bold text-primary mb-2">{title}</h2>
-          <p className="text-muted-foreground text-lg">{category}</p>
+      <Card className="max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-white shadow-2xl rounded-xl border border-gray-100 hover:shadow-xl transition-all duration-300">
+        <CardHeader className="p-8 bg-primary/5 border-b border-gray-100">
+          <h2 className="text-4xl font-extrabold text-primary mb-3 gradient-text animate-pulse-once">
+            {title}
+          </h2>
+          <p className="text-lg text-muted-foreground font-medium">{category}</p>
         </CardHeader>
-        <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="relative w-full h-96">
+        <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          <div className="relative w-full h-[400px] rounded-lg overflow-hidden border-2 border-gray-200 shadow-inner">
             <Image
               src={book.image || "/placeholder.jpg"}
               alt={title}
               fill
-              className="object-cover rounded-md"
+              className="object-cover transition-transform duration-300 hover:scale-105"
               onError={(e) => (e.target.style.display = "none")}
             />
           </div>
-          <div className="space-y-4">
-            <p className="text-foreground text-base leading-relaxed">{description}</p>
-            <div className="flex items-center gap-2">
+          <div className="space-y-6">
+            <p className="text-gray-700 text-lg leading-relaxed border-l-4 border-primary/50 pl-4">
+              {description}
+            </p>
+            <div className="flex items-center gap-3">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-5 h-5 ${i < Math.round(avgRating) ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+                  className={`w-6 h-6 ${i < Math.round(avgRating) ? "text-yellow-500 fill-current" : "text-gray-300"} transition-colors duration-200 hover:text-yellow-600`}
                 />
               ))}
-              <span className="text-muted-foreground text-sm">
+              <span className="text-gray-600 text-sm font-semibold">
                 ({avgRating.toFixed(1)} {t.rating || "Rating"})
               </span>
             </div>
-            <p className="text-xl font-semibold text-green-700">
+            <p className="text-2xl font-bold text-green-600">
               {book.price ? `${book.price} ر.س` : t.free || "Free"}
             </p>
-            <p className="text-foreground">
-              {t.inStock || "In Stock"}: {book.inStock ? t.yes : t.no}
+            <p className="text-gray-700">
+              {t.inStock || "In Stock"}:{" "}
+              <span className="font-medium">{book.inStock ? t.yes : t.no}</span>
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <Input
                 type="number"
                 min="1"
                 value={quantity}
                 onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-20 p-2 border border-gray-300 rounded-md"
+                className="w-24 p-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               />
               <Button
                 onClick={() => addToCart({ ...book, quantity })}
                 disabled={!book.inStock}
-                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 disabled:bg-gray-400"
+                className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all"
               >
                 {t.addToCart || "Add to Cart"}
               </Button>
             </div>
           </div>
         </CardContent>
-        <CardFooter className="p-6 flex justify-end">
+        <CardFooter className="p-8 bg-gray-50 border-t border-gray-100">
           <Button
             variant="outline"
             onClick={() => router.back()}
-            className="bg-secondary text-foreground hover:bg-secondary/90"
+            className="bg-secondary text-foreground px-6 py-3 rounded-lg hover:bg-secondary/90 transition-all"
           >
             {t.backToShop || "Back to Shop"}
           </Button>

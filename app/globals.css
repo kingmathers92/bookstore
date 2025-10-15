@@ -184,3 +184,40 @@ body {
   20% { opacity: 1; }
   100% { opacity: 0.2; }
 }
+
+.gradient-text {
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.animate-pulse-once {
+  animation: pulse 1s ease-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.dot-flashing {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #3498db;
+  animation: dotFlashing 1.4s infinite linear alternate;
+}
+
+.dot-flashing::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #3498db;
+  top: 0;
+  left: 0;
+  animation: dotFlashing 1.4s infinite linear alternate;
+}
