@@ -90,29 +90,22 @@ export default function BookDetail() {
   const description =
     book.description || (language === "ar" ? "لا يوجد وصف متاح" : "No description available");
 
-  const handleAddToWishlist = async () => {
+  const handleAddToWishlist = () => {
     if (!user?.id) {
       alert(t.pleaseLogin || "Please log in to add to wishlist");
       return;
     }
-    try {
-      const { error } = await supabase.from("wishlist").insert({
-        user_id: user.id,
-        book_id: book.book_id,
-        notify_price_drop: notifyPriceDrop,
-        notify_stock_available: notifyStockAvailable,
-        notify_email: notifyEmail,
-        notify_in_app: notifyInApp,
-      });
-      if (error) throw error;
-      alert(t.addedToWishlist || "Added to wishlist!");
-      setNotifyPriceDrop(false);
-      setNotifyStockAvailable(false);
-      setNotifyEmail(false);
-      setNotifyInApp(false);
-    } catch (error) {
-      alert(t.errorAddingWishlist || `Error adding to wishlist: ${error.message}`);
-    }
+    addToWishlist({
+      bookId: book.book_id,
+      notifyPriceDrop,
+      notifyStockAvailable,
+      notifyEmail,
+      notifyInApp,
+    });
+    setNotifyPriceDrop(false);
+    setNotifyStockAvailable(false);
+    setNotifyEmail(false);
+    setNotifyInApp(false);
   };
 
   return (
