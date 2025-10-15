@@ -48,7 +48,7 @@ const BookCard = ({ id, title_en, title_ar, category_en, category_ar, price, ima
         </div>
         <h3 className="text-lg font-semibold mt-2">{title}</h3>
         <p className="text-muted-foreground">{category}</p>
-        <p className="text-green-700 font-medium">{price ? `${price} ر.س` : "Free"}</p>
+        <p className="text-green-700 font-medium">{price ? `${price}` : "Free"}</p>
         <p className="text-sm">{inStock ? "In Stock" : "Out of Stock"}</p>
       </CardContent>
     </Card>

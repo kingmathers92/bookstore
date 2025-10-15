@@ -55,8 +55,7 @@ export default function BookOfTheDay() {
             category_en: randomBook.category_en,
             category_ar: randomBook.category_ar,
             image: randomBook.image || "/images/placeholder.png",
-            inStock:
-              randomBook.inStock !== undefined ? randomBook.inStock : true,
+            inStock: randomBook.inStock !== undefined ? randomBook.inStock : true,
           });
         }
       } catch (err) {
@@ -70,10 +69,7 @@ export default function BookOfTheDay() {
   }, [language]);
 
   const bookOfTheDayPrice = t.bookOfTheDayPrice || "Price: {price}";
-  const formattedPrice = bookOfTheDayPrice.replace(
-    "{price}",
-    `${bookOfTheDay?.price || 0} ر.س`
-  );
+  const formattedPrice = bookOfTheDayPrice.replace("{price}", `${bookOfTheDay?.price || 0}`);
 
   const categoryColors = {
     tafsir: "bg-primary",
@@ -91,12 +87,9 @@ export default function BookOfTheDay() {
     سيرة: "biography",
   };
   const safeCategory =
-    (language === "ar"
-      ? bookOfTheDay?.category_ar
-      : bookOfTheDay?.category_en
-    )?.toLowerCase() || "uncategorized";
-  const mappedCategory =
-    categoryMap[safeCategory] || safeCategory || "uncategorized";
+    (language === "ar" ? bookOfTheDay?.category_ar : bookOfTheDay?.category_en)?.toLowerCase() ||
+    "uncategorized";
+  const mappedCategory = categoryMap[safeCategory] || safeCategory || "uncategorized";
   const badgeColor = categoryColors[mappedCategory] || categoryColors.default;
 
   const stockText =
@@ -105,18 +98,14 @@ export default function BookOfTheDay() {
         ? "متوفر"
         : "غير متوفر"
       : bookOfTheDay?.inStock
-      ? "In Stock"
-      : "Sold Out";
+        ? "In Stock"
+        : "Sold Out";
   const stockColor = bookOfTheDay?.inStock ? "bg-green-600" : "bg-red-600";
   const stockTextColor = "text-white";
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
   if (!bookOfTheDay)
-    return (
-      <div className="text-center py-8 text-foreground">
-        No books available today.
-      </div>
-    );
+    return <div className="text-center py-8 text-foreground">No books available today.</div>;
 
   return (
     <div className="container mx-auto py-8 text-center relative overflow-hidden">
@@ -172,12 +161,8 @@ export default function BookOfTheDay() {
                 style={{ zIndex: 10, maxWidth: "calc(100% - 16px)" }}
               >
                 {language === "ar"
-                  ? bookOfTheDay?.category_ar ||
-                    bookOfTheDay?.category_en ||
-                    "Uncategorized"
-                  : bookOfTheDay?.category_en ||
-                    bookOfTheDay?.category_ar ||
-                    "Uncategorized"}
+                  ? bookOfTheDay?.category_ar || bookOfTheDay?.category_en || "Uncategorized"
+                  : bookOfTheDay?.category_en || bookOfTheDay?.category_ar || "Uncategorized"}
               </div>
             </div>
           </CardHeader>
@@ -186,9 +171,7 @@ export default function BookOfTheDay() {
               <CardTitle className="text-xl md:text-2xl font-extrabold text-primary-foreground mb-3 drop-shadow-md">
                 {bookOfTheDay?.title || "تفسير الجلالين"}
               </CardTitle>
-              <p className="text-lg text-primary-foreground mb-4">
-                {formattedPrice}
-              </p>
+              <p className="text-lg text-primary-foreground mb-4">{formattedPrice}</p>
               <div className="flex items-center gap-2 text-muted-foreground mb-4">
                 <Clock size={18} />
                 <span className="text-sm">
@@ -200,8 +183,7 @@ export default function BookOfTheDay() {
                 asChild
               >
                 <Link href="/shop">
-                  <Eye size={18} />{" "}
-                  {t.bookOfTheDayViewDetails || "View Details"}
+                  <Eye size={18} /> {t.bookOfTheDayViewDetails || "View Details"}
                 </Link>
               </Button>
               <div

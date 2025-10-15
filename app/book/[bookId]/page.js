@@ -120,7 +120,7 @@ export default function BookDetail() {
               </span>
             </div>
             <p className="text-2xl font-bold text-green-600">
-              {book.price ? `${book.price} ر.س` : t.free || "Free"}
+              {book.price ? `${book.price}` : t.free || "Free"}
             </p>
             <p className="text-gray-700">
               {t.inStock || "In Stock"}:{" "}

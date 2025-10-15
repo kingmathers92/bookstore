@@ -3,13 +3,7 @@
 import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -19,8 +13,7 @@ import { supabase } from "@/lib/supabase";
 import { Toaster, toast } from "@/components/ui/sonner";
 
 export default function Cart() {
-  const { cart, removeFromCart, language, user, syncCartFromLocalStorage } =
-    useStore();
+  const { cart, removeFromCart, language, user, syncCartFromLocalStorage } = useStore();
   const t = translations[language];
   const router = useRouter();
 
@@ -40,10 +33,7 @@ export default function Cart() {
     return () => window.removeEventListener("resize", handleResize);
   }, [syncCartFromLocalStorage]);
 
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
-    0
-  );
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
 
   const handleRemove = async (bookId) => {
     try {
@@ -77,7 +67,7 @@ export default function Cart() {
           title: item.title,
           price: item.price,
           quantity: item.quantity || 1,
-        }))
+        })),
       ),
       total_price: totalPrice,
       name: formData.name,
@@ -88,10 +78,7 @@ export default function Cart() {
     };
 
     try {
-      const { data, error } = await supabase
-        .from("orders")
-        .insert([orderDetails])
-        .single();
+      const { data, error } = await supabase.from("orders").insert([orderDetails]).single();
       if (error || !data) {
         console.error("Supabase Error:", error || "No data returned");
         throw new Error(`Supabase Error: ${error?.message || "Insert failed"}`);
@@ -120,9 +107,7 @@ export default function Cart() {
         {t.cartTitle}
       </h2>
       {cart.length === 0 ? (
-        <p className="text-center text-muted-foreground text-lg sm:text-xl">
-          {t.cartEmpty}
-        </p>
+        <p className="text-center text-muted-foreground text-lg sm:text-xl">{t.cartEmpty}</p>
       ) : (
         <>
           <div className="space-y-4 sm:space-y-6">
@@ -138,7 +123,7 @@ export default function Cart() {
                 </CardHeader>
                 <CardContent className="p-0 sm:p-2 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                   <span className="text-sm sm:text-base md:text-lg lg:text-lg font-medium">
-                    {item.price} ر.س x {item.quantity || 1}
+                    {item.price} x {item.quantity || 1}
                   </span>
                   <Button
                     variant="destructive"
@@ -160,8 +145,7 @@ export default function Cart() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-lg sm:text-xl md:text-xl lg:text-2xl font-semibold text-right">
-                {t.cartTotal}:{" "}
-                <span className="text-green-700">{totalPrice} ر.س</span>
+                {t.cartTotal}: <span className="text-green-700">{totalPrice}</span>
               </p>
             </CardContent>
             <CardFooter className="flex justify-end">
@@ -184,10 +168,7 @@ export default function Cart() {
               <CardContent>
                 <form onSubmit={handleOrderSubmit} className="space-y-4">
                   <div>
-                    <Label
-                      htmlFor="name"
-                      className="text-sm sm:text-base md:text-lg"
-                    >
+                    <Label htmlFor="name" className="text-sm sm:text-base md:text-lg">
                       {t.cartName}
                     </Label>
                     <Input
@@ -200,10 +181,7 @@ export default function Cart() {
                     />
                   </div>
                   <div>
-                    <Label
-                      htmlFor="address"
-                      className="text-sm sm:text-base md:text-lg"
-                    >
+                    <Label htmlFor="address" className="text-sm sm:text-base md:text-lg">
                       {t.cartAddress}
                     </Label>
                     <Input
@@ -216,10 +194,7 @@ export default function Cart() {
                     />
                   </div>
                   <div>
-                    <Label
-                      htmlFor="phone"
-                      className="text-sm sm:text-base md:text-lg"
-                    >
+                    <Label htmlFor="phone" className="text-sm sm:text-base md:text-lg">
                       {t.cartPhone}
                     </Label>
                     <Input
