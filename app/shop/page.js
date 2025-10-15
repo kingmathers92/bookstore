@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useMemo } from "react";
+import Hero from "@/components/Hero";
+import BookOfTheDay from "@/components/BookOfTheDay";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
@@ -9,7 +11,9 @@ import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
 import useSWR from "swr";
-const BookCard = React.lazy(() => import("@/components/BookCard"));
+import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 
 const fetcher = async () => {
   const { data, error, status } = await supabase
@@ -21,8 +25,39 @@ const fetcher = async () => {
   return data || [];
 };
 
+const BookCard = ({ id, title_en, title_ar, category_en, category_ar, price, image, inStock }) => {
+  const { language } = useStore();
+  const router = useRouter();
+  const title = language === "ar" ? title_ar || title_en : title_en || title_ar;
+  const category = language === "ar" ? category_ar || category_en : category_en || category_ar;
+
+  return (
+    <Card
+      className="cursor-pointer hover:shadow-lg transition-shadow"
+      onClick={() => router.push(`/book/${id}`)}
+    >
+      <CardContent className="p-4">
+        <div className="relative w-full h-48">
+          <Image
+            src={image || "/placeholder.jpg"}
+            alt={title}
+            fill
+            className="object-cover rounded-md"
+            onError={(e) => (e.target.style.display = "none")}
+          />
+        </div>
+        <h3 className="text-lg font-semibold mt-2">{title}</h3>
+        <p className="text-muted-foreground">{category}</p>
+        <p className="text-green-700 font-medium">{price ? `${price} ر.س` : "Free"}</p>
+        <p className="text-sm">{inStock ? "In Stock" : "Out of Stock"}</p>
+      </CardContent>
+    </Card>
+  );
+};
+
 export default function Shop() {
   const { searchQuery, category, priceRange, language, isTyping } = useStore();
+  const router = useRouter();
   const {
     data: books,
     error,
@@ -49,6 +84,8 @@ export default function Shop() {
 
   return (
     <div dir={language === "ar" ? "rtl" : "ltr"} className="mt-8">
+      <Hero />
+      <BookOfTheDay />
       <section className="container mx-auto py-12 px-4 overflow-hidden" aria-label={t.title}>
         <h2 className="text-4xl font-bold text-center mb-8 text-primary hover:text-accent md:text-5xl transition-colors">
           {t.title}

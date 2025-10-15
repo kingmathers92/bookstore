@@ -4,7 +4,6 @@
 - update readme
 - wish list/Notify users of price drops or availability.
 - update books images
-- /books/[id] info/detail view
 - admin dashboard to manage users and books/crud
 - app is very slow, speed it up
 

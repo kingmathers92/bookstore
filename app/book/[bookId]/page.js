@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
