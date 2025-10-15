@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/lib/supabase";
-import useSWR, { mutate } from "swr"; // Added mutate for refetching
+import useSWR, { mutate } from "swr";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import translations from "@/lib/translations";
@@ -36,6 +36,23 @@ export default function Wishlist() {
   const t = translations[language];
   const [isRemoving, setIsRemoving] = useState(null);
   const [editMode, setEditMode] = useState(null);
+  const [isUserLoading, setIsUserLoading] = useState(true);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      if (user === undefined) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      setIsUserLoading(false);
+    };
+    checkUser();
+  }, [user]);
+
+  useEffect(() => {
+    if (!isUserLoading && !user?.id) {
+      router.push("/shop");
+    }
+  }, [isUserLoading, user?.id, router]);
 
   const {
     data: wishlist,
@@ -50,11 +67,7 @@ export default function Wishlist() {
     fetchWishlistBooks(wishlist),
   );
 
-  useEffect(() => {
-    if (!user?.id) router.push("/shop");
-  }, [user?.id, router]);
-
-  if (wishlistLoading || booksLoading) {
+  if (isUserLoading || wishlistLoading || booksLoading) {
     return (
       <div className="container mx-auto py-12 px-4" dir={language === "ar" ? "rtl" : "ltr"}>
         <h2 className="text-3xl font-bold text-primary mb-6">{t.myWishlist || "My Wishlist"}</h2>
