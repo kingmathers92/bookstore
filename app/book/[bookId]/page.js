@@ -31,7 +31,7 @@ const fetchAverageRating = async (bookId) => {
 
 export default function BookDetail() {
   const { bookId } = useParams();
-  const { language, addToCart } = useStore();
+  const { language, addToCart, user, addToWishlist } = useStore();
   const router = useRouter();
   const t = translations[language];
   const [quantity, setQuantity] = useState(1);
@@ -84,6 +84,23 @@ export default function BookDetail() {
     language === "ar" ? book.category_ar || book.category_en : book.category_en || book.category_ar;
   const description =
     book.description || (language === "ar" ? "لا يوجد وصف متاح" : "No description available");
+
+  const handleAddToWishlist = async () => {
+    if (!user?.id) {
+      alert(t.pleaseLogin || "Please log in to add to wishlist");
+      return;
+    }
+    try {
+      const { error } = await supabase.from("wishlist").insert({
+        user_id: user.id,
+        book_id: book.book_id,
+      });
+      if (error) throw error;
+      alert(t.addedToWishlist || "Added to wishlist!");
+    } catch (error) {
+      alert(t.errorAddingWishlist || `Error adding to wishlist: ${error.message}`);
+    }
+  };
 
   return (
     <div className="container mx-auto py-12 px-4" dir={language === "ar" ? "rtl" : "ltr"}>
@@ -142,6 +159,12 @@ export default function BookDetail() {
                 {t.addToCart || "Add to Cart"}
               </Button>
             </div>
+            <Button
+              onClick={handleAddToWishlist}
+              className="bg-secondary text-foreground px-6 py-3 rounded-lg hover:bg-secondary/80 transition-all mt-4"
+            >
+              {t.addToWishlist || "Add to Wishlist"}
+            </Button>
           </div>
         </CardContent>
         <CardFooter className="p-8 bg-gray-50 border-t border-gray-100">
