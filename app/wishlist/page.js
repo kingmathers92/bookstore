@@ -4,8 +4,9 @@ import { useStore } from "@/lib/store";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/lib/supabase";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr"; // Added mutate for refetching
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import translations from "@/lib/translations";
@@ -34,6 +35,7 @@ export default function Wishlist() {
   const router = useRouter();
   const t = translations[language];
   const [isRemoving, setIsRemoving] = useState(null);
+  const [editMode, setEditMode] = useState(null);
 
   const {
     data: wishlist,
@@ -87,12 +89,26 @@ export default function Wishlist() {
         .eq("user_id", user.id)
         .eq("book_id", bookId);
       if (error) throw error;
-
       mutate(`wishlist-${user.id}`);
     } catch (error) {
       alert(t.errorRemovingWishlist || `Error removing from wishlist: ${error.message}`);
     } finally {
       setIsRemoving(null);
+    }
+  };
+
+  const handleUpdateNotifications = async (bookId, updates) => {
+    try {
+      const { error } = await supabase
+        .from("wishlist")
+        .update(updates)
+        .eq("user_id", user.id)
+        .eq("book_id", bookId);
+      if (error) throw error;
+      mutate(`wishlist-${user.id}`);
+      setEditMode(null);
+    } catch (error) {
+      alert(t.errorUpdatingNotifications || `Error updating notifications: ${error.message}`);
     }
   };
 
@@ -102,6 +118,25 @@ export default function Wishlist() {
       <div className="space-y-4">
         {books.map((book) => {
           const wishlistItem = wishlist.find((w) => w.book_id === book.book_id);
+          const isEditing = editMode === book.book_id;
+          const [localNotifyPriceDrop, setLocalNotifyPriceDrop] = useState(
+            wishlistItem.notify_price_drop,
+          );
+          const [localNotifyStockAvailable, setLocalNotifyStockAvailable] = useState(
+            wishlistItem.notify_stock_available,
+          );
+          const [localNotifyEmail, setLocalNotifyEmail] = useState(wishlistItem.notify_email);
+          const [localNotifyInApp, setLocalNotifyInApp] = useState(wishlistItem.notify_in_app);
+
+          useEffect(() => {
+            if (!isEditing) {
+              setLocalNotifyPriceDrop(wishlistItem.notify_price_drop);
+              setLocalNotifyStockAvailable(wishlistItem.notify_stock_available);
+              setLocalNotifyEmail(wishlistItem.notify_email);
+              setLocalNotifyInApp(wishlistItem.notify_in_app);
+            }
+          }, [isEditing, wishlistItem]);
+
           return (
             <Card
               key={book.book_id}
@@ -135,20 +170,101 @@ export default function Wishlist() {
                   </p>
                 </div>
                 <div className="flex flex-col md:flex-row gap-2">
-                  <Button
-                    onClick={() => handleRemoveFromWishlist(book.book_id)}
-                    disabled={isRemoving === book.book_id}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 disabled:bg-red-300 transition-all"
-                  >
-                    {isRemoving === book.book_id
-                      ? t.removing || "Removing..."
-                      : t.remove || "Remove"}
-                  </Button>
-                  <span className="text-sm text-gray-500 mt-2 md:mt-0">
-                    {t.notifications || "Notifications"}:{" "}
-                    {wishlistItem.notify_email ? "Email " : ""}
-                    {wishlistItem.notify_in_app ? "In-App" : ""}
-                  </span>
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id={`price-drop-${book.book_id}`}
+                          checked={localNotifyPriceDrop}
+                          onCheckedChange={setLocalNotifyPriceDrop}
+                          disabled={!book.price || book.inStock}
+                        />
+                        <label
+                          htmlFor={`price-drop-${book.book_id}`}
+                          className="text-sm text-gray-700"
+                        >
+                          {t.notifyPriceDrop || "Notify if price drops"}
+                        </label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id={`stock-available-${book.book_id}`}
+                          checked={localNotifyStockAvailable}
+                          onCheckedChange={setLocalNotifyStockAvailable}
+                          disabled={book.inStock}
+                        />
+                        <label
+                          htmlFor={`stock-available-${book.book_id}`}
+                          className="text-sm text-gray-700"
+                        >
+                          {t.notifyStockAvailable || "Notify when available"}
+                        </label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id={`email-${book.book_id}`}
+                          checked={localNotifyEmail}
+                          onCheckedChange={setLocalNotifyEmail}
+                        />
+                        <label htmlFor={`email-${book.book_id}`} className="text-sm text-gray-700">
+                          {t.notifyByEmail || "Notify by email"}
+                        </label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id={`in-app-${book.book_id}`}
+                          checked={localNotifyInApp}
+                          onCheckedChange={setLocalNotifyInApp}
+                        />
+                        <label htmlFor={`in-app-${book.book_id}`} className="text-sm text-gray-700">
+                          {t.notifyInApp || "Notify in-app"}
+                        </label>
+                      </div>
+                      <Button
+                        onClick={() =>
+                          handleUpdateNotifications(book.book_id, {
+                            notify_price_drop: localNotifyPriceDrop,
+                            notify_stock_available: localNotifyStockAvailable,
+                            notify_email: localNotifyEmail,
+                            notify_in_app: localNotifyInApp,
+                          })
+                        }
+                        className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 mt-2"
+                      >
+                        {t.save || "Save"}
+                      </Button>
+                      <Button
+                        onClick={() => setEditMode(null)}
+                        variant="outline"
+                        className="bg-secondary text-foreground px-4 py-2 rounded-lg hover:bg-secondary/90 mt-2"
+                      >
+                        {t.cancel || "Cancel"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={() => handleRemoveFromWishlist(book.book_id)}
+                        disabled={isRemoving === book.book_id}
+                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 disabled:bg-red-300 transition-all"
+                      >
+                        {isRemoving === book.book_id
+                          ? t.removing || "Removing..."
+                          : t.remove || "Remove"}
+                      </Button>
+                      <Button
+                        onClick={() => setEditMode(book.book_id)}
+                        className="bg-secondary text-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
+                      >
+                        {t.edit || "Edit"}
+                      </Button>
+                      <span className="text-sm text-gray-500 mt-2 md:mt-0">
+                        {t.notifications || "Notifications"}:{" "}
+                        {wishlistItem.notify_email ? "Email " : ""}
+                        {wishlistItem.notify_in_app ? "In-App" : ""}
+                      </span>
+                    </>
+                  )}
                 </div>
               </CardContent>
             </Card>
