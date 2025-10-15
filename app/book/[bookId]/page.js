@@ -7,6 +7,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/lib/supabase";
 import useSWR from "swr";
 import Image from "next/image";
@@ -35,6 +36,10 @@ export default function BookDetail() {
   const router = useRouter();
   const t = translations[language];
   const [quantity, setQuantity] = useState(1);
+  const [notifyPriceDrop, setNotifyPriceDrop] = useState(false);
+  const [notifyStockAvailable, setNotifyStockAvailable] = useState(false);
+  const [notifyEmail, setNotifyEmail] = useState(false);
+  const [notifyInApp, setNotifyInApp] = useState(false);
 
   const {
     data: book,
@@ -94,9 +99,17 @@ export default function BookDetail() {
       const { error } = await supabase.from("wishlist").insert({
         user_id: user.id,
         book_id: book.book_id,
+        notify_price_drop: notifyPriceDrop,
+        notify_stock_available: notifyStockAvailable,
+        notify_email: notifyEmail,
+        notify_in_app: notifyInApp,
       });
       if (error) throw error;
       alert(t.addedToWishlist || "Added to wishlist!");
+      setNotifyPriceDrop(false);
+      setNotifyStockAvailable(false);
+      setNotifyEmail(false);
+      setNotifyInApp(false);
     } catch (error) {
       alert(t.errorAddingWishlist || `Error adding to wishlist: ${error.message}`);
     }
@@ -159,9 +172,58 @@ export default function BookDetail() {
                 {t.addToCart || "Add to Cart"}
               </Button>
             </div>
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                {t.notificationPreferences || "Notification Preferences"}
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="notify-price-drop"
+                    checked={notifyPriceDrop}
+                    onCheckedChange={setNotifyPriceDrop}
+                    disabled={!book.price || book.inStock}
+                  />
+                  <label htmlFor="notify-price-drop" className="text-sm text-gray-700">
+                    {t.notifyPriceDrop || "Notify me if price drops"}
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="notify-stock-available"
+                    checked={notifyStockAvailable}
+                    onCheckedChange={setNotifyStockAvailable}
+                    disabled={book.inStock}
+                  />
+                  <label htmlFor="notify-stock-available" className="text-sm text-gray-700">
+                    {t.notifyStockAvailable || "Notify me when available"}
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="notify-email"
+                    checked={notifyEmail}
+                    onCheckedChange={setNotifyEmail}
+                  />
+                  <label htmlFor="notify-email" className="text-sm text-gray-700">
+                    {t.notifyByEmail || "Notify me by email"}
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="notify-in-app"
+                    checked={notifyInApp}
+                    onCheckedChange={setNotifyInApp}
+                  />
+                  <label htmlFor="notify-in-app" className="text-sm text-gray-700">
+                    {t.notifyInApp || "Notify me in-app"}
+                  </label>
+                </div>
+              </div>
+            </div>
             <Button
               onClick={handleAddToWishlist}
-              className="bg-secondary text-foreground px-6 py-3 rounded-lg hover:bg-secondary/80 transition-all mt-4"
+              className="bg-secondary text-foreground px-6 py-3 rounded-lg hover:bg-secondary/80 transition-all mt-4 w-full"
             >
               {t.addToWishlist || "Add to Wishlist"}
             </Button>
