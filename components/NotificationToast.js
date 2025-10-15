@@ -1,11 +1,9 @@
 "use client";
 
-import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import { useEffect } from "react";
 
 export default function NotificationToast({ message, open }) {
-  const { toast } = Toaster();
-
   useEffect(() => {
     if (open && message) {
       toast({
@@ -14,7 +12,7 @@ export default function NotificationToast({ message, open }) {
         duration: 5000,
       });
     }
-  }, [open, message, toast]);
+  }, [open, message]);
 
   return null;
 }

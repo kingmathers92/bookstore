@@ -108,9 +108,8 @@ export default function BookDetail() {
     if (notifyInApp) {
       setToastMessage(notifyPriceDrop ? "Price drop alert set!" : "Stock alert set!");
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 6000); // Match toast duration
+      setTimeout(() => setShowToast(false), 6000);
     }
-    // Reset notification preferences
     setNotifyPriceDrop(false);
     setNotifyStockAvailable(false);
     setNotifyEmail(false);

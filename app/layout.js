@@ -2,10 +2,8 @@ import ClientLayout from "./client-layout";
 
 export const metadata = {
   title: "ثمرات الأوراق - متجر الكتب الإسلامية",
-  description:
-    "اكتشف مجموعة واسعة من الكتب الإسلامية عالية الجودة في متجر ثمرات الأوراق.",
-  keywords:
-    "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية, قرآن, حديث, تفسير",
+  description: "اكتشف مجموعة واسعة من الكتب الإسلامية عالية الجودة في متجر ثمرات الأوراق.",
+  keywords: "كتب إسلامية, متجر كتب, ثمرات الأوراق, كتب دينية, قرآن, حديث, تفسير",
   metadataBase: new URL("https://thamaratalawrak.com"),
   icons: {
     icon: "/favicon.ico",
