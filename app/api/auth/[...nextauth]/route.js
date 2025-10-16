@@ -18,7 +18,12 @@ export const authOptions = {
         });
         if (error) return null;
         return data.user
-          ? { id: data.user.id, name: data.user.email, email: data.user.email }
+          ? {
+              id: data.user.id,
+              name: data.user.email,
+              email: data.user.email,
+              user_metadata: data.user.user_metadata || {},
+            }
           : null;
       },
     }),
@@ -36,16 +41,16 @@ export const authOptions = {
   ],
   debug: process.env.NODE_ENV === "development",
   callbacks: {
-    async jwt({ token, account, profile }) {
-      if (account?.provider === "google" && profile) {
-        token.id = profile.sub;
-        token.email = profile.email;
-        token.name = profile.name;
-        token.picture = profile.picture;
-      } else if (token.email) {
-        const { data, error } = await supabase.auth.getUser(token.email);
-        if (data?.user) {
-          token.id = data.user.id;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.user_metadata = user.user_metadata || {};
+        // fetching role from Supabase if not in user_metadata
+        if (!token.user_metadata.role) {
+          const { data } = await supabase.auth.getUser(token.email);
+          token.user_metadata.role = data?.user?.user_metadata?.role || "user";
         }
       }
       return token;
@@ -56,6 +61,7 @@ export const authOptions = {
         email: token.email,
         name: token.name,
         picture: token.picture,
+        user_metadata: token.user_metadata,
       };
       return session;
     },
