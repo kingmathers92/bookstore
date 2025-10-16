@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
-import { getServerUser } from "./lib/supabase-server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./app/api/auth/[...nextauth]/route";
 
 export async function middleware(request) {
-  const user = await getServerUser();
+  const session = await getServerSession(request, authOptions);
+
+  console.log("Middleware session:", session);
 
   if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (!user || user?.user_metadata?.role !== "admin") {
+    if (!session || session.user.user_metadata?.role !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
