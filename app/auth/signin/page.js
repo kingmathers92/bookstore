@@ -10,6 +10,7 @@ import GoogleSignIn from "@/components/GoogleSignIn";
 import { User } from "lucide-react";
 import translations from "@/lib/translations";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const { data: session, status } = useSession();
@@ -18,6 +19,7 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const setUser = useStore((state) => state.setUser);
   const { language } = useStore();
+  const router = useRouter();
   const t = translations[language];
 
   useEffect(() => {
@@ -26,10 +28,11 @@ export default function SignIn() {
         id: session.user.id,
         name: session.user.name || session.user.email,
         email: session.user.email,
-        user_metadata: { name: session.user.name, avatar_url: session.user.picture },
+        user_metadata: session.user.user_metadata || {},
       });
+      router.push(session.user.user_metadata.role === "admin" ? "/admin" : "/");
     }
-  }, [session, status, setUser]);
+  }, [session, status, setUser, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,7 +72,7 @@ export default function SignIn() {
           <CardContent className="text-center space-y-4">
             <p className="text-muted-foreground">{t.loggedInAs}</p>
             <Button
-              onClick={() => signOut({ redirect: "/auth/signin" })}
+              onClick={() => signOut({ callbackUrl: "/auth/signin" })}
               className="bg-red-600 text-white w-full"
             >
               {t.logout}
