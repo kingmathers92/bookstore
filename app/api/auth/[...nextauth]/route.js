@@ -17,12 +17,13 @@ export const authOptions = {
           password: credentials.password,
         });
         if (error) return null;
+        const { data: userData } = await supabase.auth.getUser(credentials.email);
         return data.user
           ? {
               id: data.user.id,
               name: data.user.email,
               email: data.user.email,
-              user_metadata: data.user.user_metadata || {},
+              user_metadata: userData.user?.user_metadata || {},
             }
           : null;
       },

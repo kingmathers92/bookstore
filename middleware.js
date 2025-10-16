@@ -8,7 +8,7 @@ export async function middleware(request) {
   console.log("Middleware session:", session);
 
   if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (!session || session.user.user_metadata?.role !== "admin") {
+    if (!session || !session.user || session.user.user_metadata?.role !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
