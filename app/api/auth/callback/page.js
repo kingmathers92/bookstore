@@ -17,14 +17,11 @@ export default function Callback() {
         id: session.user.id,
         name: session.user.name,
         email: session.user.email,
+        user_metadata: session.user.user_metadata || {},
       });
-      router.push("/");
+      router.push(session.user.user_metadata.role === "admin" ? "/admin" : "/");
     }
   }, [session, setUser, router]);
 
-  return (
-    <div>
-      <LoadingSpinner />
-    </div>
-  );
+  return <LoadingSpinner />;
 }
