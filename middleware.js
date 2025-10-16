@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getServerUser } from "./lib/supabase";
+import { getServerUser } from "./lib/supabase-server";
 
 export async function middleware(request) {
   const user = await getServerUser();
