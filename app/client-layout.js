@@ -9,7 +9,7 @@ import ScrollToTop from "../components/BackToTop";
 import { ArrowUp } from "lucide-react";
 import CartSync from "../components/CartSync";
 import { Toaster } from "@/components/ui/sonner";
-import AuthSync from "@/components/AuthSync";
+import AuthSync from "@/lib/authSync";
 
 export default function ClientLayout({ children }) {
   return (
