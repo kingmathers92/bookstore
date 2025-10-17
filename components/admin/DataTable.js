@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const DataTable = ({ columns, data, onEdit, onDelete, onUpdateStatus }) => {
+export const DataTable = ({ columns, data, onEdit, onDelete, onUpdateStatus, t = {} }) => {
   const [editingRow, setEditingRow] = useState(null);
 
   return (

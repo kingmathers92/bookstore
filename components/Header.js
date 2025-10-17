@@ -27,8 +27,9 @@ export default function Header() {
   const { data: session, status } = useSession();
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/auth/signin" });
-    logout();
+    await signOut({ redirect: false });
+    useStore.getState().logout();
+    router.push("/auth/signin");
   };
 
   const t = translations[language];
@@ -157,14 +158,6 @@ export default function Header() {
               <span className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full border-2 border-white"></span>
               <User size={20} className="text-primary-foreground" />
             </div>
-          )}
-          {status !== "authenticated" && (
-            <Link
-              href="/auth/signin"
-              className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg flex items-center gap-1 px-4 py-2 rounded-md"
-            >
-              {t.signIn}
-            </Link>
           )}
           <LanguageToggle />
         </div>

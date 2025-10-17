@@ -1,26 +1,23 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./app/api/auth/[...nextauth]/route";
+import { getToken } from "next-auth/jwt";
 
 export async function middleware(request) {
-  const session = await getServerSession(request, authOptions);
+  const { pathname, origin } = request.nextUrl;
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-  console.log("Middleware session:", session);
-
-  if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (
-      !session ||
-      !session.user ||
-      typeof session.user.user_metadata === "undefined" ||
-      session.user.user_metadata?.role !== "admin"
-    ) {
-      return NextResponse.redirect(new URL("/", request.url));
+  if (pathname.startsWith("/admin")) {
+    if (!token || token.user_metadata?.role !== "admin") {
+      return NextResponse.redirect(new URL("/", origin));
     }
+  }
+
+  if (pathname === "/" && token?.user_metadata?.role === "admin") {
+    return NextResponse.redirect(new URL("/admin", origin));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"], // applies to /admin and all sub-routes
+  matcher: ["/", "/admin/:path*"],
 };

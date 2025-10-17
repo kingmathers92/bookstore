@@ -16,16 +16,17 @@ export const authOptions = {
           email: credentials.email,
           password: credentials.password,
         });
-        if (error) return null;
-        const { data: userData } = await supabase.auth.getUser(credentials.email);
-        return data.user
-          ? {
-              id: data.user.id,
-              name: data.user.email,
-              email: data.user.email,
-              user_metadata: userData.user?.user_metadata || { role: "user" },
-            }
-          : null;
+        if (error || !data.user) return null;
+
+        const { data: userInfo } = await supabase.auth.getUser(data.session.access_token);
+        const metadata = userInfo?.user?.user_metadata || { role: "user" };
+
+        return {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.email,
+          user_metadata: metadata,
+        };
       },
     }),
     GoogleProvider({
@@ -40,7 +41,7 @@ export const authOptions = {
       },
     }),
   ],
-  debug: process.env.NODE_ENV === "development",
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -48,10 +49,6 @@ export const authOptions = {
         token.email = user.email;
         token.name = user.name;
         token.user_metadata = user.user_metadata || { role: "user" };
-        if (!token.user_metadata.role) {
-          const { data } = await supabase.auth.getUser(token.email);
-          token.user_metadata.role = data?.user?.user_metadata?.role || "user";
-        }
       }
       return token;
     },
@@ -60,15 +57,21 @@ export const authOptions = {
         id: token.id,
         email: token.email,
         name: token.name,
-        picture: token.picture,
         user_metadata: token.user_metadata,
       };
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      if (url === "/api/auth/signin") return baseUrl;
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
   },
+
   pages: {
     signIn: "/auth/signin",
   },
+
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);

@@ -9,10 +9,12 @@ import ScrollToTop from "../components/BackToTop";
 import { ArrowUp } from "lucide-react";
 import CartSync from "../components/CartSync";
 import { Toaster } from "@/components/ui/sonner";
+import AuthSync from "@/components/AuthSync";
 
 export default function ClientLayout({ children }) {
   return (
     <SessionProvider>
+      <AuthSync />
       <Header />
       <main className="flex-grow">{children}</main>
       <Toaster />

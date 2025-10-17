@@ -4,7 +4,6 @@ import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import UsersTable from "@/components/admin/UsersTable";
 import BooksTable from "@/components/admin/BooksTable";
 import OrdersTable from "@/components/admin/OrdersTable";
@@ -16,12 +15,18 @@ export default function AdminDashboard() {
   const t = translations[language];
 
   useEffect(() => {
-    if (!user || !isAdmin()) {
+    if (!user) {
+      console.log("No user found, redirecting to /");
+      router.push("/");
+    } else if (!isAdmin()) {
+      console.log("User is not admin, redirecting to /");
       router.push("/");
     }
   }, [user, isAdmin, router]);
 
-  if (!user || !isAdmin()) return null;
+  if (!user || !isAdmin()) {
+    return <div>Loading or unauthorized...</div>;
+  }
 
   return (
     <div className="container mx-auto py-12" dir={language === "ar" ? "rtl" : "ltr"}>
