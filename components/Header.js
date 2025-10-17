@@ -27,13 +27,24 @@ export default function Header() {
   const { data: session, status } = useSession();
 
   const handleLogout = async () => {
-    await signOut({ redirect: "/auth/signin" });
+    await signOut({ callbackUrl: "/auth/signin" });
     logout();
   };
 
   const t = translations[language];
 
   const isActive = (path) => pathname === path;
+
+  useEffect(() => {
+    if (status === "authenticated" && session && !user) {
+      useStore.getState().setUser({
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        user_metadata: session.user.user_metadata || { role: "user" },
+      });
+    }
+  }, [session, status, user]);
 
   return (
     <header
@@ -96,7 +107,7 @@ export default function Header() {
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              {session ? (
+              {status === "authenticated" ? (
                 <NavigationMenuLink
                   asChild
                   className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
@@ -141,13 +152,13 @@ export default function Header() {
             <ShoppingCart size={20} />
             {t.cart.replace("{count}", cart.length)}
           </Link>
-          {session && (
+          {status === "authenticated" && (
             <div className="relative">
               <span className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full border-2 border-white"></span>
               <User size={20} className="text-primary-foreground" />
             </div>
           )}
-          {!session && (
+          {status !== "authenticated" && (
             <Link
               href="/auth/signin"
               className="text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg flex items-center gap-1 px-4 py-2 rounded-md"
@@ -160,10 +171,7 @@ export default function Header() {
 
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              className="md:hidden text-primary-foreground flex items-center"
-            >
+            <Button variant="ghost" className="md:hidden text-primary-foreground flex items-center">
               <Menu size={24} />
             </Button>
           </SheetTrigger>
@@ -212,7 +220,7 @@ export default function Header() {
                 <ShoppingCart size={20} />
                 {t.cart.replace("{count}", cart.length)}
               </Link>
-              {session ? (
+              {status === "authenticated" ? (
                 <Button
                   variant="ghost"
                   onClick={handleLogout}
