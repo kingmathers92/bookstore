@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import Hero from "@/components/Hero";
 import BookOfTheDay from "@/components/BookOfTheDay";
+import BookCard from "@/components/BookCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
@@ -11,9 +12,6 @@ import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
 import useSWR from "swr";
-import { useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 
 const fetcher = async () => {
   const { data, error, status } = await supabase
@@ -25,39 +23,8 @@ const fetcher = async () => {
   return data || [];
 };
 
-const BookCard = ({ id, title_en, title_ar, category_en, category_ar, price, image, inStock }) => {
-  const { language } = useStore();
-  const router = useRouter();
-  const title = language === "ar" ? title_ar || title_en : title_en || title_ar;
-  const category = language === "ar" ? category_ar || category_en : category_en || category_ar;
-
-  return (
-    <Card
-      className="cursor-pointer hover:shadow-lg transition-shadow"
-      onClick={() => router.push(`/book/${id}`)}
-    >
-      <CardContent className="p-4">
-        <div className="relative w-full h-48">
-          <Image
-            src={image || "/placeholder.jpg"}
-            alt={title}
-            fill
-            className="object-cover rounded-md"
-            onError={(e) => (e.target.style.display = "none")}
-          />
-        </div>
-        <h3 className="text-lg font-semibold mt-2">{title}</h3>
-        <p className="text-muted-foreground">{category}</p>
-        <p className="text-green-700 font-medium">{price ? `${price}` : "Free"}</p>
-        <p className="text-sm">{inStock ? "In Stock" : "Out of Stock"}</p>
-      </CardContent>
-    </Card>
-  );
-};
-
 export default function Shop() {
   const { searchQuery, category, priceRange, language, isTyping } = useStore();
-  const router = useRouter();
   const {
     data: books,
     error,
