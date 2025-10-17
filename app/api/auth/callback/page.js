@@ -7,21 +7,22 @@ import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Callback() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const setUser = useStore((state) => state.setUser);
   const router = useRouter();
 
   useEffect(() => {
-    if (session) {
+    if (status === "authenticated" && session) {
       setUser({
         id: session.user.id,
         name: session.user.name,
         email: session.user.email,
-        user_metadata: session.user.user_metadata || {},
+        user_metadata: session.user.user_metadata || { role: "user" },
       });
       router.push(session.user.user_metadata.role === "admin" ? "/admin" : "/");
     }
-  }, [session, setUser, router]);
+  }, [session, status, setUser, router]);
 
+  if (status === "loading") return <LoadingSpinner />;
   return <LoadingSpinner />;
 }

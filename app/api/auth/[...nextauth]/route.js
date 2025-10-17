@@ -23,7 +23,7 @@ export const authOptions = {
               id: data.user.id,
               name: data.user.email,
               email: data.user.email,
-              user_metadata: userData.user?.user_metadata || {},
+              user_metadata: userData.user?.user_metadata || { role: "user" },
             }
           : null;
       },
@@ -47,8 +47,7 @@ export const authOptions = {
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-        token.user_metadata = user.user_metadata || {};
-        // fetching role from Supabase if not in user_metadata
+        token.user_metadata = user.user_metadata || { role: "user" };
         if (!token.user_metadata.role) {
           const { data } = await supabase.auth.getUser(token.email);
           token.user_metadata.role = data?.user?.user_metadata?.role || "user";

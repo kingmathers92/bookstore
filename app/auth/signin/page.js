@@ -11,7 +11,7 @@ import { User } from "lucide-react";
 import translations from "@/lib/translations";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import LoadingSpinner from "@/components/LoadingSpinner";
 export default function SignIn() {
   const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
@@ -24,11 +24,12 @@ export default function SignIn() {
 
   useEffect(() => {
     if (status === "authenticated" && session) {
+      console.log("Session on load:", session);
       setUser({
         id: session.user.id,
         name: session.user.name || session.user.email,
         email: session.user.email,
-        user_metadata: session.user.user_metadata || {},
+        user_metadata: session.user.user_metadata || { role: "user" },
       });
       router.push(session.user.user_metadata.role === "admin" ? "/admin" : "/");
     }
@@ -48,7 +49,6 @@ export default function SignIn() {
           t.signInError ||
             `Sign-in failed: ${result.error}. Please check your credentials and try again.`,
         );
-      } else {
       }
     } catch (error) {
       alert(
@@ -59,6 +59,10 @@ export default function SignIn() {
       setLoading(false);
     }
   };
+
+  if (status === "loading") {
+    return <div>{t.loading || <LoadingSpinner />}</div>;
+  }
 
   if (status === "authenticated" && session) {
     return (
