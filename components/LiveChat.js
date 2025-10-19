@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, MessageSquare, X, Minus } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { toast } from "@/components/ui/sonner";
 
 export default function LiveChat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,7 +74,7 @@ export default function LiveChat() {
   const handleSend = () => {
     const trimmedInput = input.trim();
     if (!trimmedInput && !questions.includes(trimmedInput)) {
-      toast.error(
+      alert.error(
         language === "ar"
           ? "يرجى إدخال رسالة أو اختيار سؤال!"
           : "Please enter a message or select a question!",
@@ -83,7 +82,7 @@ export default function LiveChat() {
       return;
     }
     if (trimmedInput.length > 500) {
-      toast.error(
+      alert.error(
         language === "ar"
           ? "الرسالة طويلة جدًا! يرجى الاحتفاظ بها تحت 500 حرف."
           : "Message too long! Please keep it under 500 characters.",
@@ -105,7 +104,7 @@ export default function LiveChat() {
 
   const handleSelectQuestion = (question) => {
     if (messages.length >= 10) {
-      toast.warning(
+      alert.warning(
         language === "ar"
           ? "تم الوصول إلى حد الدردشة! يرجى بدء جلسة جديدة."
           : "Chat limit reached! Please start a new session.",

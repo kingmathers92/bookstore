@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
+import { useStore } from "@/lib/store";
 import { DataTable } from "@/components/admin/DataTable";
-import { toast } from "@/components/ui/sonner";
 import translations from "@/lib/translations";
 
 const columns = [
@@ -24,16 +22,16 @@ export default function OrdersTable() {
     try {
       const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
       if (error) throw error;
-      toast.success(t.orderUpdated || "Order status updated!");
+      alert.success(t.orderUpdated || "Order status updated!");
     } catch (error) {
-      toast.error(t.errorUpdatingOrder || `Error updating order: ${error.message}`);
+      alert.error(t.errorUpdatingOrder || `Error updating order: ${error.message}`);
     }
   };
 
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">{t.manageOrders || "Manage Orders"}</h2>
-      <DataTable columns={columns} data={orders} onUpdateStatus={handleUpdateStatus} />
+      <DataTable columns={columns} data={orders} />
     </div>
   );
 }

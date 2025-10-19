@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import translations from "@/lib/translations";
 import { supabase } from "@/lib/supabase";
-import { Toaster, toast } from "@/components/ui/sonner";
 
 function Cart() {
   const { cart, removeFromCart, language, user, syncCartFromLocalStorage } = useStore();
@@ -40,7 +39,7 @@ function Cart() {
     try {
       await removeFromCart(bookId);
     } catch (error) {
-      toast.error(t.cartOrderError || "Error", {
+      alert.error(t.cartOrderError || "Error", {
         description: `Failed to remove item: ${error.message}`,
       });
     }
@@ -54,7 +53,7 @@ function Cart() {
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.address || !formData.phone) {
-      toast.error(t.cartFormIncomplete || "Incomplete Form", {
+      alert.error(t.cartFormIncomplete || "Incomplete Form", {
         description: t.cartFormIncomplete || "Please fill in all fields.",
       });
       return;
@@ -88,14 +87,14 @@ function Cart() {
       useStore.setState({ cart: [] });
       if (!user?.id) localStorage.setItem("cart", JSON.stringify([]));
 
-      toast.success(t.cartOrderSuccess || "Order Placed!", {
+      alert.success(t.cartOrderSuccess || "Order Placed!", {
         description:
           t.cartOrderConfirm ||
           "Your order has been placed for cash on delivery. We'll contact you soon.",
       });
       router.push("/");
     } catch (error) {
-      toast.error(t.cartOrderError || "Error", {
+      alert.error(t.cartOrderError || "Error", {
         description: `Failed to place order: ${error.message}`,
       });
       console.error("Order Submission Error:", error);

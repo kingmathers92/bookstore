@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/admin/DataTable";
-import { toast } from "@/components/ui/sonner";
 import translations from "@/lib/translations";
 
 const columns = [
@@ -30,10 +30,10 @@ export default function UsersTable() {
     try {
       const { error } = await supabase.auth.admin.updateUserById(userId, formData);
       if (error) throw error;
-      toast.success(t.userUpdated || "User updated successfully!");
+      alert.success(t.userUpdated || "User updated successfully!");
       setIsEditing(null);
     } catch (error) {
-      toast.error(t.errorUpdatingUser || `Error updating user: ${error.message}`);
+      alert.error(t.errorUpdatingUser || `Error updating user: ${error.message}`);
     }
   };
 
@@ -42,16 +42,16 @@ export default function UsersTable() {
     try {
       const { error } = await supabase.auth.admin.deleteUser(userId);
       if (error) throw error;
-      toast.success(t.userDeleted || "User deleted successfully!");
+      alert.success(t.userDeleted || "User deleted successfully!");
     } catch (error) {
-      toast.error(t.errorDeletingUser || `Error deleting user: ${error.message}`);
+      alert.error(t.errorDeletingUser || `Error deleting user: ${error.message}`);
     }
   };
 
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">{t.manageUsers || "Manage Users"}</h2>
-      <DataTable columns={columns} data={users} onEdit={handleEdit} onDelete={handleDelete} />
+      <DataTable columns={columns} data={users} />
       {isEditing && (
         <Card>
           <CardContent className="p-6">

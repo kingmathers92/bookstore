@@ -13,7 +13,6 @@ import useSWR from "swr";
 import Image from "next/image";
 import translations from "@/lib/translations";
 import { Skeleton } from "@/components/ui/skeleton";
-import NotificationToast from "@/components/NotificationToast";
 
 const fetchBook = async (bookId) => {
   const { data, error } = await supabase.from("books").select("*").eq("book_id", bookId).single();
@@ -240,7 +239,7 @@ export default function BookDetail() {
           </Button>
         </CardFooter>
       </Card>
-      <NotificationToast message={toastMessage} open={showToast} />
+      {/* <NotificationToast message={toastMessage} open={showToast} /> */}
     </div>
   );
 }

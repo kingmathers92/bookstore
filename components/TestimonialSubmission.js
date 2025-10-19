@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Star } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import translations from "@/lib/translations";
 
@@ -19,7 +18,7 @@ export default function TestimonialSubmission() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!testimonial.trim() || rating === 0) {
-      toast.error(
+      alert.error(
         language === "ar"
           ? "يرجى كتابة الشهادة واختيار التقييم!"
           : "Please write a testimonial and select a rating!",
@@ -27,7 +26,7 @@ export default function TestimonialSubmission() {
       return;
     }
     if (testimonial.length > 500) {
-      toast.error(
+      alert.error(
         language === "ar"
           ? "الشهادة طويلة جدًا! يرجى الاحتفاظ بها تحت 500 حرف."
           : "Testimonial too long! Please keep it under 500 characters.",
@@ -36,13 +35,13 @@ export default function TestimonialSubmission() {
     }
     const result = await submitTestimonial(testimonial, rating);
     if (result) {
-      toast.success(
+      alert.success(
         language === "ar" ? "تم إرسال الشهادة بنجاح!" : "Testimonial submitted successfully!",
       );
       setTestimonial("");
       setRating(0);
     } else {
-      toast.error(
+      alert.error(
         language === "ar"
           ? "فشل إرسال الشهادة. حاول مجددًا."
           : "Failed to submit testimonial. Please try again.",

@@ -1,18 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
-export const DataTable = ({ columns, data, onEdit, onDelete, onUpdateStatus, t = {} }) => {
-  const [editingRow, setEditingRow] = useState(null);
-
+export const DataTable = ({ columns, data, onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse border border-gray-300">
@@ -26,20 +16,25 @@ export const DataTable = ({ columns, data, onEdit, onDelete, onUpdateStatus, t =
           </tr>
         </thead>
         <tbody>
-          {data.map((row, rowIndex) => (
-            <tr key={row.id || rowIndex} className="hover:bg-gray-50">
+          {data.map((row) => (
+            <tr key={row.book_id} className="hover:bg-gray-50">
               {columns.map((col) => (
                 <td key={col.accessorKey} className="border border-gray-300 p-2">
                   {col.accessorKey === "actions" ? (
                     <div className="flex gap-2">
-                      {row.actions?.map((action, i) => (
-                        <Button key={action.id || i} onClick={() => action.onClick(row)}>
-                          {action.label}
-                        </Button>
-                      ))}
+                      <Button onClick={() => onEdit(row)}>Edit</Button>
+                      <Button onClick={() => onDelete(row.book_id)} variant="destructive">
+                        Delete
+                      </Button>
                     </div>
+                  ) : col.accessorKey === "image" ? (
+                    row.image ? (
+                      <img src={row.image} alt="Book Image" className="w-16 h-16 object-cover" />
+                    ) : (
+                      <span>No Image</span>
+                    )
                   ) : (
-                    row[col.accessorKey]
+                    (row[col.accessorKey] ?? "N/A")
                   )}
                 </td>
               ))}
