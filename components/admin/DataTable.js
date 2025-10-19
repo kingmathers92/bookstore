@@ -26,30 +26,17 @@ export const DataTable = ({ columns, data, onEdit, onDelete, onUpdateStatus, t =
           </tr>
         </thead>
         <tbody>
-          {data.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-50">
+          {data.map((row, rowIndex) => (
+            <tr key={row.id || rowIndex} className="hover:bg-gray-50">
               {columns.map((col) => (
                 <td key={col.accessorKey} className="border border-gray-300 p-2">
                   {col.accessorKey === "actions" ? (
                     <div className="flex gap-2">
-                      <Button size="sm" onClick={() => onEdit(row)}>
-                        {t.edit || "Edit"}
-                      </Button>
-                      <Button size="sm" variant="destructive" onClick={() => onDelete(row.id)}>
-                        {t.delete || "Delete"}
-                      </Button>
-                      {onUpdateStatus && col.accessorKey === "status" && (
-                        <Select onValueChange={(value) => onUpdateStatus(row.id, value)}>
-                          <SelectTrigger className="w-32">
-                            <SelectValue>{row.status}</SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="shipped">Shipped</SelectItem>
-                            <SelectItem value="delivered">Delivered</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      )}
+                      {row.actions?.map((action, i) => (
+                        <Button key={action.id || i} onClick={() => action.onClick(row)}>
+                          {action.label}
+                        </Button>
+                      ))}
                     </div>
                   ) : (
                     row[col.accessorKey]

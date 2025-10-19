@@ -40,7 +40,7 @@ export default function Hero() {
                   className="bg-primary text-primary-foreground hover:bg-accent transition duration-300 flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 hover:cursor-pointer text-base sm:text-lg md:text-xl"
                   aria-label={t.heroShopNow}
                 >
-                  <ShoppingCart size={iconSize} /> {t.heroShopNow}
+                  <ShoppingCart size={20} /> {t.heroShopNow}
                 </Button>
               </Link>
             </CardContent>

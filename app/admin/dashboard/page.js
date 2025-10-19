@@ -9,35 +9,51 @@ import UsersTable from "@/components/admin/UsersTable";
 import BooksTable from "@/components/admin/BooksTable";
 import OrdersTable from "@/components/admin/OrdersTable";
 import translations from "@/lib/translations";
+import { supabase } from "@/lib/supabase";
 
 export default function AdminDashboard() {
-  const { user, language, isAdmin } = useStore();
+  const { language } = useStore();
   const router = useRouter();
   const t = translations[language];
 
   useEffect(() => {
-    if (!user || !isAdmin()) {
-      router.push("/");
-    }
-  }, [user, isAdmin, router]);
-
-  if (!user || !isAdmin()) return null;
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user || data.user.user_metadata.role !== "admin") {
+        router.push("/admin/login");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   return (
     <div className="container mx-auto py-12" dir={language === "ar" ? "rtl" : "ltr"}>
       <h1 className="text-3xl font-bold mb-8">{t.adminDashboard || "Admin Dashboard"}</h1>
-      <Tabs defaultValue="books" className="w-full">
+      <Button
+        variant="outline"
+        onClick={async () => {
+          await supabase.auth.signOut();
+          router.push("/admin/login");
+        }}
+      >
+        Logout
+      </Button>
+
+      <Tabs defaultValue="books" className="w-full mt-6">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="books">{t.books || "Books"}</TabsTrigger>
           <TabsTrigger value="users">{t.users || "Users"}</TabsTrigger>
           <TabsTrigger value="orders">{t.orders || "Orders"}</TabsTrigger>
         </TabsList>
+
         <TabsContent value="books">
           <BooksTable />
         </TabsContent>
+
         <TabsContent value="users">
           <UsersTable />
         </TabsContent>
+
         <TabsContent value="orders">
           <OrdersTable />
         </TabsContent>
