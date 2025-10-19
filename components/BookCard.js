@@ -13,7 +13,20 @@ import translations from "@/lib/translations";
 import CategoryBadge from "./CategoryBadge";
 import StockStatus from "./StockStatus";
 
-const BookCard = ({ id, title_en, title_ar, category_en, category_ar, price, image, inStock }) => {
+const BookCard = ({
+  id,
+  title_en,
+  title_ar,
+  category_en,
+  category_ar,
+  price,
+  image,
+  inStock,
+  author_ar,
+  author_en,
+  publishing_house_ar,
+  publishing_house_en,
+}) => {
   const addToCart = useStore((state) => state.addToCart);
   const { language } = useStore();
   const [imgSrc, setImgSrc] = useState(image || "/images/placeholder.png");
@@ -26,6 +39,11 @@ const BookCard = ({ id, title_en, title_ar, category_en, category_ar, price, ima
     image: imgSrc,
     inStock: inStock !== undefined ? inStock : true,
     category: language === "ar" ? category_ar || category_en : category_en || category_ar,
+    author: language === "ar" ? author_ar || author_en : author_en || author_ar,
+    publishingHouse:
+      language === "ar"
+        ? publishing_house_ar || publishing_house_en
+        : publishing_house_en || publishing_house_ar,
   };
 
   if (!displayBook) return <Skeleton className="w-full h-56" />;
@@ -62,6 +80,13 @@ const BookCard = ({ id, title_en, title_ar, category_en, category_ar, price, ima
               <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-1 line-clamp-1">
                 {displayBook.title}
               </h3>
+              <p className="text-sm text-gray-600 mb-1">
+                {displayBook.author && `${t.bookCardAuthor || t.Author}: ${displayBook.author}`}
+              </p>
+              <p className="text-sm text-gray-600 mb-3">
+                {displayBook.publishingHouse &&
+                  `${t.bookCardPublisher || t.Publisher}: ${displayBook.publishingHouse}`}
+              </p>
             </div>
 
             <div className="flex items-center justify-between mt-auto">

@@ -16,7 +16,20 @@ import useSWR from "swr";
 const fetcher = async () => {
   const { data, error, status } = await supabase
     .from("books")
-    .select("*")
+    .select(`
+      book_id,
+      title_en,
+      title_ar,
+      category_en,
+      category_ar,
+      price,
+      image,
+      inStock,
+      author_en,
+      author_ar,
+      publishing_house_en,
+      publishing_house_ar
+    `)
     .order("book_id", { ascending: true })
     .limit(50);
   if (error) throw new Error(`Error fetching books: ${error.message}, Status: ${status}`);
@@ -76,6 +89,10 @@ export default function Shop() {
                   price={book.price || 0}
                   image={book.image}
                   inStock={book.inStock}
+                  author_en={book.author_en}
+                  author_ar={book.author_ar}
+                  publishing_house_en={book.publishing_house_en}
+                  publishing_house_ar={book.publishing_house_ar}
                 />
               ))
             ) : (
