@@ -48,8 +48,9 @@ export default function BooksTable() {
   const handleDelete = async (bookId) => {
     if (!confirm(t.confirmDelete || "Are you sure you want to delete this book?")) return;
     try {
-      const { error } = await supabase.from("books").delete().eq("book_id", bookId);
-      if (error) throw error;
+      const res = await fetch(`/api/admin/books?id=${bookId}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Delete failed");
       showSuccess(t.bookDeleted || "Book deleted successfully!");
       fetchBooks();
     } catch (error) {
@@ -59,46 +60,22 @@ export default function BooksTable() {
 
   const handleSave = async () => {
     try {
-      const supabaseWithSession = await getSupabaseWithSession();
-      let updateData = { ...formData };
-      delete updateData.book_id;
-      delete updateData.actions;
+      const payload = { ...formData };
+      delete payload.actions;
 
-      if (updateData.image instanceof File) {
-        const fileName = `books/${Date.now()}_${updateData.image.name}`;
-        const { data: uploadData, error: uploadError } = await supabaseWithSession.storage
-          .from("book-images")
-          .upload(fileName, updateData.image, { upsert: true });
+      const method = isEditing === "new" ? "POST" : "PUT";
+      if (isEditing !== "new") payload.book_id = isEditing;
 
-        if (uploadError) throw new Error(`Image upload failed: ${uploadError.message}`);
+      const res = await fetch("/api/admin/books", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Save failed");
 
-        const { data: urlData } = await supabaseWithSession.storage
-          .from("book-images")
-          .getPublicUrl(fileName);
-        if (!urlData?.publicUrl) {
-          throw new Error("Failed to retrieve public URL");
-        }
-        updateData.image = urlData.publicUrl;
-      } else if (!updateData.image && isEditing !== "new") {
-        const existingBook = books.find((b) => b.book_id === isEditing);
-        updateData.image = existingBook?.image || null;
-      }
-
-      let result;
-      if (isEditing === "new") {
-        const { data, error } = await supabase.from("books").insert([updateData]);
-        if (error) throw error;
-        result = data;
-        showSuccess(t.bookCreated || "Book created successfully!");
-      } else {
-        const { data, error } = await supabase
-          .from("books")
-          .update(updateData)
-          .eq("book_id", isEditing);
-        if (error) throw error;
-        result = data;
-        showSuccess(t.bookUpdated || "Book updated successfully!");
-      }
+      if (isEditing === "new") showSuccess(t.bookCreated || "Book created successfully!");
+      else showSuccess(t.bookUpdated || "Book updated successfully!");
 
       setIsEditing(null);
       setFormData({});
@@ -113,35 +90,46 @@ export default function BooksTable() {
     const file = e.target.files[0];
     if (!file) return;
 
-    const fileName = `books/${Date.now()}_${file.name}`;
+    const bookId = isEditing || (books.length > 0 ? books[0].book_id : null);
+    if (!bookId) {
+      showError("No book selected for image upload");
+      return;
+    }
+
     try {
-      const supabaseWithSession = await getSupabaseWithSession();
-      console.log("Session for upload:", await supabase.auth.getSession()); // Debug session
-      const { data, error } = await supabaseWithSession.storage
-        .from("book-images")
-        .upload(fileName, file, { upsert: true });
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("filename", `books/${Date.now()}_${file.name}`);
 
-      if (error) {
-        throw new Error(`Image upload failed: ${error.message}`);
-      }
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-      const { data: urlData, error: urlError } = await supabaseWithSession.storage
-        .from("book-images")
-        .getPublicUrl(fileName);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
 
-      if (urlError) {
-        throw new Error(`Failed to get image URL: ${urlError.message}`);
-      }
+      console.log("Image uploaded:", data.publicUrl);
 
-      if (!urlData?.publicUrl) {
-        throw new Error("Public URL is undefined");
-      }
+      const updateRes = await fetch("/api/admin/books", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          book_id: bookId,
+          image: data.publicUrl,
+        }),
+      });
 
-      setFormData((prev) => ({ ...prev, image: urlData.publicUrl }));
-      showSuccess(t.imageUploaded || "Image uploaded successfully!");
-    } catch (error) {
-      console.error("Image upload error:", error);
-      showError(`Image upload failed: ${error.message}`);
+      const updateData = await updateRes.json();
+      if (!updateRes.ok) throw new Error(updateData.error || "Book update failed");
+
+      console.log("Book updated successfully:", updateData.data);
+      showSuccess("Image updated successfully!");
+      setFormData((prev) => ({ ...prev, image: data.publicUrl }));
+      fetchBooks();
+    } catch (err) {
+      console.error("Image upload error:", err);
+      showError(`Image upload failed: ${err.message}`);
     }
   };
 
@@ -231,7 +219,12 @@ export default function BooksTable() {
               onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
             />
             <div>
-              <Input type="file" onChange={handleImageUpload} />
+              <Input
+                type="file"
+                onChange={(e) =>
+                  handleImageUpload(e, isEditing || (books.length > 0 ? books[0].book_id : null))
+                }
+              />
               {formData.image && (
                 <img src={formData.image} alt="Book Image" className="w-32 mt-2" />
               )}

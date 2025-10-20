@@ -5,7 +5,7 @@ const nextConfig = {
     formats: ["image/webp"],
     minimumCacheTTL: 60,
     contentDispositionType: "inline",
-    domains: ["i.pravatar.cc"],
+    domains: [process.env.NEXT_PUBLIC_SUPABASE_URL.replace("https://", "").split("/")[0]],
     loader: "default",
   },
   webpack(config) {
