@@ -26,6 +26,7 @@ export default function BooksTable() {
   const [books, setBooks] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [formData, setFormData] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchBooks = async () => {
     const { data, error } = await supabase.from("books").select("*");
@@ -43,6 +44,13 @@ export default function BooksTable() {
   const handleEdit = (book) => {
     setIsEditing(book.book_id);
     setFormData({ ...book });
+    setIsModalOpen(true);
+  };
+
+  const handleNewBook = () => {
+    setIsEditing("new");
+    setFormData({});
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (bookId) => {
@@ -60,29 +68,120 @@ export default function BooksTable() {
 
   const handleSave = async () => {
     try {
-      const payload = { ...formData };
+      let payload = { ...formData };
       delete payload.actions;
+      delete payload.index;
+
+      const categoryMapping = {
+        "quran-copies": { en: "Quran", ar: "القرآن" },
+        tafsir: { en: "Tafsir", ar: "التفسير" },
+        fiqh: { en: "Fiqh", ar: "الفقه" },
+        language: { en: "Language", ar: "اللغة" },
+        hadith: { en: "Hadith", ar: "الحديث" },
+        seerah: { en: "Seerah", ar: "السيرة" },
+        admonitions: { en: "Admonitions", ar: "الموعظة" },
+        spirituality: { en: "Spirituality", ar: "الروحانية" },
+        poetry: { en: "Poetry", ar: "الشعر" },
+        "children-books": { en: "Children’s Books", ar: "كتب الأطفال" },
+        supplications: { en: "Supplications & Invocations", ar: "الأدعية والأذكار" },
+        "quranic-sciences": { en: "Quranic Sciences", ar: "علوم القرآن" },
+      };
+
+      if (payload.category) {
+        const categoryData = categoryMapping[payload.category] || {
+          en: payload.category.replace(/-/g, " "),
+          ar: payload.category.replace(/-/g, " "),
+        };
+        payload.category_en = categoryData.en;
+        payload.category_ar = categoryData.ar;
+        delete payload.category;
+      } else {
+        payload.category_en = payload.category_en || "";
+        payload.category_ar = payload.category_ar || "";
+      }
 
       const method = isEditing === "new" ? "POST" : "PUT";
       if (isEditing !== "new") payload.book_id = isEditing;
 
-      const res = await fetch("/api/admin/books", {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Save failed");
+      console.log("Payload before save:", payload);
+
+      let newBookId = null;
+      let data = null;
+      if (method === "POST") {
+        const res = await fetch("/api/admin/books", {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        data = await res.json();
+        if (!res.ok) throw new Error(data?.error || `API request failed with status ${res.status}`);
+        newBookId = data[0]?.book_id;
+        if (!newBookId) throw new Error("Failed to retrieve new book ID");
+        setIsEditing(newBookId);
+        payload.book_id = newBookId;
+      }
+
+      if (document.querySelector("input[type='file']").files[0]) {
+        const formData = new FormData();
+        formData.append("file", document.querySelector("input[type='file']").files[0]);
+        formData.append(
+          "filename",
+          `books/${Date.now()}_${document.querySelector("input[type='file']").files[0].name}`,
+        );
+
+        const uploadRes = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadData.error || "Image upload failed");
+        payload.image = uploadData.publicUrl;
+        console.log("Image uploaded:", uploadData);
+
+        const bookIdToUpdate = newBookId || isEditing;
+        if (bookIdToUpdate) {
+          const updateRes = await fetch("/api/admin/books", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              book_id: bookIdToUpdate,
+              image: uploadData.publicUrl,
+            }),
+          });
+          if (!updateRes.ok) {
+            const errorData = await updateRes.json();
+            throw new Error(errorData.error || `Update failed with status ${updateRes.status}`);
+          }
+          const updateData = await updateRes.json();
+          console.log("Book updated with image:", updateData);
+        }
+      }
+
+      if (method === "PUT") {
+        const res = await fetch("/api/admin/books", {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        data = await res.json();
+        if (!res.ok) {
+          throw new Error(data?.error || `API request failed with status ${res.status}`);
+        }
+      }
 
       if (isEditing === "new") showSuccess(t.bookCreated || "Book created successfully!");
       else showSuccess(t.bookUpdated || "Book updated successfully!");
 
       setIsEditing(null);
       setFormData({});
+      setIsModalOpen(false);
       fetchBooks();
     } catch (err) {
       console.error("handleSave error:", err);
       showError(err.message || t.errorUpdatingBook || "Error updating book");
+      if (err.message.includes("404")) {
+        showError("API endpoint not found. Please check the server configuration.");
+      }
     }
   };
 
@@ -90,9 +189,9 @@ export default function BooksTable() {
     const file = e.target.files[0];
     if (!file) return;
 
-    const bookId = isEditing || (books.length > 0 ? books[0].book_id : null);
-    if (!bookId) {
-      showError("No book selected for image upload");
+    const bookId = isEditing;
+    if (!bookId || typeof bookId !== "string" || bookId === "new") {
+      showError("Please save the book first before uploading an image");
       return;
     }
 
@@ -109,7 +208,7 @@ export default function BooksTable() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Upload failed");
 
-      console.log("Image uploaded:", data.publicUrl);
+      console.log("Image uploaded:", data);
 
       const updateRes = await fetch("/api/admin/books", {
         method: "PUT",
@@ -120,10 +219,13 @@ export default function BooksTable() {
         }),
       });
 
-      const updateData = await updateRes.json();
-      if (!updateRes.ok) throw new Error(updateData.error || "Book update failed");
+      if (!updateRes.ok) {
+        const errorData = await updateRes.json();
+        throw new Error(errorData.error || `Update failed with status ${updateRes.status}`);
+      }
 
-      console.log("Book updated successfully:", updateData.data);
+      const updateData = await updateRes.json();
+      console.log("Book updated successfully:", updateData);
       showSuccess("Image updated successfully!");
       setFormData((prev) => ({ ...prev, image: data.publicUrl }));
       fetchBooks();
@@ -133,8 +235,15 @@ export default function BooksTable() {
     }
   };
 
-  const booksWithActions = books.map((book) => ({
+  const handleCloseModal = () => {
+    setIsEditing(null);
+    setFormData({});
+    setIsModalOpen(false);
+  };
+
+  const booksWithActions = books.map((book, index) => ({
     ...book,
+    index: index + 1,
     actions: [
       { label: "Edit", onClick: () => handleEdit(book) },
       { label: "Delete", onClick: () => handleDelete(book.book_id) },
@@ -145,106 +254,129 @@ export default function BooksTable() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{t.manageBooks || "Manage Books"}</h2>
-        <Button onClick={() => setIsEditing("new")}>{t.addBook || "Add Book"}</Button>
+        <Button onClick={handleNewBook}>{t.addBook || "Add Book"}</Button>
       </div>
 
       <DataTable
         columns={[
-          { accessorKey: "index", header: "#" }, // New index column
+          { accessorKey: "index", header: "#" },
           { accessorKey: "title_en", header: "English Title" },
           { accessorKey: "title_ar", header: "Arabic Title" },
           { accessorKey: "author_en", header: "Author EN" },
           { accessorKey: "author_ar", header: "Author AR" },
           { accessorKey: "publishing_house_en", header: "Publisher EN" },
           { accessorKey: "publishing_house_ar", header: "Publisher AR" },
-          { accessorKey: "category", header: "Category" },
+          { accessorKey: "category_en", header: "Category EN" },
+          { accessorKey: "category_ar", header: "Category AR" },
           { accessorKey: "price", header: "Price" },
           { accessorKey: "inStock", header: "In Stock" },
           { accessorKey: "image", header: "Image" },
           { accessorKey: "actions", header: "Actions" },
         ]}
-        data={booksWithActions.map((book, index) => ({
-          ...book,
-          index: index + 1,
-        }))}
+        data={booksWithActions}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onBulkDelete={(deletedIds) =>
+          setBooks((prev) => prev.filter((book) => !deletedIds.includes(book.book_id)))
+        }
       />
 
-      {isEditing && (
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <Input
-              placeholder={t.titleEn || "English Title"}
-              value={formData.title_en || ""}
-              onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
-            />
-            <Input
-              placeholder={t.titleAr || "Arabic Title"}
-              value={formData.title_ar || ""}
-              onChange={(e) => setFormData({ ...formData, title_ar: e.target.value })}
-            />
-            <Input
-              placeholder={t.authorEn || "Author EN"}
-              value={formData.author_en || ""}
-              onChange={(e) => setFormData({ ...formData, author_en: e.target.value })}
-            />
-            <Input
-              placeholder={t.authorAr || "Author AR"}
-              value={formData.author_ar || ""}
-              onChange={(e) => setFormData({ ...formData, author_ar: e.target.value })}
-            />
-            <Input
-              placeholder={t.publisherEn || "Publisher EN"}
-              value={formData.publishing_house_en || ""}
-              onChange={(e) => setFormData({ ...formData, publishing_house_en: e.target.value })}
-            />
-            <Input
-              placeholder={t.publisherAr || "Publisher AR"}
-              value={formData.publishing_house_ar || ""}
-              onChange={(e) => setFormData({ ...formData, publishing_house_ar: e.target.value })}
-            />
-            <Select onValueChange={(value) => setFormData({ ...formData, category: value })}>
-              <SelectTrigger>
-                <SelectValue placeholder={t.category || "Category"} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="tafsir">Tafsir</SelectItem>
-                <SelectItem value="hadith">Hadith</SelectItem>
-                <SelectItem value="fiqh">Fiqh</SelectItem>
-                <SelectItem value="biography">Biography</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              type="number"
-              placeholder={t.price || "Price"}
-              value={formData.price || ""}
-              onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-            />
-            <div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+            <CardContent className="space-y-4">
+              <div className="flex justify-end">
+                <Button variant="ghost" onClick={handleCloseModal} className="hover:cursor-pointer">
+                  X
+                </Button>
+              </div>
               <Input
-                type="file"
+                placeholder={t.titleEn || "English Title"}
+                value={formData.title_en || ""}
+                onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+              />
+              <Input
+                placeholder={t.titleAr || "Arabic Title"}
+                value={formData.title_ar || ""}
+                onChange={(e) => setFormData({ ...formData, title_ar: e.target.value })}
+              />
+              <Input
+                placeholder={t.authorEn || "Author EN"}
+                value={formData.author_en || ""}
+                onChange={(e) => setFormData({ ...formData, author_en: e.target.value })}
+              />
+              <Input
+                placeholder={t.authorAr || "Author AR"}
+                value={formData.author_ar || ""}
+                onChange={(e) => setFormData({ ...formData, author_ar: e.target.value })}
+              />
+              <Input
+                placeholder={t.publisherEn || "Publisher EN"}
+                value={formData.publishing_house_en || ""}
+                onChange={(e) => setFormData({ ...formData, publishing_house_en: e.target.value })}
+              />
+              <Input
+                placeholder={t.publisherAr || "Publisher AR"}
+                value={formData.publishing_house_ar || ""}
+                onChange={(e) => setFormData({ ...formData, publishing_house_ar: e.target.value })}
+              />
+              <Select onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t.category || "Category"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="quran-copies">Quran</SelectItem>
+                  <SelectItem value="tafsir">Tafsir</SelectItem>
+                  <SelectItem value="fiqh">Fiqh</SelectItem>
+                  <SelectItem value="language">Language</SelectItem>
+                  <SelectItem value="hadith">Hadith</SelectItem>
+                  <SelectItem value="seerah">Seerah</SelectItem>
+                  <SelectItem value="admonitions">Admonitions</SelectItem>
+                  <SelectItem value="spirituality">Spirituality</SelectItem>
+                  <SelectItem value="poetry">Poetry</SelectItem>
+                  <SelectItem value="children-books">Children’s Books</SelectItem>
+                  <SelectItem value="supplications">Supplications & Invocations</SelectItem>
+                  <SelectItem value="quranic-sciences">Quranic Sciences</SelectItem>
+                </SelectContent>
+              </Select>
+              <Input
+                placeholder={t.descriptionEn || "Description EN"}
+                value={formData.description_en || ""}
+                onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+              />
+              <Input
+                placeholder={t.descriptionAr || "Description AR"}
+                value={formData.description_ar || ""}
+                onChange={(e) => setFormData({ ...formData, description_ar: e.target.value })}
+              />
+              <Input
+                type="number"
+                placeholder={t.price || "Price"}
+                value={formData.price || ""}
                 onChange={(e) =>
-                  handleImageUpload(e, isEditing || (books.length > 0 ? books[0].book_id : null))
+                  setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })
                 }
               />
-              {formData.image && (
-                <img src={formData.image} alt="Book Image" className="w-32 mt-2" />
-              )}
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="inStock"
-                checked={formData.inStock || false}
-                onCheckedChange={(checked) => setFormData({ ...formData, inStock: checked })}
-              />
-              <Label htmlFor="inStock">{t.inStock || "In Stock"}</Label>
-            </div>
-            <Button onClick={handleSave}>
-              {isEditing === "new" ? t.addBook || "Add Book" : t.updateBook || "Update Book"}
-            </Button>
-          </CardContent>
-        </Card>
+              <div>
+                <Input type="file" onChange={(e) => handleImageUpload(e)} />
+                {formData.image && (
+                  <img src={formData.image} alt="Book Image" className="w-32 mt-2" />
+                )}
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="inStock"
+                  checked={formData.inStock || false}
+                  onCheckedChange={(checked) => setFormData({ ...formData, inStock: checked })}
+                />
+                <Label htmlFor="inStock">{t.inStock || "In Stock"}</Label>
+              </div>
+              <Button onClick={handleSave} className="w-full hover:cursor-pointer">
+                {isEditing === "new" ? t.addBook || "Add Book" : t.updateBook || "Update Book"}
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );

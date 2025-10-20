@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 
-export const DataTable = ({ columns, data, onEdit, onDelete }) => {
+export const DataTable = ({ columns, data, onEdit, onDelete, onBulkDelete }) => {
   const [selectedBooks, setSelectedBooks] = useState([]);
 
   const handleSelect = (bookId) => {
@@ -23,8 +23,8 @@ export const DataTable = ({ columns, data, onEdit, onDelete }) => {
       await Promise.all(
         selectedBooks.map((bookId) => fetch(`/api/admin/books?id=${bookId}`, { method: "DELETE" })),
       );
+      if (onBulkDelete) onBulkDelete(selectedBooks);
       setSelectedBooks([]);
-      data = data.filter((book) => !selectedBooks.includes(book.book_id));
     } catch (error) {
       console.error("Bulk delete error:", error);
       alert("Error deleting selected books");
@@ -34,7 +34,7 @@ export const DataTable = ({ columns, data, onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
       <div className="mb-4">
-        <Button onClick={handleBulkDelete} variant="destructive">
+        <Button onClick={handleBulkDelete} variant="destructive" className="hover:cursor-pointer">
           Delete Selected
         </Button>
       </div>
@@ -47,6 +47,7 @@ export const DataTable = ({ columns, data, onEdit, onDelete }) => {
                 onCheckedChange={(checked) =>
                   setSelectedBooks(checked ? data.map((book) => book.book_id) : [])
                 }
+                className="hover:cursor-pointer"
               />
             </th>
             {columns.map((col) => (
@@ -63,14 +64,21 @@ export const DataTable = ({ columns, data, onEdit, onDelete }) => {
                 <Checkbox
                   checked={selectedBooks.includes(row.book_id)}
                   onCheckedChange={() => handleSelect(row.book_id)}
+                  className="hover:cursor-pointer"
                 />
               </td>
               {columns.map((col) => (
                 <td key={col.accessorKey} className="border border-gray-300 p-2">
                   {col.accessorKey === "actions" ? (
                     <div className="flex gap-2">
-                      <Button onClick={() => onEdit(row)}>Edit</Button>
-                      <Button onClick={() => onDelete(row.book_id)} variant="destructive">
+                      <Button onClick={() => onEdit(row)} className="hover:cursor-pointer">
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() => onDelete(row.book_id)}
+                        variant="destructive"
+                        className="hover:cursor-pointer"
+                      >
                         Delete
                       </Button>
                     </div>

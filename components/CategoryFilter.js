@@ -20,9 +20,18 @@ export default function CategoryFilter() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">الكل</SelectItem>
-          <SelectItem value="quran">قرآن</SelectItem>
-          <SelectItem value="hadith">حديث</SelectItem>
-          <SelectItem value="tafsir">تفسير</SelectItem>
+          <SelectItem value="مصاحف">مصاحف</SelectItem>
+          <SelectItem value="تفسير">تفسير</SelectItem>
+          <SelectItem value="فقه">فقه</SelectItem>
+          <SelectItem value="لغة">لغة</SelectItem>
+          <SelectItem value="حديث">حديث</SelectItem>
+          <SelectItem value="سيرة">سيرة</SelectItem>
+          <SelectItem value="مواعظ وتزكية">مواعظ وتزكية</SelectItem>
+          <SelectItem value="رقائق">رقائق</SelectItem>
+          <SelectItem value="دواوين">دواوين</SelectItem>
+          <SelectItem value="كتب أطفال">كتب أطفال</SelectItem>
+          <SelectItem value="مناجد">مناجد</SelectItem>
+          <SelectItem value="علوم قرآن">علوم قرآن</SelectItem>
         </SelectContent>
       </Select>
     </div>
