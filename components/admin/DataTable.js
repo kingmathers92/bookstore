@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 export const DataTable = ({ columns, data, onEdit, onDelete }) => {
   const [selectedBooks, setSelectedBooks] = useState([]);
@@ -24,7 +24,7 @@ export const DataTable = ({ columns, data, onEdit, onDelete }) => {
         selectedBooks.map((bookId) => fetch(`/api/admin/books?id=${bookId}`, { method: "DELETE" })),
       );
       setSelectedBooks([]);
-      data.filter((book) => !selectedBooks.includes(book.book_id));
+      data = data.filter((book) => !selectedBooks.includes(book.book_id));
     } catch (error) {
       console.error("Bulk delete error:", error);
       alert("Error deleting selected books");
@@ -80,8 +80,10 @@ export const DataTable = ({ columns, data, onEdit, onDelete }) => {
                     ) : (
                       <span>No Image</span>
                     )
+                  ) : col.accessorKey === "index" ? (
+                    row.index
                   ) : (
-                    (row[col.accessorKey] ?? "N/A")
+                    row[col.accessorKey] || "-"
                   )}
                 </td>
               ))}

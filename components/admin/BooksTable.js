@@ -150,7 +150,7 @@ export default function BooksTable() {
 
       <DataTable
         columns={[
-          { accessorKey: "book_id", header: "ID" },
+          { accessorKey: "index", header: "#" }, // New index column
           { accessorKey: "title_en", header: "English Title" },
           { accessorKey: "title_ar", header: "Arabic Title" },
           { accessorKey: "author_en", header: "Author EN" },
@@ -163,7 +163,10 @@ export default function BooksTable() {
           { accessorKey: "image", header: "Image" },
           { accessorKey: "actions", header: "Actions" },
         ]}
-        data={booksWithActions}
+        data={booksWithActions.map((book, index) => ({
+          ...book,
+          index: index + 1,
+        }))}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
