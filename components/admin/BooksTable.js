@@ -52,7 +52,7 @@ export default function BooksTable() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Delete failed");
       showSuccess(t.bookDeleted || "Book deleted successfully!");
-      fetchBooks();
+      setBooks((prevBooks) => prevBooks.filter((book) => book.book_id !== bookId));
     } catch (error) {
       showError(t.errorDeletingBook || `Error deleting book: ${error.message}`);
     }
