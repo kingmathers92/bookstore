@@ -16,15 +16,17 @@ export async function middleware(req) {
     user = data.user;
   }
 
+  // restrict non-admins from /admin routes (except /admin/login)
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     if (!user || user.user_metadata.role !== "admin") {
       return NextResponse.redirect(new URL("/", origin));
     }
   }
 
-  // redirect admin from / to /admin
+  // allow admins to visit any route, including /shop, without redirecting to /admin
+  // only redirect from / to /admin if the user is an admin and explicitly on the root
   if (pathname === "/" && user?.user_metadata.role === "admin") {
-    return NextResponse.redirect(new URL("/admin", origin));
+    return NextResponse.redirect(new URL("/admin/dashboard", origin));
   }
 
   return NextResponse.next();
