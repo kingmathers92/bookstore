@@ -23,6 +23,7 @@ const fetcher = async () => {
       category_en,
       category_ar,
       price,
+      priceBeforeDiscount,
       image,
       inStock,
       author_en,
@@ -87,6 +88,7 @@ export default function Shop() {
                   category_en={book.category_en}
                   category_ar={book.category_ar}
                   price={book.price || 0}
+                  priceBeforeDiscount={book.priceBeforeDiscount || 0}
                   image={book.image}
                   inStock={book.inStock}
                   author_en={book.author_en}

@@ -20,6 +20,7 @@ const BookCard = ({
   category_en,
   category_ar,
   price,
+  priceBeforeDiscount,
   image,
   inStock,
   author_ar,
@@ -36,6 +37,7 @@ const BookCard = ({
     book_id: id,
     title: language === "ar" ? title_ar || title_en : title_en || title_ar,
     price,
+    priceBeforeDiscount,
     image: imgSrc,
     inStock: inStock !== undefined ? inStock : true,
     category: language === "ar" ? category_ar || category_en : category_en || category_ar,
@@ -47,6 +49,15 @@ const BookCard = ({
   };
 
   if (!displayBook) return <Skeleton className="w-full h-56" />;
+
+  const discountPercentage =
+    displayBook.priceBeforeDiscount && displayBook.priceBeforeDiscount > displayBook.price
+      ? Math.round(
+          ((displayBook.priceBeforeDiscount - displayBook.price) /
+            displayBook.priceBeforeDiscount) *
+            100,
+        )
+      : null;
 
   return (
     <motion.div
@@ -88,9 +99,18 @@ const BookCard = ({
                   `${t.bookCardPublisher || t.Publisher}: ${displayBook.publishingHouse}`}
               </p>
             </div>
-
             <div className="flex items-center justify-between mt-auto">
-              <div>
+              <div className="space-y-1">
+                {discountPercentage && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400 line-through text-sm">
+                      {t.bookCardPrice.replace("{price}", displayBook.priceBeforeDiscount)}
+                    </span>
+                    <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-md">
+                      -{discountPercentage}%
+                    </span>
+                  </div>
+                )}
                 <p className="text-lg font-bold text-[#c0555f]">
                   {t.bookCardPrice.replace("{price}", displayBook.price || 0)}
                 </p>

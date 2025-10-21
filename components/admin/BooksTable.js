@@ -71,6 +71,7 @@ export default function BooksTable() {
       let payload = { ...formData };
       delete payload.actions;
       delete payload.index;
+      payload.priceBeforeDiscount = formData.priceBeforeDiscount || null;
 
       const categoryMapping = {
         "quran-copies": { en: "Quran", ar: "القرآن" },
@@ -254,7 +255,9 @@ export default function BooksTable() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">{t.manageBooks || "Manage Books"}</h2>
-        <Button onClick={handleNewBook}>{t.addBook || "Add Book"}</Button>
+        <Button className="hover:cursor-pointer" onClick={handleNewBook}>
+          {t.addBook || "Add Book"}
+        </Button>
       </div>
 
       <DataTable
@@ -282,8 +285,8 @@ export default function BooksTable() {
       />
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto p-6 bg-white rounded-lg shadow-lg">
             <CardContent className="space-y-4">
               <div className="flex justify-end">
                 <Button variant="ghost" onClick={handleCloseModal} className="hover:cursor-pointer">
@@ -348,6 +351,14 @@ export default function BooksTable() {
                 placeholder={t.descriptionAr || "Description AR"}
                 value={formData.description_ar || ""}
                 onChange={(e) => setFormData({ ...formData, description_ar: e.target.value })}
+              />
+              <Input
+                type="number"
+                value={formData.priceBeforeDiscount || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, priceBeforeDiscount: parseFloat(e.target.value) || 0 })
+                }
+                placeholder={t.priceBeforeDiscount || "Price Before Discount"}
               />
               <Input
                 type="number"

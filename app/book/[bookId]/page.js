@@ -115,6 +115,11 @@ export default function BookDetail() {
     setNotifyInApp(false);
   };
 
+  const discountPercentage =
+    book.priceBeforeDiscount && book.priceBeforeDiscount > book.price
+      ? Math.round(((book.priceBeforeDiscount - book.price) / book.priceBeforeDiscount) * 100)
+      : null;
+
   return (
     <div className="container mx-auto py-12 px-4" dir={language === "ar" ? "rtl" : "ltr"}>
       <Card className="max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-white shadow-2xl rounded-xl border border-gray-100 hover:shadow-xl transition-all duration-300">
@@ -149,6 +154,10 @@ export default function BookDetail() {
                 ({avgRating.toFixed(1)} {t.rating || "Rating"})
               </span>
             </div>
+            {discountPercentage && (
+              <p className="text-gray-400 line-through text-lg">{book.priceBeforeDiscount}</p>
+            )}
+            <p className="text-2xl font-bold text-green-600">{book.price || t.free}</p>
             <p className="text-2xl font-bold text-green-600">
               {book.price ? `${book.price}` : t.free || "Free"}
             </p>
