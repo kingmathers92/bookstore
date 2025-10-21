@@ -6,25 +6,29 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function middleware(req) {
   const { pathname, origin } = req.nextUrl;
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
   const access_token = req.cookies.get("admin-access-token")?.value;
+
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    global: {
+      headers: {
+        Authorization: access_token ? `Bearer ${access_token}` : "",
+      },
+    },
+  });
+
   let user = null;
 
   if (access_token) {
-    const { data } = await supabase.auth.getUser(access_token);
-    user = data.user;
+    const { data, error } = await supabase.auth.getUser();
+    if (!error && data?.user) user = data.user;
   }
 
-  // restrict non-admins from /admin routes (except /admin/login)
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     if (!user || user.user_metadata.role !== "admin") {
       return NextResponse.redirect(new URL("/", origin));
     }
   }
 
-  // allow admins to visit any route, including /shop, without redirecting to /admin
-  // only redirect from / to /admin if the user is an admin and explicitly on the root
   if (pathname === "/" && user?.user_metadata.role === "admin") {
     return NextResponse.redirect(new URL("/admin/dashboard", origin));
   }

@@ -29,6 +29,7 @@ export default function AdminLogin() {
       return;
     }
 
+    // ✅ Check admin role
     if (data.user.user_metadata.role !== "admin") {
       setError("You are not authorized to access the admin dashboard.");
       await supabase.auth.signOut();
@@ -38,7 +39,7 @@ export default function AdminLogin() {
 
     document.cookie = `admin-access-token=${data.session.access_token}; path=/; Secure; SameSite=Lax`;
 
-    router.push("/admin/dashboard");
+    router.replace("/admin/dashboard");
     setLoading(false);
   };
 
