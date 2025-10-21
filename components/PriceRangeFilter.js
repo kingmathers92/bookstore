@@ -15,7 +15,7 @@ export default function PriceRangeFilter() {
       </label>
       <Slider
         min={0}
-        max={100}
+        max={3000}
         step={5}
         value={priceRange}
         onValueChange={setPriceRange}
