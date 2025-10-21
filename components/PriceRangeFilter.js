@@ -15,15 +15,19 @@ export default function PriceRangeFilter() {
       </label>
       <Slider
         min={0}
-        max={3000}
-        step={5}
+        max={1000}
+        step={10}
         value={priceRange}
         onValueChange={setPriceRange}
         className="w-full"
       />
       <div className="flex justify-between mt-2">
-        <span>{priceRange[0]} د.ت.</span>
-        <span>{priceRange[1]} د.ت.</span>
+        <span>
+          {priceRange[0]} {t.priceTnd}
+        </span>
+        <span>
+          {priceRange[1]} {t.priceTnd}
+        </span>
       </div>
     </div>
   );
