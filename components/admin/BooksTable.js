@@ -74,18 +74,19 @@ export default function BooksTable() {
       payload.priceBeforeDiscount = formData.priceBeforeDiscount || null;
 
       const categoryMapping = {
-        "quran-copies": { en: "Quran", ar: "القرآن" },
-        tafsir: { en: "Tafsir", ar: "التفسير" },
+        "quran-copies": { en: "Quran", ar: "قرآن" },
+        tafsir: { en: "Tafsir", ar: "تفسير" },
         fiqh: { en: "Fiqh", ar: "الفقه" },
-        language: { en: "Language", ar: "اللغة" },
-        hadith: { en: "Hadith", ar: "الحديث" },
-        seerah: { en: "Seerah", ar: "السيرة" },
-        admonitions: { en: "Admonitions", ar: "الموعظة" },
-        spirituality: { en: "Spirituality", ar: "الروحانية" },
+        language: { en: "Language", ar: "لغة" },
+        hadith: { en: "Hadith", ar: "حديث" },
+        seerah: { en: "Seerah", ar: "سيرة" },
+        admonitions: { en: "Admonitions", ar: "موعظة" },
+        spirituality: { en: "Spirituality", ar: "روحانية" },
         poetry: { en: "Poetry", ar: "الشعر" },
         "children-books": { en: "Children’s Books", ar: "كتب الأطفال" },
-        supplications: { en: "Supplications & Invocations", ar: "الأدعية والأذكار" },
+        supplications: { en: "Supplications & Invocations", ar: "أدعية وأذكار" },
         "quranic-sciences": { en: "Quranic Sciences", ar: "علوم القرآن" },
+        creed: { en: "Creed", ar: "عقيدة" },
       };
 
       if (payload.category) {
@@ -340,6 +341,7 @@ export default function BooksTable() {
                   <SelectItem value="children-books">Children’s Books</SelectItem>
                   <SelectItem value="supplications">Supplications & Invocations</SelectItem>
                   <SelectItem value="quranic-sciences">Quranic Sciences</SelectItem>
+                  <SelectItem value="quranic-sciences">Creed</SelectItem>
                 </SelectContent>
               </Select>
               <Input
