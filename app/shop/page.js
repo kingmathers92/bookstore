@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import Hero from "@/components/Hero";
-import BookOfTheDay from "@/components/BookOfTheDay";
 import BookCard from "@/components/BookCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
@@ -65,8 +63,6 @@ export default function Shop() {
 
   return (
     <div dir={language === "ar" ? "rtl" : "ltr"} className="mt-8">
-      <Hero />
-      <BookOfTheDay />
       <section className="container mx-auto py-12 px-4 overflow-hidden" aria-label={t.title}>
         <h2 className="text-4xl font-bold text-center mb-8 text-primary hover:text-accent md:text-5xl transition-colors">
           {t.title}

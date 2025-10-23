@@ -64,57 +64,49 @@ export default function BookOfTheDay() {
   return (
     <div className="container mx-auto py-12 text-center">
       <motion.h3
-        className="text-3xl font-bold text-primary mb-8 tracking-wide"
+        className="text-3xl font-bold text-burgundy mb-8 tracking-wide font-serif"
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        {t.bookOfTheDay || "Book of the Day"}
+        كتاب اليوم
       </motion.h3>
+
       <motion.div
         className="flex justify-center"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <Card className="w-64 md:w-72 bg-card shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden relative group">
-          <div className="relative w-full h-80 bg-muted">
-            <Image
-              src={bookOfTheDay.image}
-              alt={bookOfTheDay.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-              priority={false}
+        <Card className="w-64 md:w-72 bg-white shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden relative group">
+          <div className="relative w-full h-80 bg-gray-100">
+            <img
+              src={bookOfTheDay.image || "/images/placeholder.png"}
+              alt={bookOfTheDay.title_ar || bookOfTheDay.title_en}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute top-2 left-2 bg-primary text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-              {language === "ar"
-                ? bookOfTheDay.category_ar || "غير مصنف"
-                : bookOfTheDay.category_en || "Uncategorized"}
+            <div className="absolute top-2 left-2 bg-burgundy text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
+              {bookOfTheDay.category_ar || bookOfTheDay.category_en || "غير مصنف"}
             </div>
-          </div>
-
-          <CardContent className="p-4 text-center">
-            <h4 className="font-semibold text-lg text-foreground truncate">{bookOfTheDay.title}</h4>
-            <p className="text-sm text-muted-foreground mb-3">
-              {t.price || "Price"}: {bookOfTheDay.price} د.ت
-            </p>
-
-            <Button
-              asChild
-              className="w-full bg-primary text-primary-foreground hover:bg-accent transition-all"
-            >
-              <Link href="/shop">
-                <Eye size={16} className="mr-2" /> {t.bookOfTheDayViewDetails || "View Details"}
-              </Link>
-            </Button>
-
             <div
               className={`absolute top-2 right-2 px-2 py-1 text-xs font-bold rounded-full ${
                 bookOfTheDay.inStock ? "bg-green-600" : "bg-red-600"
               } text-white`}
             >
-              {stockText}
+              {bookOfTheDay.inStock ? "متوفر" : "غير متوفر"}
             </div>
+          </div>
+
+          <CardContent className="p-4 text-center">
+            <h4 className="font-semibold text-lg text-gray-900 truncate font-serif">
+              {bookOfTheDay.title_ar || bookOfTheDay.title_en}
+            </h4>
+            <p className="text-sm text-gray-600 mb-3">السعر: {bookOfTheDay.price} ر.س</p>
+
+            <Button className="w-full bg-burgundy text-white hover:bg-burgundy-dark transition-all">
+              <Eye size={16} className="mr-2" />
+              عرض التفاصيل
+            </Button>
           </CardContent>
         </Card>
       </motion.div>

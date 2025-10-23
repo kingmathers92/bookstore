@@ -6,7 +6,7 @@ import { useStore } from "@/lib/store";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
-import { Menu, ShoppingCart, User } from "lucide-react";
+import { Menu, ShoppingCart, User, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   NavigationMenu,
@@ -33,7 +33,6 @@ export default function Header() {
   };
 
   const t = translations[language];
-
   const isActive = (path) => pathname === path;
 
   useEffect(() => {
@@ -48,48 +47,46 @@ export default function Header() {
   }, [session, status, user]);
 
   return (
-    <header
-      className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-[var(--header-gradient-start)] to-[var(--header-gradient-end)] border-b border-primary/20 shadow-lg"
-      style={{
-        background:
-          "linear-gradient(to right, var(--header-gradient-start), var(--header-gradient-end))",
-      }}
-    >
+    <header className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 elegant-shadow">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
         <motion.div
-          className="text-3xl font-bold text-primary-foreground"
+          className="flex items-center gap-3"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Link href="/" className="block md:hidden hover:cursor-pointer">
-            <Image
-              src="/images/logo.jpg"
-              alt="Thamarat Al-Awraq Logo"
-              width={60}
-              height={60}
-              className="rounded-full hover:opacity-80 transition-opacity duration-300"
-            />
-          </Link>
-          <Link
-            href="/"
-            className={`hidden md:block hover:text-accent transition-colors hover:cursor-pointer ${
-              isActive("/") ? "text-accent font-bold" : ""
-            }`}
-          >
-            {t.title}
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <div className="relative">
+              <Image
+                src="/images/logo.jpg"
+                alt="Thamarat Al-Awraq Logo"
+                width={50}
+                height={50}
+                className="rounded-full elegant-shadow"
+              />
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-burgundy rounded-full flex items-center justify-center">
+                <BookOpen size={10} className="text-white" />
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <h1 className="text-2xl font-bold text-burgundy font-serif">{t.title}</h1>
+              <p className="text-xs text-gray-600 -mt-1">
+                {language === "ar" ? "متجر الكتب الإسلامية" : "Islamic Books Store"}
+              </p>
+            </div>
           </Link>
         </motion.div>
 
-        <NavigationMenu className="hidden md:block ml-10">
-          <NavigationMenuList className="space-x-4">
+        {/* Desktop Navigation */}
+        <NavigationMenu className="hidden md:block">
+          <NavigationMenuList className="flex items-center gap-2">
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/"
-                className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                   isActive("/")
-                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                    : ""
+                    ? "bg-burgundy text-white elegant-shadow"
+                    : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
                 }`}
               >
                 {t.home}
@@ -98,10 +95,10 @@ export default function Header() {
             <NavigationMenuItem>
               <NavigationMenuLink
                 href="/shop"
-                className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                   isActive("/shop")
-                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                    : ""
+                    ? "bg-burgundy text-white elegant-shadow"
+                    : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
                 }`}
               >
                 {t.shop || "Shop"}
@@ -109,29 +106,20 @@ export default function Header() {
             </NavigationMenuItem>
             <NavigationMenuItem>
               {status === "authenticated" ? (
-                <NavigationMenuLink
-                  asChild
-                  className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
-                    isActive("/auth/signin")
-                      ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                      : ""
-                  }`}
+                <Button
+                  variant="ghost"
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-warm-gray hover:text-burgundy transition-all duration-300"
                 >
-                  <Button
-                    variant="link"
-                    onClick={handleLogout}
-                    className="p-0 h-auto text-lg font-medium flex items-center gap-1 hover:cursor-pointer"
-                  >
-                    {t.signOut}
-                  </Button>
-                </NavigationMenuLink>
+                  {t.signOut}
+                </Button>
               ) : (
                 <NavigationMenuLink
                   href="/auth/signin"
-                  className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                     isActive("/auth/signin")
-                      ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                      : ""
+                      ? "bg-burgundy text-white elegant-shadow"
+                      : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
                   }`}
                 >
                   {t.signIn}
@@ -141,102 +129,117 @@ export default function Header() {
           </NavigationMenuList>
         </NavigationMenu>
 
-        <div className="flex items-center gap-6">
+        {/* Right Section */}
+        <div className="flex items-center gap-4">
           <Link
             href="/cart"
-            className={`text-primary-foreground hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg flex items-center gap-1 px-4 py-2 rounded-md ${
+            className={`relative flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
               isActive("/cart")
-                ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                : ""
+                ? "bg-burgundy text-white elegant-shadow"
+                : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
             }`}
           >
-            <ShoppingCart size={20} />
-            {t.cart.replace("{count}", cart.length)}
+            <div className="relative">
+              <ShoppingCart size={20} />
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-burgundy text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  {cart.length}
+                </span>
+              )}
+            </div>
+            <span className="hidden sm:inline">{t.cart.replace("{count}", cart.length)}</span>
           </Link>
+
+          {/* User Status */}
           {status === "authenticated" && (
             <div className="relative">
-              <span className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full border-2 border-white"></span>
-              <User size={20} className="text-primary-foreground" />
+              <div className="w-8 h-8 bg-burgundy rounded-full flex items-center justify-center">
+                <User size={16} className="text-white" />
+              </div>
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
             </div>
           )}
-          <LanguageToggle />
-        </div>
 
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" className="md:hidden text-primary-foreground flex items-center">
-              <Menu size={24} />
-            </Button>
-          </SheetTrigger>
-          <SheetContent
-            side="right"
-            className="bg-gradient-to-r from-[var(--header-gradient-start)] to-[var(--header-gradient-end)] text-primary-foreground w-[280px] p-6 rounded-l-xl shadow-2xl"
-          >
-            <motion.nav
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 50 }}
-              transition={{ duration: 0.3 }}
-              className="flex flex-col gap-6 mt-4"
-            >
-              <Link
-                href="/"
-                className={`hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
-                  isActive("/")
-                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                    : ""
-                }`}
-                onClick={() => setIsOpen(false)}
+          {/* Language Toggle */}
+          <LanguageToggle />
+
+          {/* Mobile Menu */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                className="md:hidden p-2 text-gray-700 hover:bg-warm-gray hover:text-burgundy rounded-lg"
               >
-                {t.home}
-              </Link>
-              <Link
-                href="/shop"
-                className={`hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium px-4 py-2 rounded-md ${
-                  isActive("/shop")
-                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                    : ""
-                }`}
-                onClick={() => setIsOpen(false)}
+                <Menu size={24} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="bg-white w-[280px] p-6 elegant-shadow-lg">
+              <motion.nav
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 50 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-4 mt-8"
               >
-                {t.shop}
-              </Link>
-              <Link
-                href="/cart"
-                className={`hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md ${
-                  isActive("/cart")
-                    ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                    : ""
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                <ShoppingCart size={20} />
-                {t.cart.replace("{count}", cart.length)}
-              </Link>
-              {status === "authenticated" ? (
-                <Button
-                  variant="ghost"
-                  onClick={handleLogout}
-                  className="hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md hover:cursor-pointer"
-                >
-                  {t.signOut}
-                </Button>
-              ) : (
                 <Link
-                  href="/auth/signin"
-                  className={`hover:bg-gradient-to-r hover:from-[var(--accent-start)] hover:to-[var(--accent-end)] hover:text-primary-foreground transition-all duration-300 text-lg font-medium flex items-center gap-2 px-4 py-2 rounded-md hover:cursor-pointer ${
-                    isActive("/auth/signin")
-                      ? "bg-gradient-to-r from-[var(--accent-start)] to-[var(--accent-end)] text-primary-foreground font-bold"
-                      : ""
+                  href="/"
+                  className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    isActive("/")
+                      ? "bg-burgundy text-white elegant-shadow"
+                      : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
-                  {t.signIn}
+                  {t.home}
                 </Link>
-              )}
-            </motion.nav>
-          </SheetContent>
-        </Sheet>
+                <Link
+                  href="/shop"
+                  className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    isActive("/shop")
+                      ? "bg-burgundy text-white elegant-shadow"
+                      : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {t.shop}
+                </Link>
+                <Link
+                  href="/cart"
+                  className={`px-4 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 ${
+                    isActive("/cart")
+                      ? "bg-burgundy text-white elegant-shadow"
+                      : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <ShoppingCart size={20} />
+                  {t.cart.replace("{count}", cart.length)}
+                </Link>
+                {status === "authenticated" ? (
+                  <Button
+                    variant="ghost"
+                    onClick={handleLogout}
+                    className="px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-warm-gray hover:text-burgundy transition-all duration-300 justify-start"
+                  >
+                    {t.signOut}
+                  </Button>
+                ) : (
+                  <Link
+                    href="/auth/signin"
+                    className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      isActive("/auth/signin")
+                        ? "bg-burgundy text-white elegant-shadow"
+                        : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {t.signIn}
+                  </Link>
+                )}
+              </motion.nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
