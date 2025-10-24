@@ -76,7 +76,7 @@ export default function GoogleSignIn({ language }) {
             </svg>
           </motion.div>
         </div>
-        <div className="absolute inset-0 -top-2 -bottom-2 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+        <div className="absolute inset-0 -top-2 -bottom-2 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 hover:cursor-pointer"></div>
       </Button>
     </motion.div>
   );

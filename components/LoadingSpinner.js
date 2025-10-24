@@ -12,7 +12,6 @@ const LoadingSpinner = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-burgundy/10 via-cream/50 to-warm-gray/30 backdrop-blur-sm z-50">
-      {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-burgundy rounded-full animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-24 h-24 border-2 border-burgundy-light rounded-full animate-pulse delay-300"></div>
@@ -27,9 +26,7 @@ const LoadingSpinner = () => {
       >
         <Card className="bg-white/90 backdrop-blur-md border-0 w-full max-w-md mx-4 elegant-shadow-lg rounded-3xl overflow-hidden">
           <CardContent className="flex flex-col items-center justify-center space-y-6 p-12">
-            {/* Main Loading Animation */}
             <div className="relative">
-              {/* Outer Ring */}
               <motion.div
                 className="w-20 h-20 border-4 border-burgundy/20 rounded-full"
                 animate={{ rotate: 360 }}
@@ -40,7 +37,6 @@ const LoadingSpinner = () => {
                 }}
               />
 
-              {/* Inner Ring */}
               <motion.div
                 className="absolute inset-2 w-16 h-16 border-4 border-t-burgundy border-r-burgundy-light border-b-transparent border-l-transparent rounded-full"
                 animate={{ rotate: -360 }}
@@ -50,8 +46,6 @@ const LoadingSpinner = () => {
                   ease: "linear",
                 }}
               />
-
-              {/* Center Icon */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <motion.div
                   animate={{
@@ -68,8 +62,6 @@ const LoadingSpinner = () => {
                 </motion.div>
               </div>
             </div>
-
-            {/* Loading Text */}
             <div className="text-center space-y-3">
               <motion.h3
                 className="text-2xl font-bold text-burgundy font-serif"
@@ -82,8 +74,6 @@ const LoadingSpinner = () => {
               >
                 {t.loading || "جاري التحميل"}
               </motion.h3>
-
-              {/* Animated Dots */}
               <div className="flex justify-center space-x-1 rtl:space-x-reverse">
                 {[0, 1, 2].map((i) => (
                   <motion.div
@@ -103,8 +93,6 @@ const LoadingSpinner = () => {
                 ))}
               </div>
             </div>
-
-            {/* Floating Elements */}
             <div className="absolute -top-4 -right-4">
               <motion.div
                 animate={{
@@ -136,8 +124,6 @@ const LoadingSpinner = () => {
                 <Sparkles className="w-4 h-4 text-burgundy opacity-40" />
               </motion.div>
             </div>
-
-            {/* Progress Bar */}
             <div className="w-full bg-burgundy/10 rounded-full h-2 overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-burgundy rounded-full"
@@ -151,8 +137,6 @@ const LoadingSpinner = () => {
                 }}
               />
             </div>
-
-            {/* Subtitle */}
             <p className="text-sm text-warm-gray-600 text-center leading-relaxed">
               نحضر لك أفضل تجربة للكتب الإسلامية
             </p>
