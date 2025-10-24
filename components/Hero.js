@@ -7,15 +7,13 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, BookOpen, Star, ArrowRight } from "lucide-react";
 import { useStore } from "@/lib/store";
 import translations from "@/lib/translations";
-import { useMediaQuery } from "react-responsive";
 
 export default function Hero() {
   const { language } = useStore();
   const t = translations[language];
-  const isSmall = useMediaQuery({ maxWidth: 640 });
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-cream via-white to-warm-gray overflow-hidden">
+    <section className="relative bg-gradient-to-br from-cream via-white to-warm-gray overflow-hidden">
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-10 w-32 h-32 border border-burgundy rounded-full"></div>
         <div className="absolute top-40 right-20 w-24 h-24 border border-burgundy rounded-full"></div>
@@ -24,13 +22,14 @@ export default function Hero() {
       </div>
 
       <div className="relative z-10 container mx-auto px-6 pt-32 pb-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-8rem)]">
+        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-80px)]">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="space-y-8"
           >
+            {" "}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -40,7 +39,6 @@ export default function Hero() {
               <Star size={16} className="text-burgundy" />
               {language === "ar" ? "الأفضل في الكتب الإسلامية" : "Best Islamic Books Collection"}
             </motion.div>
-
             <div className="space-y-4">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight font-serif">
                 {t.heroTitle}
@@ -51,7 +49,6 @@ export default function Hero() {
                   : "Discover a wide collection of high-quality Islamic books that enrich your knowledge and strengthen your faith"}
               </p>
             </div>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -73,7 +70,6 @@ export default function Hero() {
                 {language === "ar" ? "تصفح الكتالوج" : "Browse Catalog"}
               </Button>
             </motion.div>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -130,7 +126,6 @@ export default function Hero() {
                   </div>
                 </CardContent>
               </Card>
-
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -158,7 +153,6 @@ export default function Hero() {
           </motion.div>
         </div>
       </div>
-
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1200 120" className="w-full h-20 fill-white">
           <path d="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z"></path>
