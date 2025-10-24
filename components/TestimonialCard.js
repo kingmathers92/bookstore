@@ -22,7 +22,6 @@ const TestimonialCard = ({ testimonial, index }) => {
             </div>
           </div>
           <p className="text-gray-700 leading-relaxed line-clamp-4 italic">"{testimonial.text}"</p>
-
           <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
             <div className="relative">
               <Image

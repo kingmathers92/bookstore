@@ -33,7 +33,7 @@ const Testimonials = () => {
   if (!testimonials) return <div>Loading testimonials...</div>;
 
   return (
-    <section className="py-20 bg-gradient-cream overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-cream via-white to-warm-gray overflow-hidden">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -42,15 +42,12 @@ const Testimonials = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-serif">
-            {language === "ar" ? "ماذا يقول عملاؤنا" : "What Our Customers Say"}
+            ماذا يقول عملاؤنا
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            {language === "ar"
-              ? "اكتشف تجارب عملائنا الراضين مع مجموعتنا المميزة من الكتب الإسلامية"
-              : "Discover the experiences of our satisfied customers with our exceptional collection of Islamic books"}
+            اكتشف تجارب عملائنا الراضين مع مجموعتنا المميزة من الكتب الإسلامية
           </p>
         </motion.div>
-
         <div className="space-y-8">
           {/* first row - right to left */}
           <div className="overflow-hidden">
@@ -58,14 +55,14 @@ const Testimonials = () => {
               className="flex gap-6"
               animate={{ x: ["0%", "-50%"] }}
               transition={{
-                duration: duration,
+                duration: 60,
                 repeat: Infinity,
                 ease: "linear",
               }}
             >
               {[...testimonials, ...testimonials].map((testimonial, index) => (
                 <TestimonialCard
-                  key={`${testimonial.id}-row1-${index}`}
+                  key={`${testimonial._id}-row1-${index}`}
                   testimonial={testimonial}
                   index={index}
                 />
@@ -79,14 +76,14 @@ const Testimonials = () => {
               className="flex gap-6"
               animate={{ x: ["-50%", "0%"] }}
               transition={{
-                duration: duration,
+                duration: 60,
                 repeat: Infinity,
                 ease: "linear",
               }}
             >
               {[...testimonials, ...testimonials].map((testimonial, index) => (
                 <TestimonialCard
-                  key={`${testimonial.id}-row2-${index}`}
+                  key={`${testimonial._id}-row2-${index}`}
                   testimonial={testimonial}
                   index={index}
                 />

@@ -101,7 +101,7 @@ export default function BookOfTheDay() {
             <h4 className="font-semibold text-lg text-gray-900 truncate font-serif">
               {bookOfTheDay.title_ar || bookOfTheDay.title_en}
             </h4>
-            <p className="text-sm text-gray-600 mb-3">السعر: {bookOfTheDay.price} ر.س</p>
+            <p className="text-sm text-gray-600 mb-3">السعر: {bookOfTheDay.price}</p>
 
             <Button className="w-full bg-burgundy text-white hover:bg-burgundy-dark transition-all">
               <Eye size={16} className="mr-2" />

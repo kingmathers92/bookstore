@@ -57,7 +57,7 @@ export default function TestimonialSubmission() {
   };
 
   return (
-    <section className="py-20 bg-white" dir={language === "ar" ? "rtl" : "ltr"}>
+    <section className="py-20 bg-white" dir="rtl">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -71,22 +71,15 @@ export default function TestimonialSubmission() {
                 <Star size={24} className="text-white" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2 font-serif">
-                  {t.testimonialSubmitTitle || "Share Your Experience"}
-                </h2>
-                <p className="text-gray-600">
-                  {t.testimonialDescription ||
-                    "We'd love to hear about your experience with our books!"}
-                </p>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2 font-serif">شارك تجربتك</h2>
+                <p className="text-gray-600">نود أن نسمع عن تجربتك مع كتبنا!</p>
               </div>
             </CardHeader>
 
             <CardContent className="space-y-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-3">
-                  <Label className="text-lg font-semibold text-gray-900">
-                    {t.testimonialRating || "Your Rating"}
-                  </Label>
+                  <Label className="text-lg font-semibold text-gray-900">تقييمك</Label>
                   <div className="flex items-center justify-center gap-2 py-4">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <motion.button
@@ -111,49 +104,38 @@ export default function TestimonialSubmission() {
                   <p className="text-center text-sm text-gray-500">
                     {rating > 0 && (
                       <span>
-                        {rating === 1 && (language === "ar" ? "ضعيف" : "Poor")}
-                        {rating === 2 && (language === "ar" ? "مقبول" : "Fair")}
-                        {rating === 3 && (language === "ar" ? "جيد" : "Good")}
-                        {rating === 4 && (language === "ar" ? "ممتاز" : "Very Good")}
-                        {rating === 5 && (language === "ar" ? "رائع" : "Excellent")}
+                        {rating === 1 && "ضعيف"}
+                        {rating === 2 && "مقبول"}
+                        {rating === 3 && "جيد"}
+                        {rating === 4 && "ممتاز"}
+                        {rating === 5 && "رائع"}
                       </span>
                     )}
                   </p>
                 </div>
-
                 <div className="space-y-3">
                   <Label htmlFor="testimonial" className="text-lg font-semibold text-gray-900">
-                    {t.testimonialText || "Your Testimonial"}
+                    شهادتك
                   </Label>
                   <Textarea
                     id="testimonial"
                     value={testimonial}
                     onChange={(e) => setTestimonial(e.target.value)}
-                    placeholder={
-                      t.testimonialPlaceholder || "Tell us about your experience with our books..."
-                    }
+                    placeholder="أخبرنا عن تجربتك مع كتبنا..."
                     className="min-h-32 resize-none border-2 border-gray-200 focus:border-burgundy rounded-xl p-4 text-base"
                     maxLength={500}
                   />
                   <div className="flex justify-between items-center">
-                    <p className="text-sm text-gray-500">
-                      {testimonial.length}/500 {language === "ar" ? "حرف" : "characters"}
-                    </p>
+                    <p className="text-sm text-gray-500">{testimonial.length}/500 حرف</p>
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                       <div
                         className={`w-2 h-2 rounded-full ${testimonial.length > 400 ? "bg-red-400" : testimonial.length > 250 ? "bg-yellow-400" : "bg-green-400"}`}
                       ></div>
                       {testimonial.length > 400
-                        ? language === "ar"
-                          ? "قريب من الحد الأقصى"
-                          : "Near limit"
+                        ? "قريب من الحد الأقصى"
                         : testimonial.length > 250
-                          ? language === "ar"
-                            ? "جيد"
-                            : "Good length"
-                          : language === "ar"
-                            ? "يمكن إضافة المزيد"
-                            : "Can add more"}
+                          ? "جيد"
+                          : "يمكن إضافة المزيد"}
                     </div>
                   </div>
                 </div>
@@ -170,12 +152,12 @@ export default function TestimonialSubmission() {
                 {isSubmitting ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    {language === "ar" ? "جاري الإرسال..." : "Submitting..."}
+                    جاري الإرسال...
                   </>
                 ) : (
                   <>
                     <Send size={20} />
-                    {t.testimonialSubmit || "Submit Testimonial"}
+                    إرسال الشهادة
                   </>
                 )}
               </Button>
