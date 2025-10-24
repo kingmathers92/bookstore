@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import translations from "@/lib/translations";
 
 export default function GoogleSignIn({ language }) {
@@ -14,35 +15,69 @@ export default function GoogleSignIn({ language }) {
   };
 
   return (
-    <Button
-      onClick={handleGoogleSignIn}
-      className="bg-red-600 text-white w-full flex items-center justify-center gap-2"
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.2 }}
     >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+      <Button
+        onClick={handleGoogleSignIn}
+        className="relative w-full bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-200 hover:border-gray-300 font-semibold py-4 px-6 rounded-2xl transition-all duration-300 elegant-shadow hover:shadow-lg group overflow-hidden"
       >
-        <path
-          d="M17.64 9.2045C17.64 8.5665 17.5827 7.9525 17.476 7.3645H9V10.925H13.8433C13.635 12.315 13.0007 13.5755 12.024 14.3995V16.6785H14.9987C16.7473 15.0035 17.64 12.5415 17.64 9.2045Z"
-          fill="#4285F4"
-        />
-        <path
-          d="M9 18C11.43 18 13.4673 17.194 14.9987 16.6785L12.024 14.3995C11.1127 14.9355 9.924 15.2503 9 15.2503C6.612 15.2503 4.61333 13.9345 3.84667 12.0515L1.82667 14.3645C3.49333 16.8585 6.18 18 9 18Z"
-          fill="#34A853"
-        />
-        <path
-          d="M3.84666 12.0515C3.58966 11.4635 3.43866 10.8245 3.43866 10.125C3.43866 9.4255 3.58966 8.7865 3.84666 8.1985V5.8855L1.82333 3.5715C0.684333 5.2605 0 7.2945 0 9.125C0 10.9555 0.684333 12.9895 1.82333 14.6785L3.84666 12.0515Z"
-          fill="#FBBC04"
-        />
-        <path
-          d="M9 3.74975C10.606 3.74975 11.9967 4.18475 13.1347 5.12525L15.0213 3.23875C13.46 1.73875 11.422 0.74975 9 0.74975C6.18 0.74975 3.49333 2.04175 1.82667 4.57525L3.84667 6.88875C4.61333 5.00575 6.612 3.74975 9 3.74975Z"
-          fill="#EA4335"
-        />
-      </svg>
-      {t.googleLogin}
-    </Button>
+        <div className="absolute inset-0 bg-gradient-to-r from-red-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="relative flex items-center justify-center gap-3">
+          <motion.div
+            className="flex-shrink-0"
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.6 }}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="drop-shadow-sm"
+            >
+              <path
+                d="M17.64 9.2045C17.64 8.5665 17.5827 7.9525 17.476 7.3645H9V10.925H13.8433C13.635 12.315 13.0007 13.5755 12.024 14.3995V16.6785H14.9987C16.7473 15.0035 17.64 12.5415 17.64 9.2045Z"
+                fill="#4285F4"
+              />
+              <path
+                d="M9 18C11.43 18 13.4673 17.194 14.9987 16.6785L12.024 14.3995C11.1127 14.9355 9.924 15.2503 9 15.2503C6.612 15.2503 4.61333 13.9345 3.84667 12.0515L1.82667 14.3645C3.49333 16.8585 6.18 18 9 18Z"
+                fill="#34A853"
+              />
+              <path
+                d="M3.84666 12.0515C3.58966 11.4635 3.43866 10.8245 3.43866 10.125C3.43866 9.4255 3.58966 8.7865 3.84666 8.1985V5.8855L1.82333 3.5715C0.684333 5.2605 0 7.2945 0 9.125C0 10.9555 0.684333 12.9895 1.82333 14.6785L3.84666 12.0515Z"
+                fill="#FBBC04"
+              />
+              <path
+                d="M9 3.74975C10.606 3.74975 11.9967 4.18475 13.1347 5.12525L15.0213 3.23875C13.46 1.73875 11.422 0.74975 9 0.74975C6.18 0.74975 3.49333 2.04175 1.82667 4.57525L3.84667 6.88875C4.61333 5.00575 6.612 3.74975 9 3.74975Z"
+                fill="#EA4335"
+              />
+            </svg>
+          </motion.div>
+          <span className="text-lg font-medium bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text">
+            {t.googleLogin || "تسجيل الدخول بجوجل"}
+          </span>
+          <motion.div
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            initial={{ x: -10 }}
+            animate={{ x: 0 }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gray-600">
+              <path
+                d="M7 17L17 7M17 7H7M17 7V17"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </motion.div>
+        </div>
+        <div className="absolute inset-0 -top-2 -bottom-2 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+      </Button>
+    </motion.div>
   );
 }
