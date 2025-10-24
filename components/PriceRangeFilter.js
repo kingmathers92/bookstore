@@ -3,7 +3,7 @@
 import { useStore } from "@/lib/store";
 import { Slider } from "@/components/ui/slider";
 import { motion } from "framer-motion";
-import { DollarSign, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import translations from "@/lib/translations";
 
 export default function PriceRangeFilter() {
@@ -18,7 +18,7 @@ export default function PriceRangeFilter() {
       transition={{ duration: 0.5 }}
     >
       {" "}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3">
         <div className="p-2 bg-burgundy/10 rounded-xl">
           <TrendingUp className="w-5 h-5 text-burgundy" />
         </div>
@@ -29,13 +29,12 @@ export default function PriceRangeFilter() {
           <p className="text-sm text-warm-gray-600">اختر النطاق المناسب لك</p>
         </div>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="bg-gradient-cream rounded-xl p-4 border border-burgundy/10">
           <div className="flex items-center justify-between">
             <div className="text-center">
               <p className="text-xs text-warm-gray-600 mb-1">من</p>
               <div className="flex items-center gap-1">
-                <DollarSign className="w-4 h-4 text-burgundy" />
                 <span className="text-xl font-bold text-burgundy">{priceRange[0]}</span>
               </div>
             </div>
@@ -47,7 +46,6 @@ export default function PriceRangeFilter() {
             <div className="text-center">
               <p className="text-xs text-warm-gray-600 mb-1">إلى</p>
               <div className="flex items-center gap-1">
-                <DollarSign className="w-4 h-4 text-burgundy" />
                 <span className="text-xl font-bold text-burgundy">{priceRange[1]}</span>
               </div>
             </div>
@@ -68,11 +66,11 @@ export default function PriceRangeFilter() {
         <div className="flex justify-between text-sm text-warm-gray-500 px-2">
           <span className="flex items-center gap-1">
             <span>0</span>
-            <span className="text-xs">{t.priceTnd || "ر.س"}</span>
+            <span className="text-xs">{t.priceTnd}</span>
           </span>
           <span className="flex items-center gap-1">
             <span>1000</span>
-            <span className="text-xs">{t.priceTnd || "ر.س"}</span>
+            <span className="text-xs">{t.priceTnd}</span>
           </span>
         </div>
 

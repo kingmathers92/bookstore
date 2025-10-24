@@ -63,19 +63,19 @@ export default function BookDetail() {
 
   if (bookLoading || ratingLoading) {
     return (
-      <div className="min-h-screen bg-gradient-cream py-8 px-4" dir="rtl">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="min-h-screen bg-gradient-cream py-4 px-4" dir="rtl">
+        <div className="container mx-auto max-w-5xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-4">
-              <Skeleton className="h-96 w-full rounded-xl" />
+              <Skeleton className="h-80 w-full rounded-xl" />
             </div>
             <div className="space-y-4">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-6 w-1/2" />
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-6 w-1/3" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
             </div>
           </div>
         </div>
@@ -86,12 +86,12 @@ export default function BookDetail() {
   if (bookError || ratingError) {
     return (
       <div
-        className="min-h-screen bg-gradient-cream py-8 px-4 flex items-center justify-center"
+        className="min-h-screen bg-gradient-cream py-4 px-4 flex items-center justify-center"
         dir="rtl"
       >
-        <Card className="bg-white shadow-lg rounded-xl p-8 text-center">
-          <div className="text-red-500 text-6xl mb-4">📚</div>
-          <h2 className="text-2xl font-semibold text-burgundy mb-4 font-serif">
+        <Card className="bg-white shadow-lg rounded-xl p-6 text-center">
+          <div className="text-red-500 text-4xl mb-3">📚</div>
+          <h2 className="text-xl font-semibold text-burgundy mb-3 font-serif">
             {t.errorLoadingBook || "Error loading book details"}
           </h2>
         </Card>
@@ -136,14 +136,14 @@ export default function BookDetail() {
       : null;
 
   return (
-    <div className="min-h-screen bg-gradient-cream py-8 px-4" dir="rtl">
-      <div className="container mx-auto max-w-6xl">
+    <div className="min-h-screen bg-gradient-cream py-4 px-4" dir="rtl">
+      <div className="container mx-auto max-w-5xl">
         {showToast && (
           <motion.div
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className="fixed top-4 right-4 bg-burgundy text-white px-6 py-3 rounded-lg shadow-lg z-50"
+            className="fixed top-4 right-4 bg-burgundy text-white px-4 py-2 rounded-lg shadow-lg z-50 text-sm"
           >
             {toastMessage}
           </motion.div>
@@ -153,16 +153,16 @@ export default function BookDetail() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-screen overflow-hidden"
         >
-          {/* Book Image */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex justify-center"
           >
-            <Card className="bg-white shadow-lg rounded-xl overflow-hidden elegant-shadow">
-              <div className="relative w-full h-96 lg:h-[500px] bg-gray-100">
+            <Card className="bg-white shadow-lg rounded-xl overflow-hidden elegant-shadow w-full max-w-md">
+              <div className="relative w-full h-80 bg-gray-100">
                 <Image
                   src={book.image || "/placeholder.jpg"}
                   alt={title}
@@ -170,12 +170,12 @@ export default function BookDetail() {
                   className="object-cover hover:scale-105 transition-transform duration-500"
                   onError={(e) => (e.target.style.display = "none")}
                 />
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-3 right-3">
                   <CategoryBadge category={category} />
                 </div>
-                <div className="absolute top-4 left-4">
+                <div className="absolute top-3 left-3">
                   <div
-                    className={`px-3 py-1 text-sm font-bold rounded-full ${
+                    className={`px-2 py-1 text-xs font-bold rounded-full ${
                       book.inStock ? "bg-green-600" : "bg-red-600"
                     } text-white shadow-lg`}
                   >
@@ -183,7 +183,7 @@ export default function BookDetail() {
                   </div>
                 </div>
                 {discountPercentage && (
-                  <div className="absolute bottom-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                  <div className="absolute bottom-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                     خصم {discountPercentage}%
                   </div>
                 )}
@@ -194,116 +194,118 @@ export default function BookDetail() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="space-y-6"
+            className="space-y-4 overflow-y-auto max-h-screen pb-4"
           >
             <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-burgundy mb-4 font-serif leading-tight">
+              <h1 className="text-2xl lg:text-3xl font-bold text-burgundy mb-3 font-serif leading-tight">
                 {title}
               </h1>
 
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-3">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-5 h-5 ${
+                    className={`w-4 h-4 ${
                       i < Math.round(avgRating) ? "text-yellow-500 fill-current" : "text-gray-300"
                     } transition-colors duration-200`}
                   />
                 ))}
-                <span className="text-sm text-warm-gray-600 mr-2">
+                <span className="text-xs text-warm-gray-600 mr-2">
                   ({avgRating.toFixed(1)} {t.rating || "تقييم"})
                 </span>
               </div>
 
-              <p className="text-warm-gray-700 leading-relaxed mb-6">{description}</p>
+              <p className="text-sm text-warm-gray-700 leading-relaxed mb-4 line-clamp-3">
+                {description}
+              </p>
             </div>
-            <Card className="bg-white shadow-md rounded-xl p-6 elegant-shadow">
-              <div className="flex items-center gap-4 mb-4">
+            <Card className="bg-white shadow-md rounded-xl p-4 elegant-shadow">
+              <div className="flex items-center gap-3 mb-3">
                 {discountPercentage && (
-                  <span className="text-lg text-gray-500 line-through">
+                  <span className="text-sm text-gray-500 line-through">
                     {book.priceBeforeDiscount} ر.س
                   </span>
                 )}
-                <span className="text-3xl font-bold text-burgundy font-serif">
+                <span className="text-2xl font-bold text-burgundy font-serif">
                   {book.price ? `${book.price} ر.س` : "مجاني"}
                 </span>
               </div>
 
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-sm text-warm-gray-600">{t.inStock || "حالة التوفر"}:</span>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-xs text-warm-gray-600">{t.inStock || "حالة التوفر"}:</span>
                 <span
-                  className={`font-semibold ${book.inStock ? "text-green-600" : "text-red-600"}`}
+                  className={`font-semibold text-sm ${book.inStock ? "text-green-600" : "text-red-600"}`}
                 >
                   {book.inStock ? "متوفر" : "غير متوفر"}
                 </span>
               </div>
-              <div className="flex items-center gap-4 mb-6">
-                <label className="text-sm font-semibold text-burgundy">الكمية:</label>
+              <div className="flex items-center gap-3 mb-4">
+                <label className="text-xs font-semibold text-burgundy">الكمية:</label>
                 <Input
                   type="number"
                   min="1"
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-20 text-center border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all"
+                  className="w-16 text-center border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all text-sm"
                 />
                 <Button
                   onClick={() => addToCart({ ...book, quantity })}
                   disabled={!book.inStock}
-                  className="flex-1 bg-burgundy text-white hover:bg-burgundy-dark disabled:bg-gray-400 disabled:cursor-not-allowed px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2"
+                  className="flex-1 bg-burgundy text-white hover:bg-burgundy-dark disabled:bg-gray-400 disabled:cursor-not-allowed px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm"
                 >
-                  <ShoppingCart size={18} />
+                  <ShoppingCart size={16} />
                   {t.addToCart || "أضف للسلة"}
                 </Button>
               </div>
             </Card>
-            <Card className="bg-white shadow-md rounded-xl p-6 elegant-shadow">
-              <h3 className="text-lg font-bold text-burgundy mb-4 font-serif">
+            <Card className="bg-white shadow-md rounded-xl p-4 elegant-shadow">
+              <h3 className="text-sm font-bold text-burgundy mb-3 font-serif">
                 {t.notificationPreferences || "تفضيلات التنبيهات"}
               </h3>
 
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-3">
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center gap-2">
                   <Checkbox
                     id="notify-price-drop"
                     checked={notifyPriceDrop}
                     onCheckedChange={setNotifyPriceDrop}
                     disabled={!book.price || book.inStock}
                   />
-                  <label htmlFor="notify-price-drop" className="text-sm text-burgundy">
+                  <label htmlFor="notify-price-drop" className="text-xs text-burgundy">
                     {t.notifyPriceDrop || "أعلمني عند انخفاض السعر"}
                   </label>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <Checkbox
                     id="notify-stock"
                     checked={notifyStockAvailable}
                     onCheckedChange={setNotifyStockAvailable}
                     disabled={book.inStock}
                   />
-                  <label htmlFor="notify-stock" className="text-sm text-burgundy">
+                  <label htmlFor="notify-stock" className="text-xs text-burgundy">
                     {t.notifyStockAvailable || "أعلمني عند التوفر"}
                   </label>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <Checkbox
                     id="notify-email"
                     checked={notifyEmail}
                     onCheckedChange={setNotifyEmail}
                   />
-                  <label htmlFor="notify-email" className="text-sm text-burgundy">
+                  <label htmlFor="notify-email" className="text-xs text-burgundy">
                     {t.notifyByEmail || "تنبيه بالبريد الإلكتروني"}
                   </label>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <Checkbox
                     id="notify-app"
                     checked={notifyInApp}
                     onCheckedChange={setNotifyInApp}
                   />
-                  <label htmlFor="notify-app" className="text-sm text-burgundy">
+                  <label htmlFor="notify-app" className="text-xs text-burgundy">
                     {t.notifyInApp || "تنبيه داخل التطبيق"}
                   </label>
                 </div>
@@ -311,18 +313,18 @@ export default function BookDetail() {
 
               <Button
                 onClick={handleAddToWishlist}
-                className="w-full bg-burgundy/10 text-burgundy border-2 border-burgundy hover:bg-burgundy hover:text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2"
+                className="w-full bg-burgundy/10 text-burgundy border-2 border-burgundy hover:bg-burgundy hover:text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm"
               >
-                <Heart size={18} />
+                <Heart size={16} />
                 {t.addToWishlist || "أضف لقائمة الأمنيات"}
               </Button>
             </Card>
             <Button
               variant="outline"
               onClick={() => router.back()}
-              className="w-full border-2 border-burgundy text-burgundy hover:bg-burgundy hover:text-white px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2"
+              className="w-full border-2 border-burgundy text-burgundy hover:bg-burgundy hover:text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm"
             >
-              <ArrowRight size={18} />
+              <ArrowRight size={16} />
               {t.backToShop || "العودة للمتجر"}
             </Button>
           </motion.div>

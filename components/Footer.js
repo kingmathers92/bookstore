@@ -86,7 +86,7 @@ export default function Footer() {
                   href="/shop?category=quran"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  {language === "ar" ? "القرآن الكريم" : "Quran"}
+                  {language === "ar" ? "قرآن" : "Quran"}
                 </Link>
               </li>
               <li>
@@ -94,7 +94,7 @@ export default function Footer() {
                   href="/shop?category=hadith"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  {language === "ar" ? "الحديث الشريف" : "Hadith"}
+                  {language === "ar" ? "حديث" : "Hadith"}
                 </Link>
               </li>
               <li>
@@ -102,7 +102,7 @@ export default function Footer() {
                   href="/shop?category=fiqh"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  {language === "ar" ? "الفقه" : "Fiqh"}
+                  {language === "ar" ? "فقه" : "Fiqh"}
                 </Link>
               </li>
               <li>
@@ -142,7 +142,7 @@ export default function Footer() {
               <div className="flex items-center gap-3">
                 <MapPin size={16} className="text-gray-400" />
                 <span className="text-gray-300 text-sm">
-                  {language === "ar" ? "الرياض، المملكة العربية السعودية" : "Riyadh, Saudi Arabia"}
+                  {language === "ar" ? "تونس" : "Tunisia"}
                 </span>
               </div>
             </div>

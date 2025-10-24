@@ -4,13 +4,14 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import translations from "@/lib/translations";
 import { supabase } from "@/lib/supabase";
+import { motion } from "framer-motion";
 
 function Cart() {
   const { cart, removeFromCart, language, user, syncCartFromLocalStorage } = useStore();
@@ -102,132 +103,195 @@ function Cart() {
   };
 
   return (
-    <div className="container mx-auto py-6 sm:py-8 lg:py-12 max-w-4xl">
-      <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-bold text-green-900 mb-6 sm:mb-8 text-center mt-8">
-        {t.cartTitle}
-      </h2>
-      {cart.length === 0 ? (
-        <p className="text-center text-muted-foreground text-lg sm:text-xl">{t.cartEmpty}</p>
-      ) : (
-        <>
-          <div className="space-y-4 sm:space-y-6">
-            {cart.map((item) => (
-              <Card
-                key={item.book_id}
-                className="flex flex-col sm:flex-row justify-between items-center p-4 sm:p-6 shadow-md hover:shadow-lg transition-shadow"
-              >
-                <CardHeader className="p-0 sm:p-2 w-full sm:w-2/3 md:w-3/4">
-                  <CardTitle className="text-base sm:text-lg md:text-xl lg:text-xl font-semibold line-clamp-2">
-                    {item.title}
+    <div className="min-h-screen bg-gradient-cream py-8 px-4" dir="rtl">
+      <div className="container mx-auto max-w-4xl">
+        <motion.h1
+          className="text-4xl md:text-5xl font-bold text-burgundy mb-8 text-center font-serif"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {t.cartTitle}
+        </motion.h1>
+
+        {cart.length === 0 ? (
+          <motion.div
+            className="text-center py-16"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="bg-white shadow-lg rounded-xl p-8 elegant-shadow">
+              <CardContent>
+                <div className="text-6xl mb-4">📚</div>
+                <h2 className="text-2xl font-semibold text-burgundy mb-4 font-serif">
+                  {t.cartEmpty}
+                </h2>
+                <Button
+                  onClick={() => router.push("/shop")}
+                  className="bg-burgundy text-white hover:bg-burgundy-dark transition-all px-8 py-3 rounded-lg font-semibold"
+                >
+                  تصفح الكتب
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ) : (
+          <>
+            <div className="space-y-4 mb-8">
+              {cart.map((item, index) => (
+                <motion.div
+                  key={item.book_id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden elegant-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-burgundy font-serif mb-2">
+                            {item.title}
+                          </h3>
+                          <div className="flex items-center gap-4 text-sm text-warm-gray-600">
+                            <span className="font-medium">
+                              {item.price} ر.س × {item.quantity || 1}
+                            </span>
+                            <span className="font-bold text-burgundy">
+                              = {item.price * (item.quantity || 1)} ر.س
+                            </span>
+                          </div>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          onClick={() => handleRemove(item.book_id)}
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2"
+                          aria-label={`${t.cartRemove} ${item.title}`}
+                        >
+                          <Trash size={16} />
+                          {t.cartRemove}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="bg-white shadow-lg rounded-xl elegant-shadow mb-8">
+                <CardHeader className="bg-gradient-burgundy text-white rounded-t-xl">
+                  <CardTitle className="text-xl font-bold font-serif text-center">
+                    {t.cartSummary}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-0 sm:p-2 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                  <span className="text-sm sm:text-base md:text-lg lg:text-lg font-medium">
-                    {item.price} x {item.quantity || 1}
-                  </span>
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-burgundy font-serif">
+                      {t.cartTotal}: {totalPrice} ر.س
+                    </div>
+                  </div>
                   <Button
-                    variant="destructive"
-                    onClick={() => handleRemove(item.book_id)}
-                    className="w-full sm:w-auto mt-2 sm:mt-0 px-3 py-2 flex items-center gap-2 hover:cursor-pointer"
-                    aria-label={`${t.cartRemove} ${item.title}`}
+                    onClick={() => setIsConfirming(true)}
+                    className="w-full mt-6 bg-burgundy hover:bg-burgundy-dark text-white py-3 rounded-lg font-semibold transition-all"
                   >
-                    <Trash size={isMobile ? 14 : 16} /> {t.cartRemove}
+                    {t.cartConfirmOrder}
                   </Button>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-          <Card className="mt-8 sm:mt-10 lg:mt-12 p-4 sm:p-6 shadow-md">
-            <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-bold text-green-900">
-                {t.cartSummary}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-lg sm:text-xl md:text-xl lg:text-2xl font-semibold text-right">
-                {t.cartTotal}: <span className="text-green-700">{totalPrice}</span>
-              </p>
-            </CardContent>
-            <CardFooter className="flex justify-end">
-              <Button
-                onClick={() => setIsConfirming(true)}
-                className="bg-emerald-700 text-cream-100 px-4 py-2 hover:bg-emerald-800 transition-colors"
-              >
-                {t.cartConfirmOrder}
-              </Button>
-            </CardFooter>
-          </Card>
+            </motion.div>
 
-          {isConfirming && (
-            <Card className="mt-8 sm:mt-10 lg:mt-12 p-4 sm:p-6 shadow-md">
-              <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-bold text-green-900">
-                  {t.cartOrderDetails}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleOrderSubmit} className="space-y-4">
-                  <div>
-                    <Label htmlFor="name" className="text-sm sm:text-base md:text-lg">
-                      {t.cartName}
-                    </Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      placeholder={t.cartNamePlaceholder}
-                      className="w-full mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="address" className="text-sm sm:text-base md:text-lg">
-                      {t.cartAddress}
-                    </Label>
-                    <Input
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      placeholder={t.cartAddressPlaceholder}
-                      className="w-full mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone" className="text-sm sm:text-base md:text-lg">
-                      {t.cartPhone}
-                    </Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder={t.cartPhonePlaceholder}
-                      className="w-full mt-1"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="bg-emerald-700 text-cream-100 px-4 py-2 w-full sm:w-auto hover:bg-emerald-800 transition-colors hover:cursor-pointer"
-                  >
-                    {t.cartPlaceOrder}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          )}
-          <div className="text-center mb-6 sm:mb-8">
-            <Button
-              variant="outline"
-              className="bg-emerald-700 text-cream-100 hover:bg-emerald-800 transition-colors px-4 py-2 mt-6 hover:cursor-pointer"
-              aria-label={t.backToStore}
-              onClick={() => router.back()}
-            >
-              {t.backToStore}
-            </Button>
-          </div>
-        </>
-      )}
+            {isConfirming && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="bg-white shadow-lg rounded-xl elegant-shadow">
+                  <CardHeader className="bg-gradient-burgundy text-white rounded-t-xl">
+                    <CardTitle className="text-xl font-bold font-serif">
+                      {t.cartOrderDetails}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <form onSubmit={handleOrderSubmit} className="space-y-6">
+                      <div>
+                        <Label htmlFor="name" className="text-burgundy font-semibold mb-2 block">
+                          {t.cartName}
+                        </Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          placeholder={t.cartNamePlaceholder}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="address" className="text-burgundy font-semibold mb-2 block">
+                          {t.cartAddress}
+                        </Label>
+                        <Input
+                          id="address"
+                          name="address"
+                          value={formData.address}
+                          onChange={handleInputChange}
+                          placeholder={t.cartAddressPlaceholder}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="phone" className="text-burgundy font-semibold mb-2 block">
+                          {t.cartPhone}
+                        </Label>
+                        <Input
+                          id="phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder={t.cartPhonePlaceholder}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all"
+                        />
+                      </div>
+                      <div className="flex gap-4">
+                        <Button
+                          type="submit"
+                          className="flex-1 bg-burgundy hover:bg-burgundy-dark text-white py-3 rounded-lg font-semibold transition-all"
+                        >
+                          {t.cartPlaceOrder}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setIsConfirming(false)}
+                          className="flex-1 border-2 border-burgundy text-burgundy hover:bg-burgundy hover:text-white py-3 rounded-lg font-semibold transition-all"
+                        >
+                          إلغاء
+                        </Button>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+
+            <div className="text-center mt-8">
+              <Button
+                variant="outline"
+                className="border-2 border-burgundy text-burgundy hover:bg-burgundy hover:text-white px-8 py-3 rounded-lg font-semibold transition-all"
+                onClick={() => router.back()}
+              >
+                {t.backToStore}
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
