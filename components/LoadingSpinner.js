@@ -1,140 +1,166 @@
 "use client";
 
-import { signIn, useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Loader2, BookOpen, Sparkles } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import GoogleSignIn from "@/components/GoogleSignIn";
-import { User } from "lucide-react";
 import translations from "@/lib/translations";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import LoadingSpinner from "@/components/LoadingSpinner";
-export default function SignIn() {
-  const { data: session, status } = useSession();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const setUser = useStore((state) => state.setUser);
+
+const LoadingSpinner = () => {
   const { language } = useStore();
-  const router = useRouter();
   const t = translations[language];
 
-  useEffect(() => {
-    if (status === "authenticated" && session) {
-      console.log("Session on load:", session);
-      setUser({
-        id: session.user.id,
-        name: session.user.name || session.user.email,
-        email: session.user.email,
-        user_metadata: session.user.user_metadata || { role: "user" },
-      });
-      router.push(session.user.user_metadata.role === "admin" ? "/admin" : "/");
-    }
-  }, [session, status, setUser, router]);
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-burgundy/10 via-cream/50 to-warm-gray/30 backdrop-blur-sm z-50">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-burgundy rounded-full animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-24 h-24 border-2 border-burgundy-light rounded-full animate-pulse delay-300"></div>
+        <div className="absolute top-1/2 right-1/3 w-16 h-16 border border-burgundy rotate-45 animate-pulse delay-700"></div>
+      </div>
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
-      if (result?.error) {
-        alert(
-          t.signInError ||
-            `Sign-in failed: ${result.error}. Please check your credentials and try again.`,
-        );
-      }
-    } catch (error) {
-      alert(
-        t.signInError ||
-          `An error occurred during sign-in: ${error.message}. Please try again later.`,
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-10"
+      >
+        <Card className="bg-white/90 backdrop-blur-md border-0 w-full max-w-md mx-4 elegant-shadow-lg rounded-3xl overflow-hidden">
+          <CardContent className="flex flex-col items-center justify-center space-y-6 p-12">
+            {/* Main Loading Animation */}
+            <div className="relative">
+              {/* Outer Ring */}
+              <motion.div
+                className="w-20 h-20 border-4 border-burgundy/20 rounded-full"
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
 
-  if (status === "loading") {
-    return <div>{t.loading || <LoadingSpinner />}</div>;
-  }
+              {/* Inner Ring */}
+              <motion.div
+                className="absolute inset-2 w-16 h-16 border-4 border-t-burgundy border-r-burgundy-light border-b-transparent border-l-transparent rounded-full"
+                animate={{ rotate: -360 }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
 
-  if (status === "authenticated" && session) {
-    return (
-      <div className="container mx-auto py-12" style={{ paddingTop: "80px" }}>
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
-              <User size={24} /> {t.welcome} {session.user.name || session.user.email}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <p className="text-muted-foreground">{t.loggedInAs}</p>
-            <Button
-              onClick={() => signOut({ callbackUrl: "/auth/signin" })}
-              className="bg-red-600 text-white w-full"
-            >
-              {t.logout}
-            </Button>
+              {/* Center Icon */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 180, 360],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <BookOpen className="w-8 h-8 text-burgundy" />
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Loading Text */}
+            <div className="text-center space-y-3">
+              <motion.h3
+                className="text-2xl font-bold text-burgundy font-serif"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                {t.loading || "جاري التحميل"}
+              </motion.h3>
+
+              {/* Animated Dots */}
+              <div className="flex justify-center space-x-1 rtl:space-x-reverse">
+                {[0, 1, 2].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="w-2 h-2 bg-burgundy rounded-full"
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.3, 1, 0.3],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                      ease: "easeInOut",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Floating Elements */}
+            <div className="absolute -top-4 -right-4">
+              <motion.div
+                animate={{
+                  y: [-10, 10, -10],
+                  rotate: [0, 180, 360],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <Sparkles className="w-6 h-6 text-burgundy-light opacity-60" />
+              </motion.div>
+            </div>
+
+            <div className="absolute -bottom-4 -left-4">
+              <motion.div
+                animate={{
+                  y: [10, -10, 10],
+                  rotate: [360, 180, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <Sparkles className="w-4 h-4 text-burgundy opacity-40" />
+              </motion.div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full bg-burgundy/10 rounded-full h-2 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-burgundy rounded-full"
+                animate={{
+                  x: ["-100%", "100%"],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            </div>
+
+            {/* Subtitle */}
+            <p className="text-sm text-warm-gray-600 text-center leading-relaxed">
+              نحضر لك أفضل تجربة للكتب الإسلامية
+            </p>
           </CardContent>
         </Card>
-      </div>
-    );
-  }
-
-  return (
-    <div className="container mx-auto py-12 justify-center" style={{ paddingTop: "80px" }}>
-      <Card className="max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold text-green-900 flex items-center gap-2">
-            <User size={24} /> {t.signInTitle}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t.signInEmailPlaceholder}
-              className="w-full"
-              disabled={loading}
-            />
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={t.signInPasswordPlaceholder}
-              className="w-full"
-              disabled={loading}
-            />
-            <Button
-              type="submit"
-              disabled={loading}
-              className="bg-emerald-700 text-cream-100 w-full hover:cursor-pointer"
-            >
-              {loading ? t.signingIn || "Signing In..." : t.signInButton}
-            </Button>
-          </form>
-          <div className="mt-4 text-center">
-            <p className="text-muted-foreground mb-2">{t.or}</p>
-            <GoogleSignIn language={language} />
-          </div>
-          <div className="mt-4 text-center">
-            <p className="text-muted-foreground">{t.noAccount}</p>
-            <Link href="/auth/register">
-              <Button variant="link" className="text-emerald-700">
-                {t.register}
-              </Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+      </motion.div>
     </div>
   );
-}
+};
+
+export default LoadingSpinner;
