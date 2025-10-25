@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import UsersTable from "@/components/admin/UsersTable";
+//import UsersTable from "@/components/admin/UsersTable";
 import BooksTable from "@/components/admin/BooksTable";
 import OrdersTable from "@/components/admin/OrdersTable";
 import translations from "@/lib/translations";
@@ -50,9 +50,7 @@ export default function AdminDashboard() {
           <BooksTable />
         </TabsContent>
 
-        <TabsContent value="users">
-          <UsersTable />
-        </TabsContent>
+        <TabsContent value="users"></TabsContent>
 
         <TabsContent value="orders">
           <OrdersTable />
