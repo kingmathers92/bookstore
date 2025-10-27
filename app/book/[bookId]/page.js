@@ -1,3 +1,4 @@
+// app/book/[bookId]/page.jsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -26,9 +27,9 @@ const fetchAverageRating = async (bookId) => {
   const { data, error } = await supabase
     .from("testimonials")
     .select("rating")
-    .eq("text", (q) => q.ilike(`%${bookId}%`))
-    .limit(10);
-  if (error) throw new Error(`Error fetching ratings: ${error.message}`);
+    .eq("book_id", bookId)
+    .limit(50);
+  if (error) return 0;
   return data.length > 0 ? data.reduce((sum, t) => sum + t.rating, 0) / data.length : 0;
 };
 
@@ -66,15 +67,12 @@ export default function BookDetail() {
       <div className="min-h-screen bg-gradient-cream py-4 px-4" dir="rtl">
         <div className="container mx-auto max-w-5xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <Skeleton className="h-80 w-full rounded-xl" />
-            </div>
+            <Skeleton className="h-96 w-full rounded-xl" />
             <div className="space-y-4">
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
               <Skeleton className="h-16 w-full" />
               <Skeleton className="h-4 w-1/3" />
-              <Skeleton className="h-10 w-full" />
               <Skeleton className="h-10 w-full" />
             </div>
           </div>
@@ -83,14 +81,14 @@ export default function BookDetail() {
     );
   }
 
-  if (bookError || ratingError) {
+  if (bookError || ratingError || !book) {
     return (
       <div
         className="min-h-screen bg-gradient-cream py-4 px-4 flex items-center justify-center"
         dir="rtl"
       >
         <Card className="bg-white shadow-lg rounded-xl p-6 text-center">
-          <div className="text-red-500 text-4xl mb-3">📚</div>
+          <div className="text-red-500 text-4xl mb-3">Book Not Found</div>
           <h2 className="text-xl font-semibold text-burgundy mb-3 font-serif">
             {t.errorLoadingBook || "Error loading book details"}
           </h2>
@@ -99,8 +97,6 @@ export default function BookDetail() {
     );
   }
 
-  if (!book) return null;
-
   const title = language === "ar" ? book.title_ar || book.title_en : book.title_en || book.title_ar;
   const category =
     language === "ar" ? book.category_ar || book.category_en : book.category_en || book.category_ar;
@@ -108,7 +104,7 @@ export default function BookDetail() {
     book.description || (language === "ar" ? "لا يوجد وصف متاح" : "No description available");
 
   const handleAddToWishlist = () => {
-    if (!user?.id) {
+    if (!user?.supabase_id) {
       alert(t.pleaseLogin || "Please log in to add to wishlist");
       return;
     }
@@ -152,23 +148,22 @@ export default function BookDetail() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-h-screen overflow-hidden"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
         >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex justify-center"
+            className="flex justify-center lg:justify-end"
           >
-            <Card className="bg-white shadow-lg rounded-xl overflow-hidden elegant-shadow w-full max-w-md">
-              <div className="relative w-full h-80 bg-gray-100">
+            <Card className="bg-white shadow-lg rounded-xl overflow-hidden w-full max-w-md h-full min-h-96">
+              <div className="relative w-full h-full min-h-96">
                 <Image
                   src={book.image || "/placeholder.jpg"}
                   alt={title}
                   fill
-                  className="object-cover hover:scale-105 transition-transform duration-500"
-                  onError={(e) => (e.target.style.display = "none")}
+                  className="object-contain p-4"
+                  onError={(e) => (e.target.src = "/placeholder.jpg")}
+                  priority
                 />
                 <div className="absolute top-3 right-3">
                   <CategoryBadge category={category} />
@@ -190,10 +185,10 @@ export default function BookDetail() {
               </div>
             </Card>
           </motion.div>
+
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
             className="space-y-4 overflow-y-auto max-h-screen pb-4"
           >
             <div>
@@ -207,7 +202,7 @@ export default function BookDetail() {
                     key={i}
                     className={`w-4 h-4 ${
                       i < Math.round(avgRating) ? "text-yellow-500 fill-current" : "text-gray-300"
-                    } transition-colors duration-200`}
+                    }`}
                   />
                 ))}
                 <span className="text-xs text-warm-gray-600 mr-2">
@@ -215,10 +210,9 @@ export default function BookDetail() {
                 </span>
               </div>
 
-              <p className="text-sm text-warm-gray-700 leading-relaxed mb-4 line-clamp-3">
-                {description}
-              </p>
+              <p className="text-sm text-warm-gray-700 leading-relaxed mb-4">{description}</p>
             </div>
+
             <Card className="bg-white shadow-md rounded-xl p-4 elegant-shadow">
               <div className="flex items-center gap-3 mb-3">
                 {discountPercentage && (
@@ -239,6 +233,7 @@ export default function BookDetail() {
                   {book.inStock ? "متوفر" : "غير متوفر"}
                 </span>
               </div>
+
               <div className="flex items-center gap-3 mb-4">
                 <label className="text-xs font-semibold text-burgundy">الكمية:</label>
                 <Input
@@ -246,18 +241,19 @@ export default function BookDetail() {
                   min="1"
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 text-center border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all text-sm"
+                  className="w-16 text-center border-2 border-gray-200 rounded-lg focus:border-burgundy text-sm"
                 />
                 <Button
                   onClick={() => addToCart({ ...book, quantity })}
                   disabled={!book.inStock}
-                  className="flex-1 bg-burgundy text-white hover:bg-burgundy-dark disabled:bg-gray-400 disabled:cursor-not-allowed px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm"
+                  className="flex-1 bg-burgundy text-white hover:bg-burgundy-dark disabled:bg-gray-400 px-4 py-2 rounded-lg font-semibold flex items-center gap-2 text-sm"
                 >
                   <ShoppingCart size={16} />
                   {t.addToCart || "أضف للسلة"}
                 </Button>
               </div>
             </Card>
+
             <Card className="bg-white shadow-md rounded-xl p-4 elegant-shadow">
               <h3 className="text-sm font-bold text-burgundy mb-3 font-serif">
                 {t.notificationPreferences || "تفضيلات التنبيهات"}
@@ -275,7 +271,6 @@ export default function BookDetail() {
                     {t.notifyPriceDrop || "أعلمني عند انخفاض السعر"}
                   </label>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <Checkbox
                     id="notify-stock"
@@ -287,7 +282,6 @@ export default function BookDetail() {
                     {t.notifyStockAvailable || "أعلمني عند التوفر"}
                   </label>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <Checkbox
                     id="notify-email"
@@ -298,7 +292,6 @@ export default function BookDetail() {
                     {t.notifyByEmail || "تنبيه بالبريد الإلكتروني"}
                   </label>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <Checkbox
                     id="notify-app"
@@ -313,16 +306,17 @@ export default function BookDetail() {
 
               <Button
                 onClick={handleAddToWishlist}
-                className="w-full bg-burgundy/10 text-burgundy border-2 border-burgundy hover:bg-burgundy hover:text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm"
+                className="w-full bg-burgundy/10 text-burgundy border-2 border-burgundy hover:bg-burgundy hover:text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 text-sm"
               >
                 <Heart size={16} />
                 {t.addToWishlist || "أضف لقائمة الأمنيات"}
               </Button>
             </Card>
+
             <Button
               variant="outline"
               onClick={() => router.back()}
-              className="w-full border-2 border-burgundy text-burgundy hover:bg-burgundy hover:text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 text-sm"
+              className="w-full border-2 border-burgundy text-burgundy hover:bg-burgundy hover:text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 text-sm"
             >
               <ArrowRight size={16} />
               {t.backToShop || "العودة للمتجر"}

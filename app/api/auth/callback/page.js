@@ -15,6 +15,7 @@ export default function Callback() {
     if (status === "authenticated" && session?.user) {
       setUser({
         id: session.user.id,
+        supabase_id: session.user.supabase_id,
         name: session.user.name,
         email: session.user.email,
         user_metadata: session.user.user_metadata || { role: "user" },

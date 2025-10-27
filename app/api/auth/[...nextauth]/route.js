@@ -26,6 +26,7 @@ export const authOptions = {
           email: data.user.email,
           name: data.user.email,
           user_metadata: metadata,
+          supabase_id: data.user.id,
         };
       },
     }),
@@ -46,6 +47,7 @@ export const authOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.supabase_id = user.supabase_id || user.id;
         token.email = user.email;
         token.name = user.name;
         token.user_metadata = user.user_metadata || { role: "user" };
@@ -55,6 +57,7 @@ export const authOptions = {
     async session({ session, token }) {
       session.user = {
         id: token.id,
+        supabase_id: token.supabase_id,
         email: token.email,
         name: token.name,
         user_metadata: token.user_metadata,
@@ -62,7 +65,6 @@ export const authOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url === "/api/auth/signin") return baseUrl;
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
@@ -75,5 +77,4 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };
