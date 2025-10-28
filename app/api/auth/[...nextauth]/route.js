@@ -1,79 +1,51 @@
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { supabase } from "@/lib/supabase";
 
 export const authOptions = {
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: credentials.email,
-          password: credentials.password,
-        });
-        if (error || !data.user) return null;
-
-        const { data: userInfo } = await supabase.auth.getUser(data.session.access_token);
-        const metadata = userInfo?.user?.user_metadata || { role: "user" };
-
-        return {
-          id: data.user.id,
-          email: data.user.email,
-          name: data.user.email,
-          user_metadata: metadata,
-          supabase_id: data.user.id,
-        };
-      },
-    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      authorization: {
-        params: {
-          prompt: "consent",
-          access_type: "offline",
-          response_type: "code",
-        },
-      },
     }),
   ],
-
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account.provider === "google") {
+        const { data: existingUser } = await supabase
+          .from("auth.users")
+          .select("id")
+          .eq("email", user.email)
+          .single();
+
+        if (existingUser) {
+          user.id = existingUser?.id;
+        } else {
+          const { data } = await supabase.auth.signUp({
+            email: user.email,
+            password: crypto.randomUUID(),
+            options: { data: { name: user.name } },
+          });
+          user.id = data.user.id;
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.supabase_id = user.supabase_id || user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.user_metadata = user.user_metadata || { role: "user" };
+        token.role = user.user_metadata?.role || "user";
       }
       return token;
     },
     async session({ session, token }) {
-      session.user = {
-        id: token.id,
-        supabase_id: token.supabase_id,
-        email: token.email,
-        name: token.name,
-        user_metadata: token.user_metadata,
-      };
+      session.user.id = token.id;
+      session.user.role = token.role;
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl;
-    },
   },
-
-  pages: {
-    signIn: "/auth/signin",
-  },
-
-  debug: process.env.NODE_ENV === "development",
+  pages: { signIn: "/auth/signin" },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

@@ -17,6 +17,7 @@ function Cart() {
   const { cart, removeFromCart, language, user, syncCartFromLocalStorage } = useStore();
   const t = translations[language];
   const router = useRouter();
+  const { checkout } = useStore();
 
   const [isMobile, setIsMobile] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -54,51 +55,16 @@ function Cart() {
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.address || !formData.phone) {
-      alert.error(t.cartFormIncomplete || "Incomplete Form", {
-        description: t.cartFormIncomplete || "Please fill in all fields.",
-      });
+      alert(t.cartFormIncomplete);
       return;
     }
 
-    const orderDetails = {
-      user_id: user?.id || null,
-      items: JSON.stringify(
-        cart.map((item) => ({
-          book_id: item.book_id,
-          title: item.title,
-          price: item.price,
-          quantity: item.quantity || 1,
-        })),
-      ),
-      total_price: totalPrice,
-      name: formData.name,
-      address: formData.address,
-      phone: formData.phone,
-      status: "pending",
-      order_date: new Date().toISOString(),
-    };
-
     try {
-      const { data, error } = await supabase.from("orders").insert([orderDetails]).single();
-      if (error || !data) {
-        console.error("Supabase Error:", error || "No data returned");
-        throw new Error(`Supabase Error: ${error?.message || "Insert failed"}`);
-      }
-
-      useStore.setState({ cart: [] });
-      if (!user?.id) localStorage.setItem("cart", JSON.stringify([]));
-
-      alert.success(t.cartOrderSuccess || "Order Placed!", {
-        description:
-          t.cartOrderConfirm ||
-          "Your order has been placed for cash on delivery. We'll contact you soon.",
-      });
+      await checkout(totalPrice);
+      alert(t.cartOrderSuccess);
       router.push("/");
     } catch (error) {
-      alert.error(t.cartOrderError || "Error", {
-        description: `Failed to place order: ${error.message}`,
-      });
-      console.error("Order Submission Error:", error);
+      alert(t.cartOrderError);
     }
   };
 
@@ -149,24 +115,34 @@ function Cart() {
                   <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden elegant-shadow">
                     <CardContent className="p-6">
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        {/* IMAGE */}
+                        <div className="w-20 h-24 flex-shrink-0">
+                          <img
+                            src={item.image || "/placeholder.jpg"}
+                            alt={item.title}
+                            className="w-full h-full object-cover rounded-lg shadow-sm"
+                            onError={(e) => (e.target.src = "/placeholder.jpg")}
+                          />
+                        </div>
+
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-burgundy font-serif mb-2">
+                          <h3 className="text-lg font-semibold text-burgundy font-serif mb-1">
                             {item.title}
                           </h3>
                           <div className="flex items-center gap-4 text-sm text-warm-gray-600">
                             <span className="font-medium">
-                              {item.price} ر.س × {item.quantity || 1}
+                              {item.price} × {item.quantity || 1}
                             </span>
                             <span className="font-bold text-burgundy">
                               = {item.price * (item.quantity || 1)} ر.س
                             </span>
                           </div>
                         </div>
+
                         <Button
                           variant="destructive"
                           onClick={() => handleRemove(item.book_id)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2"
-                          aria-label={`${t.cartRemove} ${item.title}`}
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
                         >
                           <Trash size={16} />
                           {t.cartRemove}
@@ -192,7 +168,7 @@ function Cart() {
                 <CardContent className="p-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-burgundy font-serif">
-                      {t.cartTotal}: {totalPrice} ر.س
+                      {t.cartTotal}: {totalPrice}
                     </div>
                   </div>
                   <Button

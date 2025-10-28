@@ -58,7 +58,7 @@ export default function GoogleSignIn({ language }) {
             </svg>
           </motion.div>
           <span className="text-lg font-medium bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text">
-            {t.googleLogin || "تسجيل الدخول بجوجل"}
+            {t.signInWithGoogle}
           </span>
           <motion.div
             className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"

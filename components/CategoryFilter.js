@@ -10,28 +10,36 @@ import {
 import { useStore } from "@/lib/store";
 
 export default function CategoryFilter() {
-  const { category, setCategory } = useStore();
+  const { category = "all", setCategory } = useStore();
+
+  const categoryMap = {
+    الكل: "all",
+    مصاحف: "مصاحف",
+    تفسير: "تفسير",
+    فقه: "فقه",
+    لغة: "لغة",
+    حديث: "حديث",
+    سيرة: "سيرة",
+    "مواعظ وتزكية": "مواعظ وتزكية",
+    رقائق: "رقائق",
+    دواوين: "دواوين",
+    "كتب أطفال": "كتب أطفال",
+    مناجد: "مناجد",
+    "علوم قرآن": "علوم قرآن",
+  };
 
   return (
     <div className="w-full max-w-xs">
       <Select value={category} onValueChange={setCategory}>
-        <SelectTrigger className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-emerald-700">
+        <SelectTrigger className="w-full p-3 border-2 border-gray-200 focus:border-burgundy rounded-xl bg-white elegant-shadow focus:elegant-shadow-lg transition-all">
           <SelectValue placeholder="الكل" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">الكل</SelectItem>
-          <SelectItem value="مصاحف">مصاحف</SelectItem>
-          <SelectItem value="تفسير">تفسير</SelectItem>
-          <SelectItem value="فقه">فقه</SelectItem>
-          <SelectItem value="لغة">لغة</SelectItem>
-          <SelectItem value="حديث">حديث</SelectItem>
-          <SelectItem value="سيرة">سيرة</SelectItem>
-          <SelectItem value="مواعظ وتزكية">مواعظ وتزكية</SelectItem>
-          <SelectItem value="رقائق">رقائق</SelectItem>
-          <SelectItem value="دواوين">دواوين</SelectItem>
-          <SelectItem value="كتب أطفال">كتب أطفال</SelectItem>
-          <SelectItem value="مناجد">مناجد</SelectItem>
-          <SelectItem value="علوم قرآن">علوم قرآن</SelectItem>
+          {Object.entries(categoryMap).map(([label, value]) => (
+            <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>

@@ -6,7 +6,7 @@ import { useStore } from "@/lib/store";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
-import { Menu, ShoppingCart, User, BookOpen } from "lucide-react";
+import { Menu, ShoppingCart, User, BookOpen, Heart } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   NavigationMenu,
@@ -17,13 +17,14 @@ import {
 import translations from "@/lib/translations";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { cart, user, logout, language } = useStore();
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   const handleLogout = async () => {
@@ -32,16 +33,17 @@ export default function Header() {
     router.push("/auth/signin");
   };
 
-  const t = translations[language];
+  const t = translations[language] || translations.ar;
   const isActive = (path) => pathname === path;
 
   useEffect(() => {
-    if (status === "authenticated" && session && !user) {
+    if (status === "authenticated" && session?.user && !user) {
+      const { id, name, email, user_metadata } = session.user;
       useStore.getState().setUser({
-        id: session.user.id,
-        name: session.user.name,
-        email: session.user.email,
-        user_metadata: session.user.user_metadata || { role: "user" },
+        id: id || null,
+        name: name || "",
+        email: email || "",
+        user_metadata: user_metadata || { role: "user" },
       });
     }
   }, [session, status, user]);
@@ -77,7 +79,6 @@ export default function Header() {
           </Link>
         </motion.div>
 
-        {/* Desktop Navigation */}
         <NavigationMenu className="hidden md:block">
           <NavigationMenuList className="flex items-center gap-2">
             <NavigationMenuItem>
@@ -126,10 +127,19 @@ export default function Header() {
                 </NavigationMenuLink>
               )}
             </NavigationMenuItem>
+            {status === "authenticated" && (
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  href="/wishlist"
+                  className={`... ${isActive("/wishlist") ? "bg-burgundy text-white" : ""}`}
+                >
+                  <Heart /> Wishlist
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Right Section */}
         <div className="flex items-center gap-4">
           <Link
             href="/cart"
@@ -147,10 +157,8 @@ export default function Header() {
                 </span>
               )}
             </div>
-            <span className="hidden sm:inline">{t.cart.replace("{count}", cart.length)}</span>
           </Link>
 
-          {/* User Status */}
           {status === "authenticated" && (
             <div className="relative">
               <div className="w-8 h-8 bg-burgundy rounded-full flex items-center justify-center">
@@ -160,10 +168,8 @@ export default function Header() {
             </div>
           )}
 
-          {/* Language Toggle */}
           <LanguageToggle />
 
-          {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button
@@ -213,7 +219,7 @@ export default function Header() {
                   onClick={() => setIsOpen(false)}
                 >
                   <ShoppingCart size={20} />
-                  {t.cart.replace("{count}", cart.length)}
+                  {t.cart?.replace("{count}", cart.length) || `Cart (${cart.length})`}
                 </Link>
                 {status === "authenticated" ? (
                   <Button

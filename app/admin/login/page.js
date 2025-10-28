@@ -29,7 +29,6 @@ export default function AdminLogin() {
       return;
     }
 
-    // ✅ Check admin role
     if (data.user.user_metadata.role !== "admin") {
       setError("You are not authorized to access the admin dashboard.");
       await supabase.auth.signOut();

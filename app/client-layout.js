@@ -7,12 +7,15 @@ import Footer from "../components/Footer";
 import LiveChat from "../components/LiveChat";
 import ScrollToTop from "../components/BackToTop";
 import { ArrowUp } from "lucide-react";
-import CartSync from "../components/CartSync";
+import AuthSync from "@/lib/authSync";
+import DataSync from "@/lib/dataSync";
 import { ToastProvider } from "@/components/Toast";
 
 export default function ClientLayout({ children }) {
   return (
     <SessionProvider>
+      <AuthSync />
+      <DataSync />
       <ToastProvider>
         <Header />
         <main className="flex-grow">{children}</main>
@@ -25,7 +28,6 @@ export default function ClientLayout({ children }) {
         >
           <ArrowUp size={24} />
         </ScrollToTop>
-        <CartSync />
       </ToastProvider>
     </SessionProvider>
   );

@@ -1,4 +1,3 @@
-// app/book/[bookId]/page.jsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -104,16 +103,16 @@ export default function BookDetail() {
     book.description || (language === "ar" ? "لا يوجد وصف متاح" : "No description available");
 
   const handleAddToWishlist = () => {
-    if (!user?.supabase_id) {
-      alert(t.pleaseLogin || "Please log in to add to wishlist");
+    if (!user?.id) {
+      alert(t.pleaseLogin);
       return;
     }
-    addToWishlist({
-      bookId: book.book_id,
-      notifyPriceDrop,
-      notifyStockAvailable,
-      notifyEmail,
-      notifyInApp,
+
+    addToWishlist(book.book_id, {
+      notify_price_drop: notifyPriceDrop,
+      notify_stock_available: notifyStockAvailable,
+      notify_email: notifyEmail,
+      notify_in_app: notifyInApp,
     });
     if (notifyInApp) {
       setToastMessage(notifyPriceDrop ? "تم تعيين تنبيه انخفاض السعر!" : "تم تعيين تنبيه التوفر!");
@@ -217,11 +216,11 @@ export default function BookDetail() {
               <div className="flex items-center gap-3 mb-3">
                 {discountPercentage && (
                   <span className="text-sm text-gray-500 line-through">
-                    {book.priceBeforeDiscount} ر.س
+                    {book.priceBeforeDiscount}
                   </span>
                 )}
                 <span className="text-2xl font-bold text-burgundy font-serif">
-                  {book.price ? `${book.price} ر.س` : "مجاني"}
+                  {book.price ? `${book.price}` : "مجاني"}
                 </span>
               </div>
 

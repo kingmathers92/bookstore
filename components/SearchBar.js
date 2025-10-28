@@ -9,16 +9,22 @@ import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function SearchBar() {
-  const { searchQuery, setSearchQuery, language, isTyping, searchHistory, loadSearchHistory } =
-    useStore();
+  const {
+    searchQuery,
+    setSearchQuery,
+    language,
+    isTyping,
+    searchHistory,
+    loadSearchHistoryFromSupabase,
+  } = useStore();
   const [suggestions, setSuggestions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
 
   const t = translations[language];
 
   useEffect(() => {
-    loadSearchHistory();
-  }, [loadSearchHistory]);
+    loadSearchHistoryFromSupabase();
+  }, [loadSearchHistoryFromSupabase]);
 
   useEffect(() => {
     if (!searchQuery) {

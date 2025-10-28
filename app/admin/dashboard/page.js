@@ -18,9 +18,11 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user || data.user.user_metadata.role !== "admin") {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data.user || data.user.user_metadata.role !== "admin") {
         router.push("/admin/login");
+      } else {
+        console.log("Admin UUID:", data.user.id);
       }
     };
     checkAuth();

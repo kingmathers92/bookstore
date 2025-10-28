@@ -100,141 +100,49 @@ export default function BooksTable() {
   };
 
   const handleSave = async () => {
+    setIsSaving(true);
     try {
-      let payload = { ...formData };
-      delete payload.actions;
-      delete payload.index;
-      payload.priceBeforeDiscount = formData.priceBeforeDiscount || null;
+      let imageUrl = existingImageUrl || null;
 
-      if (payload.category) {
-        const categoryData = categoryMapping[payload.category] || {
-          en: payload.category.replace(/-/g, " "),
-          ar: payload.category.replace(/-/g, " "),
-        };
-        payload.category_en = categoryData.en;
-        payload.category_ar = categoryData.ar;
-        delete payload.category;
-      } else {
-        payload.category_en = payload.category_en || "";
-        payload.category_ar = payload.category_ar || "";
+      if (imageFile) {
+        const fileExt = imageFile.name.split(".").pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `books/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("book_images")
+          .upload(filePath, imageFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage.from("book_images").getPublicUrl(filePath);
+
+        imageUrl = publicUrlData.publicUrl;
       }
 
-      const creating = isEditing === "new";
-      const method = creating ? "POST" : "PUT";
+      const { data, error } = await supabase
+        .from("books")
+        .insert([
+          {
+            title,
+            author,
+            category,
+            description,
+            price,
+            image_url: imageUrl,
+          },
+        ])
+        .select();
 
-      if (creating && payload.book_id) delete payload.book_id;
+      if (error) throw error;
 
-      console.log("Payload before save:", payload);
-
-      let newBookId = null;
-      let serverData = null;
-
-      if (method === "POST") {
-        const res = await fetch("/api/admin/books", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        const bodyJson = await res.json().catch(() => null);
-        if (!res.ok) {
-          const msg =
-            bodyJson?.error || bodyJson?.message || `API POST failed (status ${res.status})`;
-          throw new Error(msg);
-        }
-
-        const inserted = Array.isArray(bodyJson) ? bodyJson : bodyJson?.data || bodyJson;
-        newBookId = inserted?.[0]?.book_id || inserted?.book_id || bodyJson?.id || null;
-
-        if (!newBookId) {
-          console.warn("POST succeeded but returned no book_id, response:", bodyJson);
-          throw new Error("Failed to retrieve new book ID from server response.");
-        }
-
-        setIsEditing(newBookId);
-        payload.book_id = newBookId;
-        serverData = bodyJson;
-      }
-
-      if (pendingImageFile) {
-        const bookIdToUpdate = newBookId || (isEditing && isEditing !== "new" ? isEditing : null);
-        if (!bookIdToUpdate) {
-          throw new Error("Please save the book first before uploading an image.");
-        }
-
-        const fd = new FormData();
-        fd.append("file", pendingImageFile);
-        fd.append("filename", `books/${Date.now()}_${pendingImageFile.name}`);
-
-        const uploadRes = await fetch("/api/admin/upload", {
-          method: "POST",
-          body: fd,
-        });
-
-        const uploadBody = await uploadRes.json().catch(() => null);
-        if (!uploadRes.ok) {
-          throw new Error(
-            uploadBody?.error || uploadBody?.message || `Image upload failed (${uploadRes.status})`,
-          );
-        }
-
-        const imageUrl = uploadBody.publicUrl || uploadBody.path || uploadBody?.data?.publicUrl;
-        const updateRes = await fetch("/api/admin/books", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            book_id: bookIdToUpdate,
-            image: imageUrl,
-          }),
-        });
-        const updateJson = await updateRes.json().catch(() => null);
-        if (!updateRes.ok) {
-          throw new Error(
-            updateJson?.error ||
-              updateJson?.message ||
-              `Failed to update book with image (${updateRes.status})`,
-          );
-        }
-
-        payload.image = imageUrl;
-        console.log("Image uploaded and book updated:", updateJson);
-
-        setPendingImageFile(null);
-      }
-
-      if (method === "PUT") {
-        if (!payload.book_id && isEditing && isEditing !== "new") payload.book_id = isEditing;
-
-        const res = await fetch("/api/admin/books", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        const resJson = await res.json().catch(() => null);
-        if (!res.ok) {
-          throw new Error(
-            resJson?.error || resJson?.message || `API PUT failed (status ${res.status})`,
-          );
-        }
-        serverData = resJson;
-      }
-      if (creating) showSuccess(t.bookCreated || "Book created successfully!");
-      else showSuccess(t.bookUpdated || "Book updated successfully!");
-
-      setIsEditing(null);
-      setFormData({});
-      setIsModalOpen(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      setPendingImageFile(null);
-      fetchBooks();
-      console.log("Saved book, server returned:", serverData);
+      toast.success("Book added successfully!");
+      onClose();
     } catch (err) {
-      console.error("handleSave error:", err);
-      showError(err.message || t.errorUpdatingBook || "Error updating book");
-      if (err.message && err.message.includes("404")) {
-        showError("API endpoint not found. Please check the server configuration.");
-      }
+      console.error("Error saving book:", err.message);
+      toast.error("Error saving book");
+    } finally {
+      setIsSaving(false);
     }
   };
 
