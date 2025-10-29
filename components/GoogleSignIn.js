@@ -1,14 +1,12 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import translations from "@/lib/translations";
 
 export default function GoogleSignIn({ language }) {
   const t = translations[language];
-  const router = useRouter();
 
   const handleGoogleSignIn = async () => {
     await signIn("google", { callbackUrl: "/" });
