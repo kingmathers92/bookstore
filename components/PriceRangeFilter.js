@@ -35,14 +35,18 @@ export default function PriceRangeFilter() {
             max={1000}
             step={10}
             value={priceRange}
-            onValueChange={setPriceRange}
+            onValueChange={(value) => {
+              setPriceRange([value[0], 1000]);
+            }}
             className="w-full"
           />
         </div>
 
         <div className="flex justify-between text-sm text-warm-gray-500 px-2">
-          <span>0</span>
-          <span>1000</span>
+          <span>
+            {priceRange[0]} {t.priceTnd}
+          </span>
+          <span>1000 {t.priceTnd}</span>
         </div>
       </div>
     </motion.div>
