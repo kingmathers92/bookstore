@@ -161,9 +161,9 @@ const BookCard = ({
                 {hasDiscount && (
                   <div className="flex items-center gap-2">
                     <span className="text-gray-400 line-through text-sm">
-                      {priceBeforeDiscount} د.ت
+                      {t.bookCardPrice.replace("{price}", displayBook.priceBeforeDiscount)}
                     </span>
-                    <span className="text-red-500 text-sm font-semibold">
+                    <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-md">
                       -{discountPercentage}%
                     </span>
                   </div>
