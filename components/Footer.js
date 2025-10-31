@@ -2,7 +2,9 @@
 
 import { useStore } from "@/lib/store";
 import { motion } from "framer-motion";
-import { BookOpen, Mail, Phone, MapPin, Facebook, Twitter, Instagram } from "lucide-react";
+import { BookOpen, Mail, Phone, MapPin, Facebook, Instagram } from "lucide-react";
+import { TbBrandTiktok } from "react-icons/tb";
+import { FaWhatsapp } from "react-icons/fa";
 import translations from "@/lib/translations";
 import Link from "next/link";
 
@@ -32,9 +34,8 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
-              {language === "ar"
-                ? "نحن نقدم أفضل مجموعة من الكتب الإسلامية عالية الجودة لإثراء معرفتك الدينية."
-                : "We provide the finest collection of high-quality Islamic books to enrich your religious knowledge."}
+              {t.footerDescription ||
+                "نحن نقدم أفضل مجموعة من الكتب الإسلامية عالية الجودة لإثراء معرفتك الدينية."}
             </p>
           </motion.div>
 
@@ -45,7 +46,7 @@ export default function Footer() {
             className="space-y-4"
           >
             <h4 className="text-lg font-semibold font-serif">
-              {language === "ar" ? "روابط سريعة" : "Quick Links"}
+              {t.footerQuickLinks || "روابط سريعة"}
             </h4>
             <ul className="space-y-2">
               <li>
@@ -60,12 +61,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
-                  {language === "ar" ? "من نحن" : "About Us"}
+                  {t.aboutUs || "من نحن"}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-                  {language === "ar" ? "اتصل بنا" : "Contact"}
+                  {t.contactUs || "اتصل بنا"}
                 </Link>
               </li>
             </ul>
@@ -77,9 +78,7 @@ export default function Footer() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-4"
           >
-            <h4 className="text-lg font-semibold font-serif">
-              {language === "ar" ? "الفئات" : "Categories"}
-            </h4>
+            <h4 className="text-lg font-semibold font-serif">{t.categories || "الفئات"}</h4>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -110,7 +109,7 @@ export default function Footer() {
                   href="/shop?category=biography"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  {language === "ar" ? "السيرة النبوية" : "Biography"}
+                  {language === "ar" ? "سيرة" : "Biography"}
                 </Link>
               </li>
             </ul>
@@ -122,22 +121,29 @@ export default function Footer() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="space-y-4"
           >
-            <h4 className="text-lg font-semibold font-serif">
-              {language === "ar" ? "تواصل معنا" : "Contact Us"}
-            </h4>
+            <h4 className="text-lg font-semibold font-serif">{t.contactUs || "تواصل معنا"}</h4>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <Mail size={16} className="text-gray-400" />
                 <a
-                  href={`mailto:${t.footerEmail}`}
+                  href="mailto:info@thamaratalawrak.com"
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                 >
-                  {t.footerEmail}
+                  info@thamaratalawrak.com
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={16} className="text-gray-400" />
-                <span className="text-gray-300 text-sm">{t.footerPhone}</span>
+                <span className="text-gray-300 text-sm">23344488</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <FaWhatsapp size={16} className="text-gray-400" />
+                <a
+                  href="https://wa.me/52998711"
+                  className="text-gray-300 hover:text-white transition-colors text-sm"
+                >
+                  52998711
+                </a>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin size={16} className="text-gray-400" />
@@ -149,19 +155,19 @@ export default function Footer() {
 
             <div className="flex items-center gap-4 pt-4">
               <a
-                href="#"
+                href="https://www.facebook.com/ThamaratAlAwrak"
                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
               >
                 <Facebook size={16} />
               </a>
               <a
-                href="#"
+                href="https://www.tiktok.com/@thamarat_al_awrak?_r=1&_t=ZM-9108FnO80Tb"
                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
               >
-                <Twitter size={16} />
+                <TbBrandTiktok />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/mayyaharrabi/?igsh=emdkNHNpd3lqMWQw"
                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
               >
                 <Instagram size={16} />
