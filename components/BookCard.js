@@ -55,14 +55,11 @@ const BookCard = ({
 
   if (!displayBook) return <Skeleton className="w-full h-96" />;
 
-  const discountPercentage =
-    displayBook.priceBeforeDiscount && displayBook.priceBeforeDiscount > displayBook.price
-      ? Math.round(
-          ((displayBook.priceBeforeDiscount - displayBook.price) /
-            displayBook.priceBeforeDiscount) *
-            100,
-        )
-      : null;
+  const currentPrice = price || priceBeforeDiscount;
+  const hasDiscount = price && priceBeforeDiscount && priceBeforeDiscount > price;
+  const discountPercentage = hasDiscount
+    ? Math.round(((priceBeforeDiscount - price) / priceBeforeDiscount) * 100)
+    : null;
 
   const handleWishlist = async (e) => {
     e.preventDefault();
@@ -121,13 +118,6 @@ const BookCard = ({
               <Eye size={16} className="text-gray-600" />
             </Button>
           </div>
-
-          {discountPercentage && (
-            <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
-              -{discountPercentage}%
-            </div>
-          )}
-
           <div className="absolute bottom-4 left-4">
             <CategoryBadge category={displayBook.category} />
           </div>
@@ -168,16 +158,19 @@ const BookCard = ({
           <div className="space-y-2 mt-auto">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                {discountPercentage && (
+                {hasDiscount && (
                   <div className="flex items-center gap-2">
                     <span className="text-gray-400 line-through text-sm">
-                      {t.bookCardPrice.replace("{price}", displayBook.priceBeforeDiscount)}
+                      {priceBeforeDiscount} د.ت
+                    </span>
+                    <span className="text-red-500 text-sm font-semibold">
+                      -{discountPercentage}%
                     </span>
                   </div>
                 )}
-                <p className="text-xl font-bold text-burgundy font-serif">
-                  {t.bookCardPrice.replace("{price}", displayBook.price || 0)}
-                </p>
+                {currentPrice && (
+                  <p className="text-xl font-bold text-burgundy font-serif">{currentPrice} د.ت</p>
+                )}
               </div>
               <StockStatus inStock={displayBook.inStock} language={language} />
             </div>

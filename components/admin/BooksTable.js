@@ -331,6 +331,7 @@ export default function BooksTable() {
           { accessorKey: "publishing_house_ar", header: "Publisher AR" },
           { accessorKey: "category_en", header: "Category EN" },
           { accessorKey: "category_ar", header: "Category AR" },
+          { accessorKey: "priceBeforeDiscount", header: "PiceBeforeDiscount" },
           { accessorKey: "price", header: "Price" },
           { accessorKey: "inStock", header: "In Stock" },
           { accessorKey: "image", header: "Image" },
@@ -432,6 +433,17 @@ export default function BooksTable() {
                   value={formData.price || ""}
                   onChange={(e) =>
                     setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })
+                  }
+                />
+                <Input
+                  type="number"
+                  placeholder={t.priceBeforeDiscount || "Price Before Discount"}
+                  value={formData.priceBeforeDiscount || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      priceBeforeDiscount: parseFloat(e.target.value) || 0,
+                    })
                   }
                 />
 
