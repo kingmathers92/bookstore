@@ -1,13 +1,14 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 import translations from "@/lib/translations";
-import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { Facebook, Instagram } from "lucide-react";
+import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import { TbBrandTiktok } from "react-icons/tb";
 
-export default function About() {
+export default function Contact() {
   const { language } = useStore();
   const t = translations[language];
 
@@ -41,7 +42,7 @@ export default function About() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {t.aboutUs}
+          {t.contactUs}
         </motion.h1>
 
         <motion.div
@@ -51,16 +52,35 @@ export default function About() {
         >
           <Card className="bg-white/10 backdrop-blur-lg border-white/10 rounded-2xl shadow-xl p-6 md:p-10">
             <CardContent className="space-y-6 text-gray-100 text-lg leading-relaxed text-center">
-              <p>{t.aboutDescription}</p>
-              <div className="space-y-2">
-                <p>• {t.shipping}</p>
-                <p>• {t.offers}</p>
-                <p>• {t.joinUs}</p>
-              </div>
+              {" "}
+              <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+                {" "}
+                <Mail size={22} className="text-white" /> <p>info@thamaratalawrak.com</p>{" "}
+              </div>{" "}
+              <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+                {" "}
+                <Phone size={22} className="text-white" />{" "}
+                <span className="text-gray-300 text-sm">23344488</span>{" "}
+              </div>{" "}
+              <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+                {" "}
+                <FaWhatsapp size={22} className="text-white" />{" "}
+                <a
+                  href="https://wa.me/52998711"
+                  className="text-gray-300 hover:text-white transition-colors text-sm"
+                >
+                  {" "}
+                  52998711{" "}
+                </a>{" "}
+              </div>{" "}
+              <div className="flex flex-col md:flex-row items-center justify-center gap-3">
+                {" "}
+                <MapPin size={22} className="text-white" />{" "}
+                <p>{language === "ar" ? "تونس" : "Tunisia"}</p>{" "}
+              </div>{" "}
             </CardContent>
           </Card>
         </motion.div>
-
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
