@@ -13,6 +13,7 @@ import translations from "@/lib/translations";
 import { motion } from "framer-motion";
 import { Heart, Settings, Save, X } from "lucide-react";
 import { showSuccess, showError } from "@/components/Toast";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 function WishlistItem({
   item,
@@ -329,6 +330,7 @@ export default function Wishlist() {
 
   return (
     <div className="min-h-screen bg-gradient-cream py-8 px-4" dir="rtl">
+      <Breadcrumbs />
       <div className="container mx-auto max-w-4xl">
         <motion.h1
           className="text-4xl md:text-5xl font-bold text-burgundy mb-8 text-center font-serif flex items-center justify-center gap-3"

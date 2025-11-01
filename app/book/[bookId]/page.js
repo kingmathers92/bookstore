@@ -15,6 +15,7 @@ import translations from "@/lib/translations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import CategoryBadge from "@/components/CategoryBadge";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const fetchBook = async (bookId) => {
   const { data, error } = await supabase.from("books").select("*").eq("book_id", bookId).single();
@@ -102,6 +103,9 @@ export default function BookDetail() {
   const description =
     book.description || (language === "ar" ? "لا يوجد وصف متاح" : "No description available");
 
+  const price = book.price;
+  const priceBeforeDiscount = book.priceBeforeDiscount;
+
   const handleAddToWishlist = () => {
     if (!user?.id) {
       alert(t.pleaseLogin);
@@ -125,13 +129,15 @@ export default function BookDetail() {
     setNotifyInApp(false);
   };
 
-  const discountPercentage =
-    book.priceBeforeDiscount && book.priceBeforeDiscount > book.price
-      ? Math.round(((book.priceBeforeDiscount - book.price) / book.priceBeforeDiscount) * 100)
-      : null;
+  const currentPrice = price || priceBeforeDiscount;
+  const hasDiscount = price && priceBeforeDiscount && priceBeforeDiscount > price;
+  const discountPercentage = hasDiscount
+    ? Math.round(((priceBeforeDiscount - price) / priceBeforeDiscount) * 100)
+    : null;
 
   return (
-    <div className="min-h-screen bg-gradient-cream py-4 px-4" dir="rtl">
+    <div className="min-h-screen bg-gradient-cream py-4 px-4 mt-8" dir="rtl">
+      <Breadcrumbs />
       <div className="container mx-auto max-w-5xl">
         {showToast && (
           <motion.div
@@ -180,6 +186,9 @@ export default function BookDetail() {
                   <div className="absolute bottom-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                     خصم {discountPercentage}%
                   </div>
+                )}
+                {currentPrice && (
+                  <p className="text-xl font-bold text-burgundy font-serif">{currentPrice} د.ت</p>
                 )}
               </div>
             </Card>

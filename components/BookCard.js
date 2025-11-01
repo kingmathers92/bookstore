@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStore } from "@/lib/store";
-import { ShoppingCart, Heart, Star, Eye } from "lucide-react";
+import { ShoppingCart, Heart, Eye } from "lucide-react";
 import { showSuccess, showError } from "@/components/Toast";
 import Image from "next/image";
 import Link from "next/link";
@@ -55,10 +55,19 @@ const BookCard = ({
 
   if (!displayBook) return <Skeleton className="w-full h-96" />;
 
-  const currentPrice = price || priceBeforeDiscount;
-  const hasDiscount = price && priceBeforeDiscount && priceBeforeDiscount > price;
+  const priceValue = price === null || price === undefined || price === 0 ? null : price;
+  const priceBeforeValue =
+    priceBeforeDiscount === null || priceBeforeDiscount === undefined || priceBeforeDiscount === 0
+      ? null
+      : priceBeforeDiscount;
+
+  const currentPrice = priceValue ?? priceBeforeValue;
+
+  const hasDiscount =
+    priceValue !== null && priceBeforeValue !== null && priceBeforeValue > priceValue;
+
   const discountPercentage = hasDiscount
-    ? Math.round(((priceBeforeDiscount - price) / priceBeforeDiscount) * 100)
+    ? Math.round(((priceBeforeValue - priceValue) / priceBeforeValue) * 100)
     : null;
 
   const handleWishlist = async (e) => {
@@ -142,17 +151,6 @@ const BookCard = ({
                 {t.bookCardPublisher || t.Publisher}: {displayBook.publishingHouse}
               </p>
             )}
-          </div>
-
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={14}
-                className={`${i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"}`}
-              />
-            ))}
-            <span className="text-xs text-gray-500 ml-1">(4.0)</span>
           </div>
 
           <div className="space-y-2 mt-auto">

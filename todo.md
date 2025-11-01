@@ -9,6 +9,11 @@
 -filter book by author, publisher also
 -breadcrumbs
 -those marketing statements on book detail adn homepage
+-category in booktable dont change on edit
+-price/description in bookIddetailview
+-finish creat book function
+-privacy adn terms adn confitioanlity
+-marketing statement for post office delivery
 
 
 # testing

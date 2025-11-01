@@ -10,6 +10,7 @@ import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
 import useSWR from "swr";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const fetcher = async () => {
   const { data, error } = await supabase
@@ -76,11 +77,10 @@ export default function Shop() {
   if (error) return <div className="text-center py-12 text-red-500">Error: {error.message}</div>;
 
   return (
-    <div dir={language === "ar" ? "rtl" : "ltr"} className="mt-8">
+    <div dir={language === "ar" ? "rtl" : "ltr"}>
       <section className="container mx-auto py-12 px-4" aria-label={t.title}>
-        <h2 className="text-4xl font-bold text-center mb-8 text-burgundy md:text-5xl font-serif">
-          {t.title}
-        </h2>
+        <Breadcrumbs />
+        <h2 className="text-4xl font-bold text-center mb-8 text-burgundy md:text-5xl">{t.title}</h2>
 
         <div className="flex flex-col sm:flex-row gap-4 mb-8 md:gap-6">
           <SearchBar />

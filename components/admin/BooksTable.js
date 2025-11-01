@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { supabase, getSupabaseWithSession } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { useStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,13 +23,11 @@ import translations from "@/lib/translations";
 export default function BooksTable() {
   const { language, user } = useStore();
   const t = translations[language];
-
   const [isLoading, setIsLoading] = useState(false);
   const [books, setBooks] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [formData, setFormData] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [pendingImageFile, setPendingImageFile] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -37,6 +35,7 @@ export default function BooksTable() {
     const { data, error } = await supabase.from("books").select("*");
     if (error) {
       console.error("Fetch error:", error);
+      showError(t.errorFetchingBooks || "Error fetching books");
     } else {
       setBooks(data || []);
     }
@@ -73,11 +72,10 @@ export default function BooksTable() {
   const handleDelete = async (bookId) => {
     if (!confirm(t.confirmDelete || "Are you sure you want to delete this book?")) return;
     try {
-      const res = await fetch(`/api/admin/books?id=${bookId}`, { method: "DELETE" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Delete failed");
+      const { error } = await supabase.from("books").delete().eq("book_id", bookId);
+      if (error) throw error;
       showSuccess(t.bookDeleted || "Book deleted successfully!");
-      setBooks((prevBooks) => prevBooks.filter((book) => book.book_id !== bookId));
+      fetchBooks();
     } catch (error) {
       showError(t.errorDeletingBook || `Error deleting book: ${error.message}`);
     }
@@ -120,40 +118,15 @@ export default function BooksTable() {
       }
 
       const creating = isEditing === "new";
-      const method = creating ? "POST" : "PUT";
-
-      if (creating && payload.book_id) delete payload.book_id;
-
-      console.log("Payload before save:", payload);
-
       let newBookId = null;
-      let serverData = null;
 
-      if (method === "POST") {
-        const res = await fetch("/api/admin/books", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        const bodyJson = await res.json().catch(() => null);
-        if (!res.ok) {
-          const msg =
-            bodyJson?.error || bodyJson?.message || `API POST failed (status ${res.status})`;
-          throw new Error(msg);
-        }
-
-        const inserted = Array.isArray(bodyJson) ? bodyJson : bodyJson?.data || bodyJson;
-        newBookId = inserted?.[0]?.book_id || inserted?.book_id || bodyJson?.id || null;
-
-        if (!newBookId) {
-          console.warn("POST succeeded but returned no book_id, response:", bodyJson);
-          throw new Error("Failed to retrieve new book ID from server response.");
-        }
-
-        setIsEditing(newBookId);
+      if (creating) {
+        if (payload.book_id) delete payload.book_id;
+        const { data, error } = await supabase.from("books").insert([payload]).select();
+        if (error) throw error;
+        newBookId = data[0].book_id;
         payload.book_id = newBookId;
-        serverData = bodyJson;
+        setIsEditing(newBookId);
       }
 
       if (pendingImageFile) {
@@ -164,7 +137,9 @@ export default function BooksTable() {
 
         const fd = new FormData();
         fd.append("file", pendingImageFile);
-        fd.append("filename", `books/${Date.now()}_${pendingImageFile.name}`);
+        const sanitizedName = pendingImageFile.name.replace(/[^\w.-]/g, "_").toLowerCase();
+
+        fd.append("filename", `books/${Date.now()}_${sanitizedName}`);
 
         const uploadRes = await fetch("/api/admin/upload", {
           method: "POST",
@@ -179,46 +154,28 @@ export default function BooksTable() {
         }
 
         const imageUrl = uploadBody.publicUrl || uploadBody.path || uploadBody?.data?.publicUrl;
-        const updateRes = await fetch("/api/admin/books", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            book_id: bookIdToUpdate,
-            image: imageUrl,
-          }),
-        });
-        const updateJson = await updateRes.json().catch(() => null);
-        if (!updateRes.ok) {
-          throw new Error(
-            updateJson?.error ||
-              updateJson?.message ||
-              `Failed to update book with image (${updateRes.status})`,
-          );
-        }
+
+        const { error: updateError } = await supabase
+          .from("books")
+          .update({ image: imageUrl })
+          .eq("book_id", bookIdToUpdate);
+
+        if (updateError) throw updateError;
 
         payload.image = imageUrl;
-        console.log("Image uploaded and book updated:", updateJson);
-
+        console.log("Image uploaded and book updated");
         setPendingImageFile(null);
       }
 
-      if (method === "PUT") {
+      if (!creating) {
         if (!payload.book_id && isEditing && isEditing !== "new") payload.book_id = isEditing;
-
-        const res = await fetch("/api/admin/books", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        const resJson = await res.json().catch(() => null);
-        if (!res.ok) {
-          throw new Error(
-            resJson?.error || resJson?.message || `API PUT failed (status ${res.status})`,
-          );
-        }
-        serverData = resJson;
+        const { error } = await supabase
+          .from("books")
+          .update(payload)
+          .eq("book_id", payload.book_id);
+        if (error) throw error;
       }
+
       if (creating) showSuccess(t.bookCreated || "Book created successfully!");
       else showSuccess(t.bookUpdated || "Book updated successfully!");
 
@@ -228,7 +185,6 @@ export default function BooksTable() {
       if (fileInputRef.current) fileInputRef.current.value = "";
       setPendingImageFile(null);
       fetchBooks();
-      console.log("Saved book, server returned:", serverData);
     } catch (err) {
       console.error("handleSave error:", err);
       showError(err.message || t.errorUpdatingBook || "Error updating book");
@@ -258,7 +214,9 @@ export default function BooksTable() {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      fd.append("filename", `books/${Date.now()}_${file.name}`);
+      const sanitizedName = pendingImageFile.name.replace(/[^\w.-]/g, "_").toLowerCase();
+
+      fd.append("filename", `books/${Date.now()}_${sanitizedName}`);
 
       const res = await fetch("/api/admin/upload", {
         method: "POST",
@@ -269,23 +227,14 @@ export default function BooksTable() {
       if (!res.ok) throw new Error(body?.error || body?.message || "Upload failed");
 
       console.log("Image uploaded:", body);
-
       const imageUrl = body.publicUrl || body.path || body?.data?.publicUrl;
-      const updateRes = await fetch("/api/admin/books", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          book_id: bookId,
-          image: imageUrl,
-        }),
-      });
 
-      const updateJson = await updateRes.json().catch(() => null);
-      if (!updateRes.ok) {
-        throw new Error(
-          updateJson?.error || updateJson?.message || `Update failed (${updateRes.status})`,
-        );
-      }
+      const { error: updateError } = await supabase
+        .from("books")
+        .update({ image: imageUrl })
+        .eq("book_id", bookId);
+
+      if (updateError) throw updateError;
 
       showSuccess("Image updated successfully!");
       setFormData((prev) => ({ ...prev, image: imageUrl }));
@@ -319,7 +268,6 @@ export default function BooksTable() {
         <h2 className="text-2xl font-bold">{t.manageBooks || "Manage Books"}</h2>
         <Button onClick={handleNewBook}>{t.addBook || "Add Book"}</Button>
       </div>
-
       <DataTable
         columns={[
           { accessorKey: "index", header: "#" },
@@ -344,7 +292,6 @@ export default function BooksTable() {
           setBooks((prev) => prev.filter((book) => !deletedIds.includes(book.book_id)))
         }
       />
-
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-lg mx-auto bg-white rounded-xl shadow-xl overflow-hidden">
@@ -359,7 +306,6 @@ export default function BooksTable() {
                   X
                 </Button>
               </div>
-
               <div className="space-y-4">
                 <Input
                   placeholder={t.titleEn || "English Title"}
@@ -395,7 +341,6 @@ export default function BooksTable() {
                     setFormData({ ...formData, publishing_house_ar: e.target.value })
                   }
                 />
-
                 <Select onValueChange={(value) => setFormData({ ...formData, category: value })}>
                   <SelectTrigger>
                     <SelectValue placeholder={t.category || "Category"} />
@@ -416,7 +361,6 @@ export default function BooksTable() {
                     <SelectItem value="creed">Creed</SelectItem>
                   </SelectContent>
                 </Select>
-
                 <Input
                   placeholder={t.descriptionEn || "Description EN"}
                   value={formData.description_en || ""}
@@ -446,7 +390,6 @@ export default function BooksTable() {
                     })
                   }
                 />
-
                 <div className="space-y-3">
                   <Input
                     type="file"
@@ -465,7 +408,6 @@ export default function BooksTable() {
                     </div>
                   )}
                 </div>
-
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="inStock"
@@ -477,7 +419,6 @@ export default function BooksTable() {
                   </Label>
                 </div>
               </div>
-
               <Button
                 onClick={handleClick}
                 disabled={isLoading}
