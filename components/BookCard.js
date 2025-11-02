@@ -92,7 +92,7 @@ const BookCard = ({
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="group relative"
     >
-      <Card className="overflow-hidden bg-white elegant-border hover:elegant-shadow-lg transition-all duration-300 h-full flex flex-col">
+      <Card className="overflow-hidden bg-white elegant-border hover:elegant-shadow-lg transition-all duration-300 h-full flex flex-col p-0">
         <div className="relative h-90 bg-white">
           <Link href={`/book/${id}`} prefetch>
             <Image

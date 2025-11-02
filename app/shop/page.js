@@ -98,8 +98,8 @@ export default function Shop() {
 
         <div className="flex flex-col sm:flex-row gap-4 mb-8 md:gap-6">
           <SearchBar />
-          <SortFilter sortOrder={sortOrder} setSortOrder={setSortOrder} language={language} />
           <CategoryFilter />
+          <SortFilter sortOrder={sortOrder} setSortOrder={setSortOrder} language={language} />
           <PriceRangeFilter />
         </div>
 
