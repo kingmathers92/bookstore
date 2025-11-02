@@ -127,9 +127,7 @@ const BookCard = ({
               <Eye size={16} className="text-gray-600" />
             </Button>
           </div>
-          <div className="absolute bottom-4 left-4">
-            <CategoryBadge category={displayBook.category} />
-          </div>
+          <CategoryBadge category={displayBook.category} />
         </div>
 
         <CardContent className="flex flex-col flex-grow p-6 space-y-4">
