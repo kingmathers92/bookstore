@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import BookCard from "@/components/BookCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
@@ -9,13 +9,44 @@ import { useStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
+import useSWRInfinite from "swr/infinite";
 import useSWR from "swr";
 import SortFilter from "@/components/SortFilter";
+import ReactPaginate from "react-paginate";
 
-const fetcher = async (sortOrder = "desc") => {
-  const { data, error } = await supabase
+const PAGE_SIZE = 10;
+const PAGINATION_CHUNK = 50;
+
+const getInfiniteKey = (
+  pageIndex,
+  previousPageData,
+  searchQuery,
+  category,
+  priceRange,
+  language,
+  sortOrder,
+) => {
+  if (previousPageData && !previousPageData.length) return null;
+  return `books_page_${pageIndex}_query_${searchQuery}_cat_${category}_min_${priceRange[0]}_max_${priceRange[1]}_lang_${language}_sort_${sortOrder}`;
+};
+
+const infiniteFetcher = async (key) => {
+  const parts = key.split("_");
+  const pageIndex = parseInt(parts[2]);
+  const query = parts[4];
+  const cat = parts[6];
+  const min = parseFloat(parts[8]);
+  const max = parseFloat(parts[10]);
+  const lang = parts[12];
+  const sort = parts[14];
+
+  const titleField = lang === "ar" ? "title_ar" : "title_en";
+  const catField = lang === "ar" ? "category_ar" : "category_en";
+
+  let sbQuery = supabase
     .from("books")
-    .select(`
+    .select(
+      `
       book_id,
       title_en,
       title_ar,
@@ -30,12 +61,45 @@ const fetcher = async (sortOrder = "desc") => {
       publishing_house_en,
       publishing_house_ar,
       created_at
-    `)
-    .order("created_at", { ascending: sortOrder === "asc" })
-    .limit(50);
+    `,
+    )
+    .order("created_at", { ascending: sort === "oldest" });
 
+  if (query) sbQuery = sbQuery.ilike(titleField, `%${query}%`);
+  if (cat !== "all") sbQuery = sbQuery.eq(catField, cat);
+  sbQuery = sbQuery.or(`price.is.null, and(price.gte.${min || 0}, price.lte.${max || 1000})`);
+
+  sbQuery = sbQuery.range(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE - 1);
+
+  const { data, error } = await sbQuery;
   if (error) throw new Error(`Error fetching books: ${error.message}`);
   return data || [];
+};
+
+const getCountKey = (searchQuery, category, priceRange, language) => {
+  return `book_count_query_${searchQuery}_cat_${category}_min_${priceRange[0]}_max_${priceRange[1]}_lang_${language}`;
+};
+
+const countFetcher = async (key) => {
+  const parts = key.split("_");
+  const query = parts[3];
+  const cat = parts[5];
+  const min = parseFloat(parts[7]);
+  const max = parseFloat(parts[9]);
+  const lang = parts[11];
+
+  const titleField = lang === "ar" ? "title_ar" : "title_en";
+  const catField = lang === "ar" ? "category_ar" : "category_en";
+
+  let sbQuery = supabase.from("books").select("count", { count: "exact", head: true });
+
+  if (query) sbQuery = sbQuery.ilike(titleField, `%${query}%`);
+  if (cat !== "all") sbQuery = sbQuery.eq(catField, cat);
+  sbQuery = sbQuery.or(`price.is.null, and(price.gte.${min || 0}, price.lte.${max || 1000})`);
+
+  const { count, error } = await sbQuery;
+  if (error) throw new Error(`Error fetching count: ${error.message}`);
+  return count || 0;
 };
 
 export default function Shop() {
@@ -46,47 +110,64 @@ export default function Shop() {
     language,
     isTyping = false,
   } = useStore();
-  const {
-    data: books,
-    error,
-    isLoading,
-  } = useSWR("books", fetcher, {
-    refreshInterval: 300000,
-  });
   const t = translations[language] || translations.ar;
   const [sortOrder, setSortOrder] = useState("newest");
-  const filteredBooks = useMemo(() => {
-    if (!books) return [];
 
-    const query = (searchQuery || "").toLowerCase().trim();
-    const titleField = language === "ar" ? "title_ar" : "title_en";
-    const categoryField = language === "ar" ? "category_ar" : "category_en";
+  const getKeyWrapper = (pageIndex, previousPageData) =>
+    getInfiniteKey(
+      pageIndex,
+      previousPageData,
+      searchQuery,
+      category,
+      priceRange,
+      language,
+      sortOrder,
+    );
 
-    return books.filter((book) => {
-      const title = (book[titleField] || "").toString().toLowerCase();
-      const bookCategory = book[categoryField] || "";
+  const { data, error, isLoading, size, setSize, isValidating } = useSWRInfinite(
+    getKeyWrapper,
+    infiniteFetcher,
+    {
+      revalidateFirstPage: false,
+      refreshInterval: 300000,
+    },
+  );
 
-      return (
-        title.includes(query) &&
-        (category === "all" || bookCategory === category) &&
-        (book.price == null || (book.price >= priceRange[0] && book.price <= priceRange[1]))
-      );
-    });
-  }, [books, searchQuery, category, priceRange, language]);
+  const books = useMemo(() => (data ? data.flat() : []), [data]);
 
-  const sortedBooks = useMemo(() => {
-    if (!filteredBooks) return [];
+  const hasMore = data && data[data.length - 1]?.length === PAGE_SIZE;
 
-    const sorted = [...filteredBooks];
+  const countKey = getCountKey(searchQuery, category, priceRange, language);
+  const { data: totalCount = 0 } = useSWR(countKey, countFetcher);
 
-    if (sortOrder === "newest") {
-      return sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    } else {
-      return sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  const loaderRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isValidating) {
+          setSize(size + 1);
+        }
+      },
+      { threshold: 1.0 },
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
     }
-  }, [filteredBooks, sortOrder]);
 
-  if (isLoading) return <LoadingSpinner />;
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [hasMore, isValidating, size, setSize]);
+
+  useEffect(() => {
+    setSize(1);
+  }, [searchQuery, category, priceRange, language, sortOrder, setSize]);
+
+  if (isLoading && size === 1) return <LoadingSpinner />;
   if (error) return <div className="text-center py-12 text-red-500">Error: {error.message}</div>;
 
   return (
@@ -104,8 +185,8 @@ export default function Shop() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-          {sortedBooks.length > 0 ? (
-            sortedBooks.map((book) => (
+          {books.length > 0 ? (
+            books.map((book) => (
               <BookCard
                 key={book.book_id}
                 id={book.book_id}
@@ -130,6 +211,12 @@ export default function Shop() {
           )}
         </div>
 
+        {hasMore && (
+          <div ref={loaderRef} className="flex justify-center items-center h-20 mt-8">
+            {isValidating && <LoadingSpinner />}
+          </div>
+        )}
+
         {isTyping && (
           <div className="text-center text-muted-foreground mt-6 flex items-center justify-center">
             <span className="dot-flashing"></span>
@@ -137,6 +224,24 @@ export default function Shop() {
             <span className="dot-flashing" style={{ animationDelay: "0.4s" }}></span>
             <span className="ml-2">{language === "ar" ? "جاري الكتابة..." : "Typing..."}</span>
           </div>
+        )}
+
+        {totalCount > 0 && (
+          <ReactPaginate
+            pageCount={Math.ceil(totalCount / PAGINATION_CHUNK)}
+            onPageChange={({ selected }) =>
+              setSize((selected + 1) * (PAGINATION_CHUNK / PAGE_SIZE))
+            }
+            containerClassName="flex justify-center mt-8 space-x-2"
+            pageLinkClassName="px-4 py-2 border border-burgundy text-burgundy rounded-md hover:bg-burgundy hover:text-white transition-colors font-medium"
+            activeLinkClassName="bg-burgundy text-white"
+            previousLinkClassName="px-4 py-2 border border-burgundy text-burgundy rounded-md hover:bg-burgundy hover:text-white transition-colors font-medium"
+            nextLinkClassName="px-4 py-2 border border-burgundy text-burgundy rounded-md hover:bg-burgundy hover:text-white transition-colors font-medium"
+            breakLinkClassName="px-4 py-2 text-burgundy"
+            previousLabel={language === "ar" ? "السابق" : "Previous"}
+            nextLabel={language === "ar" ? "التالي" : "Next"}
+            breakLabel="..."
+          />
         )}
       </section>
     </div>

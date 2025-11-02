@@ -13,13 +13,11 @@ export async function POST(req) {
     return NextResponse.json({ success: false, error: error.message }, { status: 401 });
   }
 
-  // ✅ Only allow the admin email from environment variables
   if (email !== process.env.ADMIN_EMAIL) {
     await supabase.auth.signOut();
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
   }
 
-  // ✅ Set secure HTTP-only cookie for admin
   const res = NextResponse.json({ success: true });
   res.cookies.set("admin-access-token", "true", {
     path: "/",
