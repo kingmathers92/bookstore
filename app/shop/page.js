@@ -90,7 +90,7 @@ export default function Shop() {
   if (error) return <div className="text-center py-12 text-red-500">Error: {error.message}</div>;
 
   return (
-    <div dir={language === "ar" ? "rtl" : "ltr"}>
+    <div>
       <section className="container mx-auto py-12 px-4" aria-label={t.title}>
         <h2 className="text-4xl font-bold text-center mb-8 mt-16 text-burgundy md:text-5xl">
           {t.title}
