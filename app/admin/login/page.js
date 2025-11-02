@@ -1,9 +1,10 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -11,27 +12,31 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
       const res = await fetch("/api/admin/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ email, password }),
       });
-
       const result = await res.json();
-
       if (!res.ok) {
         setError(result.error || "Login failed.");
         setLoading(false);
         return;
       }
-
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
+      });
+      if (sessionError) throw sessionError;
       router.replace("/admin/dashboard");
     } catch (err) {
       console.error(err);
@@ -54,14 +59,24 @@ export default function AdminLogin() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <Input
-          type="password"
-          placeholder="Password"
-          className="mb-4"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div className="relative mb-4">
+          {" "}
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className="pr-10"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </Button>

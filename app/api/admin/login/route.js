@@ -18,7 +18,11 @@ export async function POST(req) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
   }
 
-  const res = NextResponse.json({ success: true });
+  const res = NextResponse.json({
+    success: true,
+    access_token: data.session.access_token,
+    refresh_token: data.session.refresh_token,
+  });
   res.cookies.set("admin-access-token", "true", {
     path: "/",
     httpOnly: true,

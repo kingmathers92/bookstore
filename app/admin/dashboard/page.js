@@ -27,6 +27,7 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
+      await supabase.auth.signOut();
       await fetch("/api/admin/logout", { method: "POST" });
       router.replace("/admin/login");
     } catch (error) {
@@ -35,9 +36,9 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="container mx-auto py-12" dir={language === "ar" ? "rtl" : "ltr"}>
+    <div className="container mx-auto py-12">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">{t.adminDashboard || "Admin Dashboard"}</h1>
+        <h1 className="text-3xl font-bold text-white">{t.adminDashboard || "Admin Dashboard"}</h1>
         <Button
           onClick={handleLogout}
           variant="destructive"
