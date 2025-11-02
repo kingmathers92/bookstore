@@ -82,19 +82,14 @@ export default function BooksTable() {
   };
 
   const categoryMapping = {
-    "quran-copies": { en: "Quran", ar: "قرآن" },
-    tafsir: { en: "Tafsir", ar: "تفسير" },
+    quran: { en: "Quran", ar: "القرآن" },
+    hadith: { en: "Hadith", ar: "الحديث" },
     fiqh: { en: "Fiqh", ar: "الفقه" },
-    language: { en: "Language", ar: "لغة" },
-    hadith: { en: "Hadith", ar: "حديث" },
-    seerah: { en: "Seerah", ar: "سيرة" },
-    admonitions: { en: "Admonitions", ar: "موعظة" },
-    spirituality: { en: "Spirituality", ar: "روحانية" },
-    poetry: { en: "Poetry", ar: "الشعر" },
-    "children-books": { en: "Children’s Books", ar: "كتب الأطفال" },
-    supplications: { en: "Supplications & Invocations", ar: "أدعية وأذكار" },
-    "quranic-sciences": { en: "Quranic Sciences", ar: "علوم القرآن" },
-    creed: { en: "Creed", ar: "عقيدة" },
+    aqidah: { en: "Aqidah", ar: "العقيدة" },
+    language: { en: "Language", ar: "اللغة" },
+    history: { en: "History", ar: "التاريخ" },
+    culture: { en: "Culture", ar: "الثقافة" },
+    children: { en: "Children", ar: "الطفل" },
   };
 
   const handleSave = async () => {
@@ -346,19 +341,14 @@ export default function BooksTable() {
                     <SelectValue placeholder={t.category || "Category"} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="quran-copies">Quran</SelectItem>
-                    <SelectItem value="tafsir">Tafsir</SelectItem>
-                    <SelectItem value="fiqh">Fiqh</SelectItem>
-                    <SelectItem value="language">Language</SelectItem>
+                    <SelectItem value="quran">Quran Science</SelectItem>
                     <SelectItem value="hadith">Hadith</SelectItem>
-                    <SelectItem value="seerah">Seerah</SelectItem>
-                    <SelectItem value="admonitions">Admonitions</SelectItem>
-                    <SelectItem value="spirituality">Spirituality</SelectItem>
-                    <SelectItem value="poetry">Poetry</SelectItem>
-                    <SelectItem value="children-books">Children’s Books</SelectItem>
-                    <SelectItem value="supplications">Supplications & Invocations</SelectItem>
-                    <SelectItem value="quranic-sciences">Quranic Sciences</SelectItem>
-                    <SelectItem value="creed">Creed</SelectItem>
+                    <SelectItem value="fiqh">Fiqh</SelectItem>
+                    <SelectItem value="aqidah">Aqidah</SelectItem>
+                    <SelectItem value="language">Language</SelectItem>
+                    <SelectItem value="history">History</SelectItem>
+                    <SelectItem value="culture">Culture</SelectItem>
+                    <SelectItem value="children">Children</SelectItem>
                   </SelectContent>
                 </Select>
                 <Input

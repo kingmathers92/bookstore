@@ -40,8 +40,13 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
+  const language = typeof window !== "undefined" ? localStorage.getItem("language") || "en" : "en";
   return (
-    <html className="flex flex-col min-h-screen">
+    <html
+      className="flex flex-col min-h-screen"
+      lang={language}
+      dir={language === "ar" ? "rtl" : "ltr"}
+    >
       <body className="flex flex-col min-h-screen">
         <ClientLayout>{children}</ClientLayout>
       </body>
