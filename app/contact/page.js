@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import Socials from "@/components/Socials";
-import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function Contact() {
   const { language } = useStore();
@@ -18,7 +17,6 @@ export default function Contact() {
       className="min-h-screen bg-gradient-to-b from-burgundy-dark via-[#2c1d1a] to-[#3a2622] py-16 px-6 mt-8 text-white"
       dir={language === "ar" ? "rtl" : "ltr"}
     >
-      <Breadcrumbs />
       <div className="container mx-auto max-w-5xl">
         <motion.h1
           className="text-4xl md:text-5xl font-bold text-center mb-10"

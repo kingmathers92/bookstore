@@ -10,7 +10,6 @@ import { supabase } from "@/lib/supabase";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
 import useSWR from "swr";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import SortFilter from "@/components/SortFilter";
 
 const fetcher = async (sortOrder = "desc") => {
@@ -93,8 +92,9 @@ export default function Shop() {
   return (
     <div dir={language === "ar" ? "rtl" : "ltr"}>
       <section className="container mx-auto py-12 px-4" aria-label={t.title}>
-        <Breadcrumbs />
-        <h2 className="text-4xl font-bold text-center mb-8 text-burgundy md:text-5xl">{t.title}</h2>
+        <h2 className="text-4xl font-bold text-center mb-8 mt-16 text-burgundy md:text-5xl">
+          {t.title}
+        </h2>
 
         <div className="flex flex-col sm:flex-row gap-4 mb-8 md:gap-6">
           <SearchBar />

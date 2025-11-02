@@ -15,7 +15,6 @@ import translations from "@/lib/translations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import CategoryBadge from "@/components/CategoryBadge";
-import Breadcrumbs from "@/components/Breadcrumbs";
 
 const fetchBook = async (bookId) => {
   const { data, error } = await supabase.from("books").select("*").eq("book_id", bookId).single();
@@ -137,7 +136,6 @@ export default function BookDetail() {
 
   return (
     <div className="min-h-screen bg-gradient-cream py-4 px-4 mt-8" dir="rtl">
-      <Breadcrumbs />
       <div className="container mx-auto max-w-5xl">
         {showToast && (
           <motion.div

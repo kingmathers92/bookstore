@@ -12,7 +12,6 @@ import { Label } from "@/components/ui/label";
 import translations from "@/lib/translations";
 import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
-import Breadcrumbs from "@/components/Breadcrumbs";
 
 function Cart() {
   const { cart, removeFromCart, language, user, syncCartFromLocalStorage } = useStore();
@@ -70,18 +69,8 @@ function Cart() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-cream py-8 px-4" dir="rtl">
-      <Breadcrumbs />
+    <div className="min-h-screen bg-gradient-cream py-8 mt-40 px-4" dir="rtl">
       <div className="container mx-auto max-w-4xl">
-        <motion.h1
-          className="text-4xl md:text-5xl font-bold text-burgundy mb-8 text-center mt-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          {t.cartTitle}
-        </motion.h1>
-
         {cart.length === 0 ? (
           <motion.div
             className="text-center py-16"

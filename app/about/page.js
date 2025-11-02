@@ -5,7 +5,6 @@ import translations from "@/lib/translations";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import Socials from "@/components/Socials";
-import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function About() {
   const { language } = useStore();
@@ -16,7 +15,6 @@ export default function About() {
       className="min-h-screen bg-gradient-to-b from-burgundy-dark via-[#2c1d1a] to-[#3a2622] py-16 px-6 mt-8 text-white"
       dir={language === "ar" ? "rtl" : "ltr"}
     >
-      <Breadcrumbs />
       <div className="container mx-auto max-w-5xl">
         <motion.h1
           className="text-4xl md:text-5xl font-bold text-center mb-10"

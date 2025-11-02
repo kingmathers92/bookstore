@@ -10,14 +10,18 @@ import { ArrowUp } from "lucide-react";
 import AuthSync from "@/lib/authSync";
 import DataSync from "@/lib/dataSync";
 import { ToastProvider } from "@/components/Toast";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import { usePathname } from "next/navigation";
 
 export default function ClientLayout({ children }) {
+  const pathname = usePathname();
   return (
     <SessionProvider>
       <AuthSync />
       <DataSync />
       <ToastProvider>
         <Header />
+        <Breadcrumbs key={pathname} />
         <main className="flex-grow">{children}</main>
         <Footer />
         <LiveChat />
