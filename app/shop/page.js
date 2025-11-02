@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import BookCard from "@/components/BookCard";
 import SearchBar from "@/components/SearchBar";
 import CategoryFilter from "@/components/CategoryFilter";
@@ -11,8 +11,9 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import translations from "@/lib/translations";
 import useSWR from "swr";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import SortFilter from "@/components/SortFilter";
 
-const fetcher = async () => {
+const fetcher = async (sortOrder = "desc") => {
   const { data, error } = await supabase
     .from("books")
     .select(`
@@ -28,9 +29,10 @@ const fetcher = async () => {
       author_en,
       author_ar,
       publishing_house_en,
-      publishing_house_ar
+      publishing_house_ar,
+      created_at
     `)
-    .order("book_id", { ascending: true })
+    .order("created_at", { ascending: sortOrder === "asc" })
     .limit(50);
 
   if (error) throw new Error(`Error fetching books: ${error.message}`);
@@ -53,7 +55,7 @@ export default function Shop() {
     refreshInterval: 300000,
   });
   const t = translations[language] || translations.ar;
-
+  const [sortOrder, setSortOrder] = useState("newest");
   const filteredBooks = useMemo(() => {
     if (!books) return [];
 
@@ -73,6 +75,18 @@ export default function Shop() {
     });
   }, [books, searchQuery, category, priceRange, language]);
 
+  const sortedBooks = useMemo(() => {
+    if (!filteredBooks) return [];
+
+    const sorted = [...filteredBooks];
+
+    if (sortOrder === "newest") {
+      return sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else {
+      return sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
+  }, [filteredBooks, sortOrder]);
+
   if (isLoading) return <LoadingSpinner />;
   if (error) return <div className="text-center py-12 text-red-500">Error: {error.message}</div>;
 
@@ -84,13 +98,14 @@ export default function Shop() {
 
         <div className="flex flex-col sm:flex-row gap-4 mb-8 md:gap-6">
           <SearchBar />
+          <SortFilter sortOrder={sortOrder} setSortOrder={setSortOrder} language={language} />
           <CategoryFilter />
           <PriceRangeFilter />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-          {filteredBooks.length > 0 ? (
-            filteredBooks.map((book) => (
+          {sortedBooks.length > 0 ? (
+            sortedBooks.map((book) => (
               <BookCard
                 key={book.book_id}
                 id={book.book_id}
