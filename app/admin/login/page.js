@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -18,30 +17,28 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
 
-    const { data, error: loginError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (loginError) {
-      setError(loginError.message);
+      const result = await res.json();
+
+      if (!res.ok) {
+        setError(result.error || "Login failed.");
+        setLoading(false);
+        return;
+      }
+
+      router.replace("/admin/dashboard");
+    } catch (err) {
+      console.error(err);
+      setError("Unexpected error. Try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const user = data?.user;
-
-    if (user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-      setError("You are not authorized to access the admin dashboard.");
-      await supabase.auth.signOut();
-      setLoading(false);
-      return;
-    }
-
-    document.cookie = `admin-access-token=true; path=/; Secure; SameSite=Strict`;
-
-    router.replace("/admin/dashboard");
-    setLoading(false);
   };
 
   return (

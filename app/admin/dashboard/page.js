@@ -18,19 +18,20 @@ export default function AdminDashboard() {
   useEffect(() => {
     const checkAuth = async () => {
       const { data, error } = await supabase.auth.getUser();
-      if (error || !data.user || data.user.user_metadata.role !== "admin") {
+      if (error || !data.user) {
         router.push("/admin/login");
-      } else {
-        console.log("Admin UUID:", data.user.id);
       }
     };
     checkAuth();
   }, [router]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    document.cookie = "admin-access-token=; Max-Age=0; path=/;";
-    router.push("/admin/login");
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+      router.replace("/admin/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -57,7 +58,7 @@ export default function AdminDashboard() {
           <BooksTable />
         </TabsContent>
 
-        <TabsContent value="users">{/* UsersTable later */}</TabsContent>
+        <TabsContent value="users">{/* Future: UsersTable */}</TabsContent>
 
         <TabsContent value="orders">
           <OrdersTable />

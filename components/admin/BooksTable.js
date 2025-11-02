@@ -117,9 +117,19 @@ export default function BooksTable() {
 
       if (creating) {
         if (payload.book_id) delete payload.book_id;
-        const { data, error } = await supabase.from("books").insert([payload]).select();
-        if (error) throw error;
-        newBookId = data[0].book_id;
+        const res = await fetch("/api/admin/books", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const errorBody = await res.json().catch(() => ({}));
+          throw new Error(errorBody.error || "Failed to add book");
+        }
+
+        const data = await res.json();
+        newBookId = data[0]?.book_id;
         payload.book_id = newBookId;
         setIsEditing(newBookId);
       }
