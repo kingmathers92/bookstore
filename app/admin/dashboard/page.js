@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-//import UsersTable from "@/components/admin/UsersTable";
 import BooksTable from "@/components/admin/BooksTable";
 import OrdersTable from "@/components/admin/OrdersTable";
 import translations from "@/lib/translations";
@@ -28,20 +27,26 @@ export default function AdminDashboard() {
     checkAuth();
   }, [router]);
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    document.cookie = "admin-access-token=; Max-Age=0; path=/;";
+    router.push("/admin/login");
+  };
+
   return (
     <div className="container mx-auto py-12" dir={language === "ar" ? "rtl" : "ltr"}>
-      <h1 className="text-3xl font-bold mb-8">{t.adminDashboard || "Admin Dashboard"}</h1>
-      <Button
-        variant="outline"
-        onClick={async () => {
-          await supabase.auth.signOut();
-          router.push("/admin/login");
-        }}
-      >
-        Logout
-      </Button>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">{t.adminDashboard || "Admin Dashboard"}</h1>
+        <Button
+          onClick={handleLogout}
+          variant="destructive"
+          className="bg-red-600 hover:bg-red-700 text-white mt-12"
+        >
+          {t.logout || "Logout"}
+        </Button>
+      </div>
 
-      <Tabs defaultValue="books" className="w-full mt-6">
+      <Tabs defaultValue="books" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="books">{t.books || "Books"}</TabsTrigger>
           <TabsTrigger value="users">{t.users || "Users"}</TabsTrigger>
@@ -52,7 +57,7 @@ export default function AdminDashboard() {
           <BooksTable />
         </TabsContent>
 
-        <TabsContent value="users"></TabsContent>
+        <TabsContent value="users">{/* UsersTable later */}</TabsContent>
 
         <TabsContent value="orders">
           <OrdersTable />

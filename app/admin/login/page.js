@@ -29,14 +29,16 @@ export default function AdminLogin() {
       return;
     }
 
-    if (data.user.user_metadata.role !== "admin") {
+    const user = data?.user;
+
+    if (user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
       setError("You are not authorized to access the admin dashboard.");
       await supabase.auth.signOut();
       setLoading(false);
       return;
     }
 
-    document.cookie = `admin-access-token=${data.session.access_token}; path=/; Secure; SameSite=Lax`;
+    document.cookie = `admin-access-token=true; path=/; Secure; SameSite=Strict`;
 
     router.replace("/admin/dashboard");
     setLoading(false);

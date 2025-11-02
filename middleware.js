@@ -2,17 +2,21 @@ import { NextResponse } from "next/server";
 
 export async function middleware(req) {
   const { pathname, origin } = req.nextUrl;
-  const token = req.cookies.get("admin-access-token")?.value;
+  const isAdminRoute = pathname.startsWith("/admin");
+  const isLoginPage = pathname === "/admin/login";
+  const hasAdminCookie = req.cookies.get("admin-access-token")?.value === "true";
 
-  if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
-    if (!token) return NextResponse.redirect(new URL("/admin/login", origin));
+  // Protect admin routes
+  if (isAdminRoute && !isLoginPage && !hasAdminCookie) {
+    return NextResponse.redirect(new URL("/admin/login", origin));
   }
 
-  if (pathname === "/" && token) {
+  // Prevent admin from seeing login again
+  if (isLoginPage && hasAdminCookie) {
     return NextResponse.redirect(new URL("/admin/dashboard", origin));
   }
 
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/", "/admin/:path*"] };
+export const config = { matcher: ["/admin/:path*"] };

@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import Hero from "@/components/Hero";
 import Testimonials from "@/components/Testimonials";
 import TestimonialSubmission from "@/components/TestimonialSubmission";
+import MarketingHighlights from "@/components/MarketingHighlights";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -19,6 +20,7 @@ export default function Home() {
   return (
     <div>
       <Hero />
+      <MarketingHighlights />
       <Testimonials />
       {session ? (
         <TestimonialSubmission />

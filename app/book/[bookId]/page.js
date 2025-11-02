@@ -15,6 +15,7 @@ import translations from "@/lib/translations";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import CategoryBadge from "@/components/CategoryBadge";
+import MarketingHighlights from "@/components/MarketingHighlights";
 
 const fetchBook = async (bookId) => {
   const { data, error } = await supabase.from("books").select("*").eq("book_id", bookId).single();
@@ -109,14 +110,15 @@ export default function BookDetail() {
 
   return (
     <div className="min-h-svh bg-gradient-cream py-8 px-4 mt-8">
-      <div className="container mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+      <MarketingHighlights />
+      <div className="container mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mt-6">
         <motion.div
           initial={{ opacity: 0, x: language === "ar" ? 20 : -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="relative"
         >
-          <Card className="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="relative aspect-[3/4] w-full">
+          <Card className="bg-white rounded-2xl shadow-xl overflow-hidden w-120 h-120">
+            <div className="relative aspect-[3/4] ">
               <Image
                 src={book.image || "/placeholder.jpg"}
                 alt={title}
