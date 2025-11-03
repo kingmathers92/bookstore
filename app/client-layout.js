@@ -12,6 +12,7 @@ import DataSync from "@/lib/dataSync";
 import { ToastProvider } from "@/components/Toast";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePathname } from "next/navigation";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -22,7 +23,10 @@ export default function ClientLayout({ children }) {
       <ToastProvider>
         <Header />
         <Breadcrumbs key={pathname} />
-        <main className="flex-grow">{children}</main>
+        <main className="flex-grow">
+          {children}
+          <SpeedInsights />
+        </main>
         <Footer />
         <LiveChat />
         <ScrollToTop
