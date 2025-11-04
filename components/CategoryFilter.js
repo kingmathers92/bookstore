@@ -13,19 +13,16 @@ export default function CategoryFilter() {
   const { category = "all", setCategory } = useStore();
 
   const categoryMap = {
-    الكل: "all",
-    مصاحف: "مصاحف",
-    تفسير: "تفسير",
-    فقه: "فقه",
-    لغة: "لغة",
-    حديث: "حديث",
-    سيرة: "سيرة",
-    "مواعظ وتزكية": "مواعظ وتزكية",
-    رقائق: "رقائق",
-    دواوين: "دواوين",
-    "كتب أطفال": "كتب أطفال",
-    مناجد: "مناجد",
-    "علوم قرآن": "علوم قرآن",
+    all: { en: "All", ar: "الكل" },
+    quran: { en: "Quran", ar: "قرآن" },
+    hadith: { en: "Hadith", ar: "حديث" },
+    fiqh: { en: "Fiqh", ar: "الفقه" },
+    aqidah: { en: "Aqidah", ar: "عقيدة" },
+    language: { en: "Language", ar: "لغة" },
+    history: { en: "History", ar: "تاريخ" },
+    culture: { en: "Culture", ar: "ثقافة" },
+    children: { en: "Children", ar: "طفل" },
+    seerah: { en: "Seerah", ar: "سيرة" },
   };
 
   return (

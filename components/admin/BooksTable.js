@@ -82,14 +82,15 @@ export default function BooksTable() {
   };
 
   const categoryMapping = {
-    quran: { en: "Quran", ar: "القرآن" },
-    hadith: { en: "Hadith", ar: "الحديث" },
+    quran: { en: "Quran", ar: "قرآن" },
+    hadith: { en: "Hadith", ar: "حديث" },
     fiqh: { en: "Fiqh", ar: "الفقه" },
-    aqidah: { en: "Aqidah", ar: "العقيدة" },
-    language: { en: "Language", ar: "اللغة" },
-    history: { en: "History", ar: "التاريخ" },
-    culture: { en: "Culture", ar: "الثقافة" },
-    children: { en: "Children", ar: "الطفل" },
+    aqidah: { en: "Aqidah", ar: "عقيدة" },
+    language: { en: "Language", ar: "لغة" },
+    history: { en: "History", ar: "تاريخ" },
+    culture: { en: "Culture", ar: "ثقافة" },
+    children: { en: "Children", ar: "طفل" },
+    seerah: { en: "Seerah", ar: "سيرة" },
   };
 
   const handleSave = async () => {
@@ -359,6 +360,7 @@ export default function BooksTable() {
                     <SelectItem value="history">History</SelectItem>
                     <SelectItem value="culture">Culture</SelectItem>
                     <SelectItem value="children">Children</SelectItem>
+                    <SelectItem value="seerah">Seerah</SelectItem>
                   </SelectContent>
                 </Select>
                 <Input

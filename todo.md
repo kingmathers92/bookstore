@@ -9,5 +9,4 @@
 -privacy adn terms adn confitioanlity
 -wishlist
 -cart-order to db-wishlist to db
--
 # testing
