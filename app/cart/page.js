@@ -12,14 +12,14 @@ import { Label } from "@/components/ui/label";
 import translations from "@/lib/translations";
 import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
+import { showSuccess, showError } from "@/components/Toast";
 
 function Cart() {
-  const { cart, removeFromCart, language, user, syncCartFromLocalStorage } = useStore();
+  const { cart, removeFromCart, updateQuantity, clearCart, language, syncCartFromLocalStorage } =
+    useStore();
   const t = translations[language];
   const router = useRouter();
-  const { checkout } = useStore();
 
-  const [isMobile, setIsMobile] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -29,20 +29,31 @@ function Cart() {
 
   useEffect(() => {
     syncCartFromLocalStorage();
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
   }, [syncCartFromLocalStorage]);
 
-  const totalPrice = cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + (Number(item.price) || 0) * (Number(item.quantity) || 1),
+    0,
+  );
+  const shipping = subtotal > 200 ? 0 : 6;
+  const grandTotal = subtotal + shipping;
 
   const handleRemove = async (bookId) => {
     try {
       await removeFromCart(bookId);
     } catch (error) {
-      alert.error(t.cartOrderError || "Error", {
+      showError(t.cartOrderError || "Error", {
         description: `Failed to remove item: ${error.message}`,
+      });
+    }
+  };
+
+  const handleUpdateQuantity = async (bookId, newQty) => {
+    try {
+      await updateQuantity(bookId, newQty);
+    } catch (error) {
+      showError(t.cartOrderError || "Error", {
+        description: `Failed to update quantity: ${error.message}`,
       });
     }
   };
@@ -52,19 +63,58 @@ function Cart() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleConfirmOrder = () => {
+    setIsConfirming(true);
+  };
+
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.address || !formData.phone) {
-      alert(t.cartFormIncomplete);
+      showError(t.cartFormIncomplete || "الرجاء ملء جميع الحقول قبل تأكيد الطلب");
       return;
     }
 
     try {
-      await checkout(totalPrice);
-      alert(t.cartOrderSuccess);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      if (session?.access_token) {
+        headers.Authorization = `Bearer ${session.access_token}`;
+      }
+
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          name: formData.name,
+          address: formData.address,
+          phone: formData.phone,
+          items: cart.map((item) => ({
+            book_id: item.book_id,
+            title: item.title,
+            quantity: Number(item.quantity) || 1,
+            price: Number(item.price) || 0,
+          })),
+          total_amount: grandTotal,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Order failed");
+      }
+
+      await clearCart();
+      showSuccess(t.cartOrderSuccess || "تم تأكيد الطلب بنجاح!");
+      setIsConfirming(false);
       router.push("/");
     } catch (error) {
-      alert(t.cartOrderError);
+      console.error("Order error:", error);
+      showError(t.cartOrderError || "حدث خطأ أثناء إنشاء الطلب، الرجاء المحاولة لاحقاً.");
     }
   };
 
@@ -106,7 +156,6 @@ function Cart() {
                   <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden elegant-shadow">
                     <CardContent className="p-6">
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        {/* IMAGE */}
                         <div className="w-20 h-24 flex-shrink-0">
                           <img
                             src={item.image || "/placeholder.jpg"}
@@ -115,21 +164,40 @@ function Cart() {
                             onError={(e) => (e.target.src = "/placeholder.jpg")}
                           />
                         </div>
-
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-burgundy font-serif mb-1">
                             {item.title}
                           </h3>
                           <div className="flex items-center gap-4 text-sm text-warm-gray-600">
                             <span className="font-medium">
-                              {item.price} × {item.quantity || 1}
+                              {Number(item.price).toFixed(2)} × {item.quantity || 1}
                             </span>
                             <span className="font-bold text-burgundy">
-                              = {item.price * (item.quantity || 1)} ر.س
+                              = {(Number(item.price) * (item.quantity || 1)).toFixed(2)} د.ت
                             </span>
                           </div>
                         </div>
-
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              handleUpdateQuantity(item.book_id, (item.quantity || 1) - 1)
+                            }
+                          >
+                            -
+                          </Button>
+                          <span className="px-2">{item.quantity || 1}</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              handleUpdateQuantity(item.book_id, (item.quantity || 1) + 1)
+                            }
+                          >
+                            +
+                          </Button>
+                        </div>
                         <Button
                           variant="destructive"
                           onClick={() => handleRemove(item.book_id)}
@@ -145,106 +213,92 @@ function Cart() {
               ))}
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <Card className="bg-white shadow-lg rounded-xl elegant-shadow mb-8">
+            <Card className="bg-white shadow-lg rounded-xl elegant-shadow mb-8">
+              <CardHeader className="bg-gradient-burgundy text-white rounded-t-xl">
+                <CardTitle className="text-xl font-bold font-serif text-center">
+                  {t.cartSummary}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 text-center">
+                <div className="text-lg font-medium">
+                  {t.subtotal}: {subtotal.toFixed(2)} د.ت
+                </div>
+                <div className="text-lg font-medium">
+                  {t.shipping}: {shipping.toFixed(2)} د.ت {shipping === 0 && `(${t.freeShipping})`}
+                </div>
+                <div className="text-3xl font-bold text-burgundy font-serif">
+                  {t.cartTotal}: {grandTotal.toFixed(2)} د.ت
+                </div>
+                <Button
+                  onClick={handleConfirmOrder}
+                  className="w-full mt-6 bg-burgundy hover:bg-burgundy-dark text-white py-3 rounded-lg font-semibold transition-all"
+                >
+                  {t.cartConfirmOrder}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {isConfirming && (
+              <Card className="bg-white shadow-lg rounded-xl elegant-shadow">
                 <CardHeader className="bg-gradient-burgundy text-white rounded-t-xl">
-                  <CardTitle className="text-xl font-bold font-serif text-center">
-                    {t.cartSummary}
+                  <CardTitle className="text-xl font-bold font-serif">
+                    {t.cartOrderDetails}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-burgundy font-serif">
-                      {t.cartTotal}: {totalPrice}
+                  <form onSubmit={handleOrderSubmit} className="space-y-6">
+                    <div>
+                      <Label htmlFor="name" className="text-burgundy font-semibold mb-2 block">
+                        {t.cartName}
+                      </Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder={t.cartNamePlaceholder}
+                      />
                     </div>
-                  </div>
-                  <Button
-                    onClick={() => setIsConfirming(true)}
-                    className="w-full mt-6 bg-burgundy hover:bg-burgundy-dark text-white py-3 rounded-lg font-semibold transition-all"
-                  >
-                    {t.cartConfirmOrder}
-                  </Button>
+                    <div>
+                      <Label htmlFor="address" className="text-burgundy font-semibold mb-2 block">
+                        {t.cartAddress}
+                      </Label>
+                      <Input
+                        id="address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        placeholder={t.cartAddressPlaceholder}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="phone" className="text-burgundy font-semibold mb-2 block">
+                        {t.cartPhone}
+                      </Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder={t.cartPhonePlaceholder}
+                      />
+                    </div>
+                    <div className="flex gap-4">
+                      <Button type="submit" className="flex-1 bg-burgundy text-white">
+                        {t.cartPlaceOrder}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsConfirming(false)}
+                        className="flex-1 border-burgundy text-burgundy hover:bg-burgundy hover:text-white"
+                      >
+                        إلغاء
+                      </Button>
+                    </div>
+                  </form>
                 </CardContent>
               </Card>
-            </motion.div>
-
-            {isConfirming && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="bg-white shadow-lg rounded-xl elegant-shadow">
-                  <CardHeader className="bg-gradient-burgundy text-white rounded-t-xl">
-                    <CardTitle className="text-xl font-bold font-serif">
-                      {t.cartOrderDetails}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <form onSubmit={handleOrderSubmit} className="space-y-6">
-                      <div>
-                        <Label htmlFor="name" className="text-burgundy font-semibold mb-2 block">
-                          {t.cartName}
-                        </Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          placeholder={t.cartNamePlaceholder}
-                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="address" className="text-burgundy font-semibold mb-2 block">
-                          {t.cartAddress}
-                        </Label>
-                        <Input
-                          id="address"
-                          name="address"
-                          value={formData.address}
-                          onChange={handleInputChange}
-                          placeholder={t.cartAddressPlaceholder}
-                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="phone" className="text-burgundy font-semibold mb-2 block">
-                          {t.cartPhone}
-                        </Label>
-                        <Input
-                          id="phone"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          placeholder={t.cartPhonePlaceholder}
-                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-burgundy focus:ring-2 focus:ring-burgundy/20 transition-all"
-                        />
-                      </div>
-                      <div className="flex gap-4">
-                        <Button
-                          type="submit"
-                          className="flex-1 bg-burgundy hover:bg-burgundy-dark text-white py-3 rounded-lg font-semibold transition-all"
-                        >
-                          {t.cartPlaceOrder}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setIsConfirming(false)}
-                          className="flex-1 border-2 border-burgundy text-burgundy hover:bg-burgundy hover:text-white py-3 rounded-lg font-semibold transition-all"
-                        >
-                          إلغاء
-                        </Button>
-                      </div>
-                    </form>
-                  </CardContent>
-                </Card>
-              </motion.div>
             )}
 
             <div className="text-center mt-8">
@@ -263,7 +317,7 @@ function Cart() {
   );
 }
 
-const DynamicCart = dynamic(async () => ({ default: Cart }), { ssr: false });
+const DynamicCart = dynamic(() => Promise.resolve(Cart), { ssr: false });
 
 export default function CartPage() {
   return <DynamicCart />;
