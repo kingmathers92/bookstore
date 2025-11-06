@@ -69,7 +69,7 @@ function WishlistItem({
                   </span>
                 </p>
                 <p className="text-burgundy font-bold text-lg">
-                  {item.price ? `${item.price} ر.س` : "مجاني"}
+                  {item.price ? `${item.price} {t.priceTnd}` : "مجاني"}
                 </p>
               </div>
 

@@ -173,7 +173,8 @@ function Cart() {
                               {Number(item.price).toFixed(2)} × {item.quantity || 1}
                             </span>
                             <span className="font-bold text-burgundy">
-                              = {(Number(item.price) * (item.quantity || 1)).toFixed(2)} د.ت
+                              = {(Number(item.price) * (item.quantity || 1)).toFixed(2)}{" "}
+                              {t.priceTnd}
                             </span>
                           </div>
                         </div>
@@ -221,13 +222,14 @@ function Cart() {
               </CardHeader>
               <CardContent className="p-6 text-center">
                 <div className="text-lg font-medium">
-                  {t.subtotal}: {subtotal.toFixed(2)} د.ت
+                  {t.subtotal}: {subtotal.toFixed(2)} {t.priceTnd}
                 </div>
                 <div className="text-lg font-medium">
-                  {t.shipping}: {shipping.toFixed(2)} د.ت {shipping === 0 && `(${t.freeShipping})`}
+                  {t.shipping}: {shipping.toFixed(2)} {t.priceTnd}
+                  {shipping === 0 && `(${t.freeShipping})`}
                 </div>
                 <div className="text-3xl font-bold text-burgundy font-serif">
-                  {t.cartTotal}: {grandTotal.toFixed(2)} د.ت
+                  {t.cartTotal}: {grandTotal.toFixed(2)} {t.priceTnd}
                 </div>
                 <Button
                   onClick={handleConfirmOrder}

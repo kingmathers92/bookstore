@@ -113,13 +113,23 @@ export default function Shop() {
   const t = translations[language] || translations.ar;
   const [sortOrder, setSortOrder] = useState("newest");
 
+  const [debouncedPriceRange, setDebouncedPriceRange] = useState(priceRange);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedPriceRange(priceRange);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [priceRange]);
+
   const getKeyWrapper = (pageIndex, previousPageData) =>
     getInfiniteKey(
       pageIndex,
       previousPageData,
       searchQuery,
       category,
-      priceRange,
+      debouncedPriceRange,
       language,
       sortOrder,
     );
@@ -137,7 +147,7 @@ export default function Shop() {
 
   const hasMore = data && data[data.length - 1]?.length === PAGE_SIZE;
 
-  const countKey = getCountKey(searchQuery, category, priceRange, language);
+  const countKey = getCountKey(searchQuery, category, debouncedPriceRange, language);
   const { data: totalCount = 0 } = useSWR(countKey, countFetcher);
 
   const loaderRef = useRef(null);
@@ -165,7 +175,7 @@ export default function Shop() {
 
   useEffect(() => {
     setSize(1);
-  }, [searchQuery, category, priceRange, language, sortOrder, setSize]);
+  }, [searchQuery, category, debouncedPriceRange, language, sortOrder, setSize]);
 
   if (isLoading && size === 1) return <LoadingSpinner />;
   if (error) return <div className="text-center py-12 text-red-500">Error: {error.message}</div>;
