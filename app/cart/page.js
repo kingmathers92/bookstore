@@ -79,9 +79,7 @@ function Cart() {
         data: { session },
       } = await supabase.auth.getSession();
 
-      const headers = {
-        "Content-Type": "application/json",
-      };
+      const headers = { "Content-Type": "application/json" };
       if (session?.access_token) {
         headers.Authorization = `Bearer ${session.access_token}`;
       }
@@ -146,72 +144,93 @@ function Cart() {
         ) : (
           <>
             <div className="space-y-4 mb-8">
-              {cart.map((item, index) => (
-                <motion.div
-                  key={item.book_id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden elegant-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <div className="w-20 h-24 flex-shrink-0">
-                          <img
-                            src={item.image || "/placeholder.jpg"}
-                            alt={item.title}
-                            className="w-full h-full object-cover rounded-lg shadow-sm"
-                            onError={(e) => (e.target.src = "/placeholder.jpg")}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-burgundy font-serif mb-1">
-                            {item.title}
-                          </h3>
-                          <div className="flex items-center gap-4 text-sm text-warm-gray-600">
-                            <span className="font-medium">
-                              {Number(item.price).toFixed(2)} × {item.quantity || 1}
-                            </span>
-                            <span className="font-bold text-burgundy">
-                              = {(Number(item.price) * (item.quantity || 1)).toFixed(2)}{" "}
-                              {t.priceTnd}
-                            </span>
+              {cart.map((item, index) => {
+                const displayTitle =
+                  language === "ar"
+                    ? item.title_ar || item.title_en
+                    : item.title_en || item.title_ar;
+                const displayAuthor =
+                  language === "ar"
+                    ? item.author_ar || item.author_en
+                    : item.author_en || item.author_ar;
+                const displayPublisher =
+                  language === "ar"
+                    ? item.publishing_house_ar || item.publishing_house_en
+                    : item.publishing_house_en || item.publishing_house_ar;
+
+                return (
+                  <motion.div
+                    key={item.book_id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <Card className="bg-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl overflow-hidden elegant-shadow">
+                      <CardContent className="p-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                          <div className="w-20 h-24 flex-shrink-0">
+                            <img
+                              src={item.image || "/placeholder.jpg"}
+                              alt={displayTitle}
+                              className="w-full h-full object-cover rounded-lg shadow-sm"
+                              onError={(e) => (e.target.src = "/placeholder.jpg")}
+                            />
                           </div>
-                        </div>
-                        <div className="flex items-center gap-2">
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-burgundy font-serif mb-1">
+                              {displayTitle}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {t.author}: {displayAuthor || t.unknown}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {t.publisher}: {displayPublisher || t.unknown}
+                            </p>
+                            <div className="flex items-center gap-4 text-sm text-warm-gray-600 mt-2">
+                              <span className="font-medium">
+                                {Number(item.price).toFixed(2)} × {item.quantity || 1}
+                              </span>
+                              <span className="font-bold text-burgundy">
+                                = {(Number(item.price) * (item.quantity || 1)).toFixed(2)}{" "}
+                                {t.priceTnd}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleUpdateQuantity(item.book_id, (item.quantity || 1) - 1)
+                              }
+                            >
+                              -
+                            </Button>
+                            <span className="px-2">{item.quantity || 1}</span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleUpdateQuantity(item.book_id, (item.quantity || 1) + 1)
+                              }
+                            >
+                              +
+                            </Button>
+                          </div>
                           <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              handleUpdateQuantity(item.book_id, (item.quantity || 1) - 1)
-                            }
+                            variant="destructive"
+                            onClick={() => handleRemove(item.book_id)}
+                            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
                           >
-                            -
-                          </Button>
-                          <span className="px-2">{item.quantity || 1}</span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              handleUpdateQuantity(item.book_id, (item.quantity || 1) + 1)
-                            }
-                          >
-                            +
+                            <Trash size={16} />
+                            {t.cartRemove}
                           </Button>
                         </div>
-                        <Button
-                          variant="destructive"
-                          onClick={() => handleRemove(item.book_id)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-                        >
-                          <Trash size={16} />
-                          {t.cartRemove}
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
 
             <Card className="bg-white shadow-lg rounded-xl elegant-shadow mb-8">

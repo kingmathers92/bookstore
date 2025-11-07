@@ -8,5 +8,5 @@
 -filter book by author, publisher also
 -privacy adn terms adn confitioanlity
 -wishlist
--cart-order to db-wishlist to db
+-db-wishlist to db
 # testing

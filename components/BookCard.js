@@ -34,7 +34,6 @@ const BookCard = ({
   const [imgSrc, setImgSrc] = useState(image || "/images/placeholder.png");
   const { addToWishlist, wishlist } = useStore();
   const [isLiked, setIsLiked] = useState(false);
-  const [quantity, setQuantity] = useState(1);
 
   const t = translations[language];
 
@@ -81,6 +80,31 @@ const BookCard = ({
       showSuccess("تمت الإضافة إلى قائمة الأمنيات");
     } else {
       showError(result.error || "فشل في الإضافة");
+    }
+  };
+
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await addToCart({
+        book_id: id,
+        title_ar,
+        title_en,
+        author_ar,
+        author_en,
+        publishing_house_ar,
+        publishing_house_en,
+        category_ar,
+        category_en,
+        price,
+        priceBeforeDiscount,
+        image,
+        inStock,
+      });
+      showSuccess(t.addedToCart);
+    } catch (error) {
+      showError(t.cartAddError);
     }
   };
 
@@ -173,7 +197,7 @@ const BookCard = ({
 
             <Button
               className="w-full bg-burgundy hover:bg-burgundy-dark text-white rounded-xl py-3 font-semibold elegant-shadow hover-lift transition-all duration-300 flex items-center justify-center gap-2"
-              onClick={() => addToCart({ ...displayBook, quantity })}
+              onClick={handleAddToCart}
               disabled={!displayBook.inStock}
             >
               <ShoppingCart size={18} />
