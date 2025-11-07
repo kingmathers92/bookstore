@@ -10,7 +10,7 @@ import {
 import { useStore } from "@/lib/store";
 
 export default function CategoryFilter() {
-  const { category = "all", setCategory } = useStore();
+  const { category = "all", setCategory, language } = useStore();
 
   const categoryMap = {
     all: { en: "All", ar: "الكل" },
@@ -29,12 +29,12 @@ export default function CategoryFilter() {
     <div className="w-full max-w-xs">
       <Select value={category} onValueChange={setCategory}>
         <SelectTrigger className="w-full p-3 border-2 border-gray-200 focus:border-burgundy rounded-xl bg-white elegant-shadow focus:elegant-shadow-lg transition-all">
-          <SelectValue placeholder="الكل" />
+          <SelectValue placeholder={language === "ar" ? "الكل" : "All"} />
         </SelectTrigger>
         <SelectContent>
-          {Object.entries(categoryMap).map(([label, value]) => (
-            <SelectItem key={value} value={value}>
-              {label}
+          {Object.entries(categoryMap).map(([key, value]) => (
+            <SelectItem key={key} value={key}>
+              {language === "ar" ? value.ar : value.en}
             </SelectItem>
           ))}
         </SelectContent>

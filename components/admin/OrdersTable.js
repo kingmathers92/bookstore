@@ -1,30 +1,56 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useStore } from "@/lib/store";
 import { DataTable } from "@/components/admin/DataTable";
 import translations from "@/lib/translations";
+import { showError, showSuccess } from "@/components/Toast";
 
 const columns = [
   { accessorKey: "id", header: "ID" },
-  { accessorKey: "name", header: "Customer Name" },
-  { accessorKey: "email", header: "Email" },
-  { accessorKey: "total_price", header: "Total Price" },
+  { accessorKey: "full_name", header: "Customer Name" },
+  { accessorKey: "phone", header: "Phone" },
+  { accessorKey: "address", header: "Address" },
+  { accessorKey: "total_amount", header: "Total Price" },
   { accessorKey: "status", header: "Status" },
-  { accessorKey: "order_date", header: "Order Date" },
+  { accessorKey: "created_at", header: "Order Date" },
 ];
 
 export default function OrdersTable() {
   const { language } = useStore();
   const t = translations[language];
+  const [orders, setOrders] = useState([]);
+
+  // Fetch orders from Supabase
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching orders:", error.message);
+        showError("Error loading orders");
+      } else {
+        setOrders(data);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const handleUpdateStatus = async (orderId, status) => {
     try {
       const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
       if (error) throw error;
-      alert.success(t.orderUpdated || "Order status updated!");
+      setOrders((prev) =>
+        prev.map((order) => (order.id === orderId ? { ...order, status } : order)),
+      );
+      showSuccess(t.orderUpdated || "Order status updated!");
     } catch (error) {
-      alert.error(t.errorUpdatingOrder || `Error updating order: ${error.message}`);
+      showError(t.errorUpdatingOrder || `Error updating order: ${error.message}`);
     }
   };
 
