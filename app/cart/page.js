@@ -160,7 +160,7 @@ function Cart() {
 
                 return (
                   <motion.div
-                    key={item.book_id}
+                    key={`${item.book_id}-${index}`}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
