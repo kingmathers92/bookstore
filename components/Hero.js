@@ -15,14 +15,14 @@ export default function Hero() {
 
   return (
     <section className="relative bg-gradient-to-br from-cream via-white to-warm-gray overflow-hidden h-screen max-h-screen mt-10">
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 border border-burgundy rounded-full"></div>
         <div className="absolute top-40 right-20 w-24 h-24 border border-burgundy rounded-full"></div>
         <div className="absolute bottom-40 left-20 w-40 h-40 border border-burgundy rounded-full"></div>
         <div className="absolute bottom-20 right-10 w-28 h-28 border border-burgundy rounded-full"></div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 h-full flex items-center">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 h-full flex items-center">
         <div className="grid lg:grid-cols-2 gap-8 items-center w-full">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -102,53 +102,22 @@ export default function Hero() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="relative flex justify-center items-center mt-8 sm:mt-0"
+            className="flex justify-center items-center w-full px-4"
           >
-            <div className="relative w-full max-w-[320px] sm:max-w-sm mx-auto">
-              <Card className="bg-white elegant-shadow-lg hover-lift transition-all duration-500 overflow-hidden">
+            <div className="relative w-full max-w-[280px] sm:max-w-[320px] md:max-w-[360px] lg:max-w-[400px]">
+              <Card className="bg-white rounded-2xl overflow-hidden shadow-xl border-0">
                 <CardContent className="p-0">
-                  <div className="aspect-[3/4] relative overflow-hidden">
+                  <div className="aspect-[3/4] relative">
                     <BookOfTheDay />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-                    <div className="absolute bottom-4 left-4 right-4 text-white">
-                      <h3 className="text-base sm:text-lg font-bold mb-1 font-serif">
-                        {language === "ar"
-                          ? "مجموعة مختارة بعناية"
-                          : "Carefully Curated Collection"}
+
+                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent text-white">
+                      <h3 className="text-sm sm:text-base font-bold font-serif">
+                        {language === "ar" ? "كتاب اليوم" : "Book of the Day"}
                       </h3>
-                      <p className="text-xs sm:text-sm opacity-90">
-                        {language === "ar"
-                          ? "كتب إسلامية أصيلة من أفضل دور النشر"
-                          : "Authentic Islamic books from the best publishers"}
-                      </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-                className="absolute -top-3 -right-3 bg-burgundy text-white p-3 rounded-2xl elegant-shadow-lg"
-              >
-                <BookOpen size={20} />
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 1 }}
-                className="absolute -bottom-3 -left-3 bg-white p-3 rounded-2xl elegant-shadow-lg"
-              >
-                <div className="flex items-center gap-2">
-                  <Star size={14} className="text-yellow-500 fill-current" />
-                  <span className="text-sm font-semibold text-gray-900">4.9/5</span>
-                </div>
-                <div className="text-xs text-gray-600 mt-1">
-                  {language === "ar" ? "تقييم العملاء" : "Customer Rating"}
-                </div>
-              </motion.div>
             </div>
           </motion.div>
         </div>

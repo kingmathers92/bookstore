@@ -98,7 +98,9 @@ export default function BookDetail() {
   const category =
     language === "ar" ? book.category_ar || book.category_en : book.category_en || book.category_ar;
   const description =
-    book.description || (language === "ar" ? "لا يوجد وصف متاح" : "No description available");
+    language === "ar"
+      ? book.description_ar || book.description_en || "لا يوجد وصف متاح"
+      : book.description_en || book.description_ar || "No description available";
 
   const price = book.price;
   const priceBeforeDiscount = book.priceBeforeDiscount;
