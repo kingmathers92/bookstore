@@ -25,6 +25,11 @@ export default function CategoryFilter() {
     seerah: { en: "Seerah", ar: "سيرة" },
   };
 
+  const getDbCategory = (key) => {
+    if (key === "all") return null;
+    return categoryMap[key]?.[language === "ar" ? "ar" : "en"] || key;
+  };
+
   return (
     <div className="w-full max-w-xs">
       <Select value={category} onValueChange={setCategory}>

@@ -17,6 +17,22 @@ import ReactPaginate from "react-paginate";
 const PAGE_SIZE = 10;
 const PAGINATION_CHUNK = 50;
 
+const getDbCategory = (key, language) => {
+  const categoryMap = {
+    quran: { en: "Quran", ar: "قرآن" },
+    hadith: { en: "Hadith", ar: "حديث" },
+    fiqh: { en: "Fiqh", ar: "الفقه" },
+    aqidah: { en: "Aqidah", ar: "عقيدة" },
+    language: { en: "Language", ar: "لغة" },
+    history: { en: "History", ar: "تاريخ" },
+    culture: { en: "Culture", ar: "ثقافة" },
+    children: { en: "Children", ar: "طفل" },
+    seerah: { en: "Seerah", ar: "سيرة" },
+  };
+  if (key === "all") return null;
+  return categoryMap[key]?.[language === "ar" ? "ar" : "en"] || key;
+};
+
 const getInfiniteKey = (
   pageIndex,
   previousPageData,
@@ -46,29 +62,18 @@ const infiniteFetcher = async (key) => {
   let sbQuery = supabase
     .from("books")
     .select(
-      `
-      book_id,
-      title_en,
-      title_ar,
-      category_en,
-      category_ar,
-      price,
-      priceBeforeDiscount,
-      image,
-      inStock,
-      author_en,
-      author_ar,
-      publishing_house_en,
-      publishing_house_ar,
-      created_at
-    `,
+      `book_id, title_en, title_ar, category_en, category_ar, price, priceBeforeDiscount, image, inStock, author_en, author_ar, publishing_house_en, publishing_house_ar, created_at`,
     )
     .order("created_at", { ascending: sort === "oldest" });
 
   if (query) sbQuery = sbQuery.ilike(titleField, `%${query}%`);
-  if (cat !== "all") sbQuery = sbQuery.eq(catField, cat);
-  sbQuery = sbQuery.or(`price.is.null, and(price.gte.${min || 0}, price.lte.${max || 1000})`);
 
+  const dbCategory = getDbCategory(cat, lang);
+  if (dbCategory) {
+    sbQuery = sbQuery.eq(catField, dbCategory);
+  }
+
+  sbQuery = sbQuery.or(`price.is.null, and(price.gte.${min || 0}, price.lte.${max || 1000})`);
   sbQuery = sbQuery.range(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE - 1);
 
   const { data, error } = await sbQuery;
@@ -94,7 +99,12 @@ const countFetcher = async (key) => {
   let sbQuery = supabase.from("books").select("count", { count: "exact", head: true });
 
   if (query) sbQuery = sbQuery.ilike(titleField, `%${query}%`);
-  if (cat !== "all") sbQuery = sbQuery.eq(catField, cat);
+
+  const dbCategory = getDbCategory(cat, lang);
+  if (dbCategory) {
+    sbQuery = sbQuery.eq(catField, dbCategory);
+  }
+
   sbQuery = sbQuery.or(`price.is.null, and(price.gte.${min || 0}, price.lte.${max || 1000})`);
 
   const { count, error } = await sbQuery;
