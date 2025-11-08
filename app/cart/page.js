@@ -188,10 +188,10 @@ function Cart() {
                             </p>
                             <div className="flex items-center gap-4 text-sm text-warm-gray-600 mt-2">
                               <span className="font-medium">
-                                {Number(item.price).toFixed(2)} × {item.quantity || 1}
+                                {(Number(item.price) || 0).toFixed(2)} × {item.quantity || 1}
                               </span>
                               <span className="font-bold text-burgundy">
-                                = {(Number(item.price) * (item.quantity || 1)).toFixed(2)}{" "}
+                                = {((Number(item.price) || 0) * (item.quantity || 1)).toFixed(2)}{" "}
                                 {t.priceTnd}
                               </span>
                             </div>

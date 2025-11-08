@@ -177,7 +177,7 @@ export default function BookDetail() {
                 className="w-20 text-center border border-gray-300 rounded-lg focus:border-burgundy"
               />
               <Button
-                onClick={() => addToCart({ ...book, quantity })}
+                onClick={() => addToCart(book, quantity)}
                 disabled={!book.inStock}
                 className="flex-1 bg-burgundy text-white hover:bg-burgundy-dark text-sm flex items-center justify-center gap-2"
               >

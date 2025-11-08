@@ -36,7 +36,6 @@ export default function SearchBar() {
     }
 
     setIsTyping(true);
-
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(async () => {
@@ -55,20 +54,21 @@ export default function SearchBar() {
 
         setSuggestions([...new Set([...searchHistory, ...titles])].slice(0, 5));
       } catch (e) {
-        console.error("Search suggestions error:", e);
+        console.error(e);
       } finally {
         setIsTyping(false);
       }
     }, 300);
 
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
+    return () => clearTimeout(debounceRef.current);
   }, [searchQuery, language, searchHistory, setIsTyping]);
 
-  const handleSelect = (s) => {
-    setSearchQuery(s);
+  const performSearch = () => {
     setIsFocused(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") performSearch();
   };
 
   const clear = () => {
@@ -86,9 +86,14 @@ export default function SearchBar() {
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+          onKeyDown={handleKeyDown}
           className="w-full pl-12 pr-12 py-3 border-2 border-gray-200 focus:border-burgundy rounded-xl bg-white elegant-shadow focus:elegant-shadow-lg transition-all duration-300"
         />
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+        <Search
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
+          size={20}
+          onClick={performSearch}
+        />
 
         {searchQuery && (
           <button
@@ -124,7 +129,10 @@ export default function SearchBar() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.2, delay: i * 0.05 }}
                 className="w-full px-4 py-3 text-left hover:bg-warm-gray cursor-pointer text-gray-700 hover:text-burgundy transition-colors border-b border-gray-100 last:border-b-0 flex items-center gap-3"
-                onMouseDown={() => handleSelect(s)}
+                onMouseDown={() => {
+                  setSearchQuery(s);
+                  performSearch();
+                }}
               >
                 <Search size={16} className="text-gray-400" />
                 <span className="truncate">{s}</span>
