@@ -9,6 +9,7 @@ import BooksTable from "@/components/admin/BooksTable";
 import OrdersTable from "@/components/admin/OrdersTable";
 import translations from "@/lib/translations";
 import { supabase } from "@/lib/supabase";
+import ArchiveTable from "../archive/page";
 
 export default function AdminDashboard() {
   const { language } = useStore();
@@ -48,17 +49,27 @@ export default function AdminDashboard() {
         </Button>
       </div>
 
-      <Tabs defaultValue="books" className="w-full">
+      <Tabs defaultValue="books">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="books">{t.books || "Books"}</TabsTrigger>
-          <TabsTrigger value="orders">{t.orders || "Orders"}</TabsTrigger>
+          <TabsTrigger value="books">Books</TabsTrigger>
+          <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="archive">Archive</TabsTrigger>
         </TabsList>
 
         <TabsContent value="books">
           <BooksTable />
         </TabsContent>
+
         <TabsContent value="orders">
-          <OrdersTable />
+          <OrdersTable
+            onArchive={() => {
+              /* refetch archive if needed */
+            }}
+          />
+        </TabsContent>
+
+        <TabsContent value="archive">
+          <ArchiveTable />
         </TabsContent>
       </Tabs>
     </div>
