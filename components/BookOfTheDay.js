@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +21,7 @@ export default function BookOfTheDay() {
       try {
         const { data: books, error } = await supabase.from("books").select("*");
         if (error) throw error;
+
         const availableBooks = books.filter((b) => b.inStock !== false);
         if (!availableBooks.length) return setBookOfTheDay(null);
 
@@ -45,12 +45,23 @@ export default function BookOfTheDay() {
         setLoading(false);
       }
     };
+
     fetchBook();
   }, [language]);
 
-  if (loading) return <div className="text-center py-8">Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-64 text-gray-500 text-sm sm:text-base">
+        Loading...
+      </div>
+    );
+
   if (!bookOfTheDay)
-    return <div className="text-center py-8 text-foreground">No books available today.</div>;
+    return (
+      <div className="flex justify-center items-center h-64 text-gray-500 text-sm sm:text-base">
+        No books available today.
+      </div>
+    );
 
   const stockText =
     language === "ar"
@@ -62,62 +73,53 @@ export default function BookOfTheDay() {
         : "Sold Out";
 
   return (
-    <div className="container mx-auto py-12 text-center">
-      <motion.h3
-        className="text-3xl font-bold text-primary mb-8 tracking-wide"
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        {t.bookOfTheDay || "Book of the Day"}
-      </motion.h3>
-      <motion.div
-        className="flex justify-center"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <Card className="w-64 md:w-72 bg-card shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden relative group">
-          <div className="relative w-full h-80 bg-muted">
-            <Image
-              src={bookOfTheDay.image}
-              alt={bookOfTheDay.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-              priority={false}
-            />
-            <div className="absolute top-2 left-2 bg-primary text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-              {language === "ar"
-                ? bookOfTheDay.category_ar || "غير مصنف"
-                : bookOfTheDay.category_en || "Uncategorized"}
-            </div>
+    <motion.div
+      className="w-full flex justify-center items-center px-2 sm:px-0"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6 }}
+    >
+      <Card className="w-full max-w-[260px] sm:max-w-[300px] bg-white shadow-lg hover:shadow-2xl transition-all duration-300 rounded-xl overflow-hidden relative group">
+        <div className="relative w-full aspect-[3/4] bg-muted">
+          <Image
+            src={bookOfTheDay.image}
+            alt={bookOfTheDay.title}
+            fill
+            sizes="(max-width: 640px) 100vw, 300px"
+            className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute top-2 left-2 bg-burgundy text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
+            {language === "ar"
+              ? bookOfTheDay.category_ar || "غير مصنف"
+              : bookOfTheDay.category_en || "Uncategorized"}
           </div>
+        </div>
 
-          <CardContent className="p-4 text-center">
-            <h4 className="font-semibold text-lg text-foreground truncate">{bookOfTheDay.title}</h4>
-            <p className="text-sm text-muted-foreground mb-3">
-              {t.price || "Price"}: {bookOfTheDay.price} د.ت
-            </p>
-
-            <Button
-              asChild
-              className="w-full bg-primary text-primary-foreground hover:bg-accent transition-all"
-            >
-              <Link href="/shop">
-                <Eye size={16} className="mr-2" /> {t.bookOfTheDayViewDetails || "View Details"}
-              </Link>
-            </Button>
-
-            <div
-              className={`absolute top-2 right-2 px-2 py-1 text-xs font-bold rounded-full ${
-                bookOfTheDay.inStock ? "bg-green-600" : "bg-red-600"
-              } text-white`}
-            >
-              {stockText}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-    </div>
+        <CardContent className="p-3 sm:p-4 text-center space-y-2">
+          <h4 className="font-semibold text-base sm:text-lg text-gray-900 truncate">
+            {bookOfTheDay.title}
+          </h4>
+          <p className="text-xs sm:text-sm text-gray-600 mb-2">
+            {t.price || "Price"}: {bookOfTheDay.price} د.ت
+          </p>
+          <Button
+            asChild
+            className="w-full bg-burgundy text-white hover:bg-burgundy-dark transition-all text-xs sm:text-sm py-2 sm:py-3"
+          >
+            <Link href="/shop">
+              <Eye size={14} className="mr-1" />
+              {t.bookOfTheDayViewDetails || "View Details"}
+            </Link>
+          </Button>
+          <div
+            className={`absolute top-2 right-2 px-2 py-1 text-[10px] sm:text-xs font-bold rounded-full ${
+              bookOfTheDay.inStock ? "bg-green-600" : "bg-red-600"
+            } text-white`}
+          >
+            {stockText}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

@@ -1,63 +1,78 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { useStore } from "@/lib/store";
-import { DataTable } from "@/components/admin/DataTable";
-import translations from "@/lib/translations";
-import { showError, showSuccess } from "@/components/Toast";
-
-const columns = [
-  { accessorKey: "id", header: "ID" },
-  { accessorKey: "full_name", header: "Customer Name" },
-  { accessorKey: "phone", header: "Phone" },
-  { accessorKey: "address", header: "Address" },
-  { accessorKey: "total_amount", header: "Total Price" },
-  { accessorKey: "status", header: "Status" },
-  { accessorKey: "created_at", header: "Order Date" },
-];
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function OrdersTable() {
-  const { language } = useStore();
-  const t = translations[language];
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch orders from Supabase
   useEffect(() => {
-    const fetchOrders = async () => {
-      const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error fetching orders:", error.message);
-        showError("Error loading orders");
-      } else {
+    async function fetchOrders() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/admin/orders");
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Failed to fetch");
+        }
+        const data = await res.json();
         setOrders(data);
+      } catch (err) {
+        console.error("Orders fetch error:", err);
+        setOrders([]);
+      } finally {
+        setLoading(false);
       }
-    };
-
+    }
     fetchOrders();
   }, []);
 
-  const handleUpdateStatus = async (orderId, status) => {
-    try {
-      const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
-      if (error) throw error;
-      setOrders((prev) =>
-        prev.map((order) => (order.id === orderId ? { ...order, status } : order)),
-      );
-      showSuccess(t.orderUpdated || "Order status updated!");
-    } catch (error) {
-      showError(t.errorUpdatingOrder || `Error updating order: ${error.message}`);
-    }
-  };
+  if (loading) return <p className="text-center p-6">Loading orders...</p>;
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">{t.manageOrders || "Manage Orders"}</h2>
-      <DataTable columns={columns} data={orders} />
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-6">Orders</h1>
+      {orders.length === 0 ? (
+        <p className="text-gray-500 text-center">No orders found</p>
+      ) : (
+        <div className="grid gap-4">
+          {orders.map((order) => (
+            <Card key={order.id}>
+              <CardContent className="p-4">
+                <p>
+                  <strong>Full Name:</strong> {order.full_name || "—"}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {order.phone || "—"}
+                </p>
+                <p>
+                  <strong>Address:</strong> {order.address || "—"}
+                </p>
+                <p>
+                  <strong>Total:</strong> {order.total_amount} د.ت
+                </p>
+                <p>
+                  <strong>Status:</strong> <span className="capitalize">{order.status}</span>
+                </p>
+                <p className="text-sm text-gray-500">
+                  {new Date(order.created_at).toLocaleString()}
+                </p>
+                <div className="mt-3">
+                  <strong>Items:</strong>
+                  <ul className="list-disc ml-5 text-sm">
+                    {(order.items || []).map((item, i) => (
+                      <li key={i}>
+                        Book ID: {item.book_id} × {item.quantity} ({item.price} د.ت)
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

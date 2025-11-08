@@ -51,16 +51,12 @@ export default function AdminDashboard() {
       <Tabs defaultValue="books" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="books">{t.books || "Books"}</TabsTrigger>
-          <TabsTrigger value="users">{t.users || "Users"}</TabsTrigger>
           <TabsTrigger value="orders">{t.orders || "Orders"}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="books">
           <BooksTable />
         </TabsContent>
-
-        <TabsContent value="users">{/* Future: UsersTable */}</TabsContent>
-
         <TabsContent value="orders">
           <OrdersTable />
         </TabsContent>

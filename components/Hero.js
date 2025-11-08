@@ -102,21 +102,21 @@ export default function Hero() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="relative flex justify-center"
+            className="relative flex justify-center items-center mt-8 sm:mt-0"
           >
-            <div className="relative max-w-sm w-full">
+            <div className="relative w-full max-w-[320px] sm:max-w-sm mx-auto">
               <Card className="bg-white elegant-shadow-lg hover-lift transition-all duration-500 overflow-hidden">
                 <CardContent className="p-0">
                   <div className="aspect-[3/4] relative overflow-hidden">
                     <BookOfTheDay />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                     <div className="absolute bottom-4 left-4 right-4 text-white">
-                      <h3 className="text-lg font-bold mb-1 font-serif">
+                      <h3 className="text-base sm:text-lg font-bold mb-1 font-serif">
                         {language === "ar"
                           ? "مجموعة مختارة بعناية"
                           : "Carefully Curated Collection"}
                       </h3>
-                      <p className="text-xs opacity-90">
+                      <p className="text-xs sm:text-sm opacity-90">
                         {language === "ar"
                           ? "كتب إسلامية أصيلة من أفضل دور النشر"
                           : "Authentic Islamic books from the best publishers"}
