@@ -76,9 +76,7 @@ const infiniteFetcher = async (key) => {
   if (query) sbQuery = sbQuery.ilike(titleField, `%${query}%`);
 
   const dbCategory = getDbCategory(cat, lang);
-  if (dbCategory) {
-    sbQuery = sbQuery.eq(catField, dbCategory);
-  }
+  if (dbCategory) sbQuery = sbQuery.eq(catField, dbCategory);
 
   if (author) sbQuery = sbQuery.eq(authorField, author);
   if (publisher) sbQuery = sbQuery.eq(publisherField, publisher);
@@ -115,9 +113,7 @@ const countFetcher = async (key) => {
   if (query) sbQuery = sbQuery.ilike(titleField, `%${query}%`);
 
   const dbCategory = getDbCategory(cat, lang);
-  if (dbCategory) {
-    sbQuery = sbQuery.eq(catField, dbCategory);
-  }
+  if (dbCategory) sbQuery = sbQuery.eq(catField, dbCategory);
 
   if (author) sbQuery = sbQuery.eq(authorField, author);
   if (publisher) sbQuery = sbQuery.eq(publisherField, publisher);
@@ -131,8 +127,8 @@ const countFetcher = async (key) => {
 
 export default function Shop() {
   const searchParams = useSearchParams();
-  const authorParam = searchParams.get("author");
-  const publisherParam = searchParams.get("publisher");
+  const authorParam = searchParams?.get("author") || "";
+  const publisherParam = searchParams?.get("publisher") || "";
 
   const {
     searchQuery = "",
