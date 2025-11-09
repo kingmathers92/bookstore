@@ -13,6 +13,7 @@ import useSWRInfinite from "swr/infinite";
 import useSWR from "swr";
 import SortFilter from "@/components/SortFilter";
 import ReactPaginate from "react-paginate";
+import { useSearchParams } from "next/navigation";
 
 const PAGE_SIZE = 10;
 const PAGINATION_CHUNK = 50;
@@ -21,7 +22,7 @@ const getDbCategory = (key, language) => {
   const categoryMap = {
     quran: { en: "Quran", ar: "قرآن" },
     hadith: { en: "Hadith", ar: "حديث" },
-    fiqh: { en: "Fiqh", ar: "الفقه" },
+    fiqh: { en: "Fiqh", ar: "فقه" },
     aqidah: { en: "Aqidah", ar: "عقيدة" },
     language: { en: "Language", ar: "لغة" },
     history: { en: "History", ar: "تاريخ" },
@@ -41,9 +42,11 @@ const getInfiniteKey = (
   priceRange,
   language,
   sortOrder,
+  author,
+  publisher,
 ) => {
   if (previousPageData && !previousPageData.length) return null;
-  return `books_page_${pageIndex}_query_${searchQuery}_cat_${category}_min_${priceRange[0]}_max_${priceRange[1]}_lang_${language}_sort_${sortOrder}`;
+  return `books_page_${pageIndex}_query_${searchQuery}_cat_${category}_min_${priceRange[0]}_max_${priceRange[1]}_lang_${language}_sort_${sortOrder}_author_${author || ""}_publisher_${publisher || ""}`;
 };
 
 const infiniteFetcher = async (key) => {
@@ -55,9 +58,13 @@ const infiniteFetcher = async (key) => {
   const max = parseFloat(parts[10]);
   const lang = parts[12];
   const sort = parts[14];
+  const author = parts[16];
+  const publisher = parts[18];
 
   const titleField = lang === "ar" ? "title_ar" : "title_en";
   const catField = lang === "ar" ? "category_ar" : "category_en";
+  const authorField = lang === "ar" ? "author_ar" : "author_en";
+  const publisherField = lang === "ar" ? "publishing_house_ar" : "publishing_house_en";
 
   let sbQuery = supabase
     .from("books")
@@ -73,6 +80,9 @@ const infiniteFetcher = async (key) => {
     sbQuery = sbQuery.eq(catField, dbCategory);
   }
 
+  if (author) sbQuery = sbQuery.eq(authorField, author);
+  if (publisher) sbQuery = sbQuery.eq(publisherField, publisher);
+
   sbQuery = sbQuery.or(`price.is.null, and(price.gte.${min || 0}, price.lte.${max || 1000})`);
   sbQuery = sbQuery.range(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE - 1);
 
@@ -81,8 +91,8 @@ const infiniteFetcher = async (key) => {
   return data || [];
 };
 
-const getCountKey = (searchQuery, category, priceRange, language) => {
-  return `book_count_query_${searchQuery}_cat_${category}_min_${priceRange[0]}_max_${priceRange[1]}_lang_${language}`;
+const getCountKey = (searchQuery, category, priceRange, language, author, publisher) => {
+  return `book_count_query_${searchQuery}_cat_${category}_min_${priceRange[0]}_max_${priceRange[1]}_lang_${language}_author_${author || ""}_publisher_${publisher || ""}`;
 };
 
 const countFetcher = async (key) => {
@@ -92,9 +102,13 @@ const countFetcher = async (key) => {
   const min = parseFloat(parts[7]);
   const max = parseFloat(parts[9]);
   const lang = parts[11];
+  const author = parts[13];
+  const publisher = parts[15];
 
   const titleField = lang === "ar" ? "title_ar" : "title_en";
   const catField = lang === "ar" ? "category_ar" : "category_en";
+  const authorField = lang === "ar" ? "author_ar" : "author_en";
+  const publisherField = lang === "ar" ? "publishing_house_ar" : "publishing_house_en";
 
   let sbQuery = supabase.from("books").select("count", { count: "exact", head: true });
 
@@ -105,6 +119,9 @@ const countFetcher = async (key) => {
     sbQuery = sbQuery.eq(catField, dbCategory);
   }
 
+  if (author) sbQuery = sbQuery.eq(authorField, author);
+  if (publisher) sbQuery = sbQuery.eq(publisherField, publisher);
+
   sbQuery = sbQuery.or(`price.is.null, and(price.gte.${min || 0}, price.lte.${max || 1000})`);
 
   const { count, error } = await sbQuery;
@@ -113,6 +130,10 @@ const countFetcher = async (key) => {
 };
 
 export default function Shop() {
+  const searchParams = useSearchParams();
+  const authorParam = searchParams.get("author");
+  const publisherParam = searchParams.get("publisher");
+
   const {
     searchQuery = "",
     category = "all",
@@ -142,6 +163,8 @@ export default function Shop() {
       debouncedPriceRange,
       language,
       sortOrder,
+      authorParam,
+      publisherParam,
     );
 
   const { data, error, isLoading, size, setSize, isValidating } = useSWRInfinite(
@@ -157,7 +180,14 @@ export default function Shop() {
 
   const hasMore = data && data[data.length - 1]?.length === PAGE_SIZE;
 
-  const countKey = getCountKey(searchQuery, category, debouncedPriceRange, language);
+  const countKey = getCountKey(
+    searchQuery,
+    category,
+    debouncedPriceRange,
+    language,
+    authorParam,
+    publisherParam,
+  );
   const { data: totalCount = 0 } = useSWR(countKey, countFetcher);
 
   const loaderRef = useRef(null);
@@ -185,7 +215,16 @@ export default function Shop() {
 
   useEffect(() => {
     setSize(1);
-  }, [searchQuery, category, debouncedPriceRange, language, sortOrder, setSize]);
+  }, [
+    searchQuery,
+    category,
+    debouncedPriceRange,
+    language,
+    sortOrder,
+    authorParam,
+    publisherParam,
+    setSize,
+  ]);
 
   if (isLoading && size === 1) return <LoadingSpinner />;
   if (error) return <div className="text-center py-12 text-red-500">Error: {error.message}</div>;

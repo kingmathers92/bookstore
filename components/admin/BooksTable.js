@@ -48,7 +48,7 @@ export default function BooksTable() {
   const categoryMapping = {
     quran: { en: "Quran", ar: "قرآن" },
     hadith: { en: "Hadith", ar: "حديث" },
-    fiqh: { en: "Fiqh", ar: "الفقه" },
+    fiqh: { en: "Fiqh", ar: "فقه" },
     aqidah: { en: "Aqidah", ar: "عقيدة" },
     language: { en: "Language", ar: "لغة" },
     history: { en: "History", ar: "تاريخ" },
@@ -59,8 +59,6 @@ export default function BooksTable() {
 
   const handleEdit = (book) => {
     const editBook = { ...book };
-
-    // Find internal key from category_en
     const foundKey = Object.keys(categoryMapping).find(
       (key) => categoryMapping[key].en === book.category_en,
     );
@@ -281,7 +279,7 @@ export default function BooksTable() {
               />
               <Input
                 type="number"
-                placeholder="Old Price"
+                placeholder="PriceBeforeDiscount"
                 value={formData.priceBeforeDiscount || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, priceBeforeDiscount: parseFloat(e.target.value) || 0 })

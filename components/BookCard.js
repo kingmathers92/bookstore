@@ -157,21 +157,28 @@ const BookCard = ({
         <CardContent className="flex flex-col flex-grow p-6 space-y-4">
           <div className="space-y-2">
             <Link href={`/book/${id}`} prefetch>
-              <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 hover:text-burgundy transition-colors font-serif">
+              <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 hover:text-burgundy hover:underline transition-all duration-200 font-serif cursor-pointer">
                 {displayBook.title}
               </h3>
             </Link>
 
             {displayBook.author && (
-              <p className="text-sm text-gray-600">
-                {t.bookCardAuthor || t.Author}: {displayBook.author}
-              </p>
+              <Link href={`/shop?author=${encodeURIComponent(displayBook.author)}`} prefetch>
+                <p className="text-sm text-gray-600 font-medium hover:text-burgundy hover:underline hover:font-semibold transition-all duration-200 cursor-pointer">
+                  {displayBook.author}
+                </p>
+              </Link>
             )}
 
             {displayBook.publishingHouse && (
-              <p className="text-xs text-gray-500">
-                {t.bookCardPublisher || t.Publisher}: {displayBook.publishingHouse}
-              </p>
+              <Link
+                href={`/shop?publisher=${encodeURIComponent(displayBook.publishingHouse)}`}
+                prefetch
+              >
+                <p className="text-xs text-gray-500 font-medium hover:text-burgundy hover:underline hover:font-semibold transition-all duration-200 cursor-pointer">
+                  {displayBook.publishingHouse}
+                </p>
+              </Link>
             )}
           </div>
 

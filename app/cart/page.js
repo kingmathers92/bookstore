@@ -39,22 +39,16 @@ function Cart() {
   const grandTotal = subtotal + shipping;
 
   const handleRemove = async (bookId) => {
-    try {
-      await removeFromCart(bookId);
-    } catch (error) {
-      showError(t.cartOrderError || "Error", {
-        description: `Failed to remove item: ${error.message}`,
-      });
+    const result = await removeFromCart(bookId);
+    if (!result.success) {
+      showError(t.cartOrderError, { description: result.error });
     }
   };
 
   const handleUpdateQuantity = async (bookId, newQty) => {
-    try {
-      await updateQuantity(bookId, newQty);
-    } catch (error) {
-      showError(t.cartOrderError || "Error", {
-        description: `Failed to update quantity: ${error.message}`,
-      });
+    const result = await updateQuantity(bookId, newQty);
+    if (!result.success) {
+      showError(t.cartOrderError, { description: result.error });
     }
   };
 

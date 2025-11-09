@@ -128,14 +128,17 @@ export default function Header() {
               )}
             </NavigationMenuItem>
             {status === "authenticated" && (
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  href="/wishlist"
-                  className={`... ${isActive("/wishlist") ? "bg-burgundy text-white" : ""}`}
-                >
-                  <Heart /> Wishlist
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+              <NavigationMenuLink
+                href="/wishlist"
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  isActive("/wishlist")
+                    ? "bg-burgundy text-white elegant-shadow"
+                    : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
+                }`}
+              >
+                <Heart className="inline-block w-5 h-5 mr-1" />
+                {t.wishlist || "Wishlist"}
+              </NavigationMenuLink>
             )}
           </NavigationMenuList>
         </NavigationMenu>

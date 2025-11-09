@@ -1,6 +1,24 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+async function findUserByEmail(email) {
+  let page = 1;
+  const perPage = 100;
+  while (true) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+    if (error) throw error;
+    const user = data.users.find((u) => u.email === email);
+    if (user) return user;
+    if (data.users.length < perPage) break;
+    page++;
+  }
+  return null;
+}
 
 export const authOptions = {
   providers: [
@@ -12,20 +30,19 @@ export const authOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account.provider === "google") {
-        const { data: existingUser } = await supabase
-          .from("auth.users")
-          .select("id")
-          .eq("email", user.email)
-          .single();
-
+        const existingUser = await findUserByEmail(user.email);
         if (existingUser) {
-          user.id = existingUser?.id;
+          user.id = existingUser.id;
         } else {
-          const { data } = await supabase.auth.signUp({
+          const { data, error } = await supabaseAdmin.auth.admin.createUser({
             email: user.email,
-            password: crypto.randomUUID(),
-            options: { data: { name: user.name } },
+            user_metadata: { name: user.name },
+            email_confirm: true,
           });
+          if (error) {
+            console.error("Error creating user:", error);
+            return false; // Deny sign-in if creation fails
+          }
           user.id = data.user.id;
         }
       }
