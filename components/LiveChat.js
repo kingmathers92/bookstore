@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,7 +67,7 @@ export default function LiveChat() {
   return (
     <div className="fixed bottom-4 right-4 z-50" dir="rtl">
       <Button
-        className="bg-burgundy text-white hover:bg-burgundy-dark rounded-full w-14 h-14 flex items-center justify-center transition-colors"
+        className="bg-burgundy text-white hover:bg-burgundy-dark rounded-full w-14 h-14 flex items-center justify-center transition-colors hover:cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
         <MessageSquare />

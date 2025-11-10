@@ -110,14 +110,14 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   onClick={handleLogout}
-                  className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-warm-gray hover:text-burgundy transition-all duration-300"
+                  className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-warm-gray hover:text-burgundy transition-all duration-300 hover:cursor-pointer"
                 >
                   {t.signOut}
                 </Button>
               ) : (
                 <NavigationMenuLink
                   href="/auth/signin"
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:cursor-pointer ${
                     isActive("/auth/signin")
                       ? "bg-burgundy text-white elegant-shadow"
                       : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
@@ -177,7 +177,7 @@ export default function Header() {
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
-                className="md:hidden p-2 text-gray-700 hover:bg-warm-gray hover:text-burgundy rounded-lg"
+                className="md:hidden p-2 text-gray-700 hover:bg-warm-gray hover:text-burgundy rounded-lg hover:cursor-pointer"
               >
                 <Menu size={24} />
               </Button>
@@ -201,6 +201,18 @@ export default function Header() {
                 >
                   {t.home}
                 </Link>
+              <Link
+                href="/about"
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  isActive("/about")
+                    ? "bg-burgundy text-white elegant-shadow"
+                    : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                {t.aboutUs || "من نحن"}
+              </Link>
+
                 <Link
                   href="/shop"
                   className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
@@ -224,18 +236,29 @@ export default function Header() {
                   <ShoppingCart size={20} />
                   {t.cart?.replace("{count}", cart.length) || `Cart (${cart.length})`}
                 </Link>
+              <Link
+                href="/contact"
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                  isActive("/contact")
+                    ? "bg-burgundy text-white elegant-shadow"
+                    : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                {t.contactUs || "اتصل بنا"}
+              </Link>
                 {status === "authenticated" ? (
                   <Button
                     variant="ghost"
                     onClick={handleLogout}
-                    className="px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-warm-gray hover:text-burgundy transition-all duration-300 justify-start"
+                    className="px-4 py-3 rounded-lg font-medium text-gray-700 hover:bg-warm-gray hover:text-burgundy transition-all duration-300 justify-start hover:cursor-pointer"
                   >
                     {t.signOut}
                   </Button>
                 ) : (
                   <Link
                     href="/auth/signin"
-                    className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    className={`px-4 py-3 rounded-lg font-medium transition-all duration-300 hover:cursor-pointer ${
                       isActive("/auth/signin")
                         ? "bg-burgundy text-white elegant-shadow"
                         : "text-gray-700 hover:bg-warm-gray hover:text-burgundy"

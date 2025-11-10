@@ -155,18 +155,21 @@ export default function Footer() {
 
             <div className="flex items-center gap-4 pt-4">
               <a
+                target="_blank"
                 href="https://www.facebook.com/ThamaratAlAwrak"
                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
               >
                 <Facebook size={16} />
               </a>
               <a
+                target="_blank"
                 href="https://www.tiktok.com/@thamarat_al_awrak?_r=1&_t=ZM-9108FnO80Tb"
                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
               >
                 <TbBrandTiktok />
               </a>
               <a
+                target="_blank"
                 href="https://www.instagram.com/mayyaharrabi/?igsh=emdkNHNpd3lqMWQw"
                 className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors"
               >

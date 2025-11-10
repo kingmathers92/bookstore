@@ -13,16 +13,8 @@ export default function Contact() {
   const t = translations[language];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-burgundy-dark via-[#2c1d1a] to-[#3a2622] py-16 px-6 mt-8 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-burgundy-dark via-[#2c1d1a] to-[#3a2622] py-16 px-6 mt-22 text-white">
       <div className="container mx-auto max-w-5xl">
-        <motion.h1
-          className="text-4xl md:text-5xl font-bold text-center mb-10"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          {t.contactUs}
-        </motion.h1>
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}
