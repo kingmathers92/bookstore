@@ -11,7 +11,7 @@ const LoadingSpinner = () => {
   const t = translations[language];
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-burgundy/10 via-cream/50 to-warm-gray/30 backdrop-blur-sm z-50">
+    <div className="fixed inset-0 grid place-items-center bg-gradient-to-br from-burgundy/10 via-cream/50 via-warm-gray/30 backdrop-blur-sm z-50 min-h-screen">
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-1/4 left-1/4 w-32 h-32 border-2 border-burgundy rounded-full animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-24 h-24 border-2 border-burgundy-light rounded-full animate-pulse delay-300"></div>
