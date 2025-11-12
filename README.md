@@ -1,134 +1,118 @@
-# Thamarat Al-Awrak - Islamic Book Store
+Thamarat Al-Awrak - Islamic Book Store
+======================================
 
-Welcome to **Thamarat Al-Awrak**, an online Islamic book store built with Next.js. This project offers a beautifully designed platform inspired by the Kiteby theme, featuring a rich collection of Arabic Islamic books. The app utilizes shadcn/ui for modern UI components and Tailwind CSS for styling, with custom Islamic color schemes and RTL (right-to-left) support.
+Welcome to **Thamarat Al-Awrak** (ثمرات الأوراق), an online e-commerce platform for Islamic books, built with Next.js and Supabase. This app provides a user-friendly store for browsing, searching, and purchasing Arabic Islamic literature, with features like cart management, wishlist, order processing, and admin tools. The design draws inspiration from modern themes, featuring RTL support for Arabic, elegant animations, and a custom Islamic color scheme (burgundy, cream, warm gray).
 
-![Thamarat Al-Awrak Screenshot](public/images/hero.webp)
+[Thamarat Al-Awrak Screenshot](public/images/sreen.png)
 
-## Overview
+Overview
+--------
 
-Thamarat Al-Awrak (ثمرات الأوراق) translates to "Fruits of the Pages," symbolizing the wisdom and knowledge found in Islamic literature. This project aims to provide an accessible and visually appealing online store for purchasing Islamic books, with a focus on Arabic content.
+Thamarat Al-Awrak, meaning "Fruits of the Pages," symbolizes the wisdom derived from Islamic texts. The app focuses on a seamless shopping experience for books in categories like Quran, Hadith, Fiqh, and more. It includes bilingual support (Arabic/English), secure authentication, and backend integration for real-time data.
 
-- **Tech Stack**: Next.js, shadcn/ui, Tailwind CSS, Framer Motion
-- **Language**: JavaScript
-- **Direction**: RTL (Arabic support)
-- **Features**: Responsive design, book catalog, search, and category filters
+*   **Tech Stack**: Next.js (App Router), Supabase (Database & Auth), Next-Auth (Google Login), Zustand (State Management), SWR (Data Fetching), shadcn/ui & Tailwind CSS (UI/Styling), Framer Motion (Animations)
 
-## Installation
+*   **Language**: JavaScript/TypeScript
 
-To run this project locally, follow these steps:
+*   **Direction**: RTL for Arabic, LTR for English (dynamic switch)
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/your-username/thamarat-al-awrak-shadcn-final.git
-   cd thamarat-al-awrak-shadcn-final
-   ```
+*   **Deployment**: Optimized for Vercel/Next.js hosting
 
-## Installation
+*   **Key Integrations**: Supabase Storage for images, API routes for CRUD operations
 
-To run this project locally, follow these steps:
 
-1. **Clone the Repository**
+Features
+--------
 
-   ```bash
-   git clone https://github.com/your-username/thamarat-al-awrak-shadcn-final.git
-   cd thamarat-al-awrak-shadcn-final
+*   **Homepage**: Hero section with featured "Book of the Day," marketing highlights (e.g., delivery info), testimonials carousel, and testimonial submission form (for logged-in users).
 
-   ```
+*   **Shop Page**: Infinite scrolling book catalog with search, category filters, price range slider, and sorting (newest/oldest). Supports author/publisher filtering via query params.
 
-2. **Install Dependencies**
+*   **Book Detail Page**: Detailed view with images, descriptions, pricing (discounts), stock status, quantity selector, add to cart/wishlist, and notification preferences.
 
-   ```bash
-   npm install
-   ```
+*   **Cart**: Dynamic cart with quantity updates, removals, subtotal/shipping calculations, and order confirmation form (name, address, phone).
 
-   ```
-   npm run dev
-   ```
+*   **Wishlist**: Persistent localStorage wishlist with add/remove functionality.
 
-   ```
-   Open https://localhost:3000 in your browser to see the app.
-   ```
+*   **Authentication**: Google Sign-In integrated with Supabase users; role-based (user/admin).
 
-### Usage
+*   **Admin Dashboard**: Books CRUD (add/edit/delete with image upload), orders management (status updates, archive).
 
-- Explore the Catalog: Browse the featured books on the homepage.
-- Search Books: Use the search bar to find specific titles.
-- Filter Categories: Select categories like Quran, Hadith, or Tafsir.
-- Add to Cart: Click "أضف إلى السلة" (Add to Cart) on book cards (functionality to be expanded).
+*   **UI/UX**: Responsive design, loading spinners, toasts, live chat bot, back-to-top button, breadcrumbs, animations.
 
-The app is designed to be user-friendly on both desktop and mobile devices, with an Islamic aesthetic featuring beige, green, and gold tones.
+*   **Performance**: Server components for static pages, Suspense for loading states, dynamic imports for heavy components, image optimization.
 
-### Features
+*   **Internationalization**: Bilingual (Arabic/English) with dynamic RTL/LTR switching.
 
-- Responsive Layout: Optimized for all screen sizes.
-- Islamic Design: Custom color scheme and - Arabic typography (Noto Kufi Arabic, Amiri).
-- Dynamic Components: Interactive Hero section with animations (via Framer Motion).
-  shadcn/ui Integration: Modern UI components with Tailwind styling.
-- RTL Support: Fully right-to-left layout for Arabic content.
+*   **API Routes**: Secure endpoints for books/orders management, file uploads.
 
-## Future Features
 
-To enhance the functionality and user experience of Thamarat Al-Awrak, consider implementing the following features:
+Usage
+-----
 
-- **User Authentication**:
+*   **Browse & Shop**: Visit /shop to filter/search books. Click author/publisher for filtered views.
 
-  - Add login and registration for users to create accounts.
-  - Implement secure password management and email verification.
-  - Allow users to save their cart and purchase history.
+*   **Cart & Checkout**: Add items, update quantities, submit orders.
 
-- **Shopping Cart Functionality**:
+*   **Wishlist**: Add/remove books; persists via localStorage.
 
-  - Enable adding and removing books from the cart.
-  - Display cart summary with total price and item count.
-  - Integrate a checkout process with payment options (e.g., Stripe or PayPal).
+*   **Admin**: Login as admin, manage books/orders at /admin.
 
-- **Advanced Search and Filters**:
+*   **Language Switch**: Toggle Arabic/English; auto RTL.
 
-  - Add search by author, publisher, or price range.
-  - Include filters for book availability, rating, or language.
-  - Implement autocomplete suggestions for search input.
+*   **Live Chat**: Predefined Q&A bot for common queries.
 
-- **Wishlist Feature**:
 
-  - Let users save books to a wishlist for later purchase.
-  - Sync wishlist across devices with user accounts.
-  - Notify users of price drops or availability.
+Performance Optimizations
+-------------------------
 
-- **Multi-Language Support**:
+*   Server-side rendering for static pages (e.g., Home, Testimonials).
 
-  - Extend RTL support to include English or other languages.
-  - Provide a language switcher in the UI.
-  - Translate static content dynamically.
+*   Dynamic imports for heavy components to reduce bundle size.
 
-- **Order Tracking**:
+*   Suspense boundaries with custom loading spinners.
 
-  - Add a "My Orders" section for logged-in users.
-  - Provide real-time tracking updates (e.g., via API integration).
-  - Send email notifications for order status changes.
+*   Image optimization via Next.js  (AVIF/WebP, lazy loading).
 
-- **Admin Dashboard**:
+*   Caching for Supabase queries and SWR for client data.
 
-  - Create a dashboard for managing books, users, and orders.
-  - Allow admins to add, edit, or delete products.
-  - Generate sales reports and analytics.
+*   Minified JS/CSS in production; split chunks in webpack.
 
-_Last updated: August 30, 2025_
 
-### Contributing
+Lighthouse scores: Improved to 60+ on mobile/desktop after optimizations (e.g., reduced TBT/LCP via server components).
 
-Contributions are welcome! To contribute:
-Fork the repository.
+Future Features
+---------------
 
-1. Create a new branch: git checkout -b feature/your-feature.
-2. Make your changes and commit: git commit -m "Add your feature".
-3. Push to the branch: git push origin feature/your-feature.
-   Open a pull request.
+*   Advanced admin analytics (sales reports).
 
-Please ensure your code follows the project’s styling guidelines and includes relevant tests.LicenseThis project is licensed under the MIT License (LICENSE). Feel free to use, modify, and distribute it as needed. AcknowledgmentsInspired by the Kiteby theme for Islamic e-commerce.
-Built with love using Next.js, shadcn/ui, and Tailwind CSS.
+*   Email notifications for orders/stock.
 
-Thanks to the open-source community for tools like Framer Motion and Radix UI.
+*   Multi-currency support.
 
-### Contact
 
-For questions or support, reach out at info@thamaratalawrak.com (mailto:info@thamaratalawrak.com).
+_Last updated: November 15, 2025_
+
+Contributing
+------------
+
+1.  Fork the repo.
+
+2.  Create branch: git checkout -b feature/your-feature.
+
+3.  Commit: git commit -m "Add feature".
+
+4.  Push: git push origin feature/your-feature.
+
+5.  Open PR.
+
+
+Follow ESLint/Prettier; add tests for new features.
+
+License
+-------
+
+MIT License - see LICENSE for details.
+
+
+Contact: [info@thamaratalawrak.com](mailto:info@thamaratalawrak.com)
