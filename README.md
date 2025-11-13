@@ -3,8 +3,7 @@ Thamarat Al-Awrak - Islamic Book Store
 
 Welcome to **Thamarat Al-Awrak** (ثمرات الأوراق), an online e-commerce platform for Islamic books, built with Next.js and Supabase. This app provides a user-friendly store for browsing, searching, and purchasing Arabic Islamic literature, with features like cart management, wishlist, order processing, and admin tools. The design draws inspiration from modern themes, featuring RTL support for Arabic, elegant animations, and a custom Islamic color scheme (burgundy, cream, warm gray).
 
-[Thamarat Al-Awrak Screenshot](public/images/sreen.png)
-
+![Thamarat Al-Awrak Screenshot](/public/images/screen.png)
 Overview
 --------
 
